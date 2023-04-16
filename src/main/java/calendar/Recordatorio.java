@@ -30,6 +30,8 @@ abstract class Recordatorio {
     public LocalDateTime verFinal() {
         return this.inicio.plusHours(horas).plusMinutes(minutos);
     }
-
+    public boolean VerficarDiaCompleto(){
+      return (inicio.getHour() == 0) && (horas == 24);
+    }
 
 }

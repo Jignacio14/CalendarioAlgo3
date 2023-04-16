@@ -22,15 +22,40 @@ public class EventoTest {
         var evento = new Evento(inicio, 1, 30);
         // act
         LocalDateTime duracion = evento.verFinal();
+
         // assert
         assertEquals(duracion, finalEvento);
+    }
+
+    @Test
+    public void VerificarEventoDiaCompleto(){
+        LocalDateTime completa = LocalDateTime.of(2023, 12, 14, 0, 0);
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var eventodiacompleto = new Evento(completa, 24, 0);
+        var eventoparcial = new Evento(parcial, 4, 30);
+        //act
+        var prueba1 = eventodiacompleto.VerficarDiaCompleto();
+        var prueba2 = eventoparcial.VerficarDiaCompleto();
+        //
+        assertTrue(prueba1);
+        assertFalse(prueba2);
+    }
+
+    @Test
+    public void VerificarEventoDura24HperoNoEsDiaCompleto(){
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var eventoparcial = new Evento(parcial, 24, 0);
+        //
+        var prueba = eventoparcial.VerficarDiaCompleto();
+        //
+        assertFalse(prueba);
     }
 
     //prueba de terminar el recordatorio en un dia en especifico
     //por ejemplo: empieza el 20 de abril y se indica que se repite cada x cantidad de dias o semanas o mes o año
     // (cantidad que supera el rango entre el inicio y fin) pero se pone que termina el 25 de abril,
-    // solo va a durar el inicio o los dias que esten dentro del rango que cumpla la condicion de (repeticion cada: ...)
-    public void cantidadDeRepeticionesMayorADuracionDelRecordatorio(){
+        // solo va a durar el inicio o los dias que esten dentro del rango que cumpla la condicion de (repeticion cada: ...)
+        public void cantidadDeRepeticionesMayorADuracionDelRecordatorio(){
         // arrange
 
         // act
