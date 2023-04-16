@@ -1,4 +1,3 @@
-import calendar.Calendario;
 import calendar.Evento;
 import org.junit.Test;
 
@@ -11,37 +10,55 @@ public class EventoTest {
 
     //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void fechaDeFinDelRecordatorioAntesQueElInicioDelRecordatorio() {
+    public void VerificarFechaFinEsCorrecta() {
         // arrange
         String fechaInicio = "2023-04-20 12:30";
-        String fechaFin = "2023-04-10 12:30";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         LocalDateTime inicio = LocalDateTime.parse(fechaInicio, formatter);
-        LocalDateTime fin = LocalDateTime.parse(fechaFin, formatter);
-
-        var evento = new Evento(inicio, fin, null, null);
-
+        LocalDateTime finalEvento = LocalDateTime.parse(fechaInicio, formatter);
+        finalEvento = finalEvento.plusHours(1);
+        finalEvento = finalEvento.plusMinutes(30);
+        var evento = new Evento(inicio, 1, 30);
         // act
-        long duracion = evento.calcularDuracion();
+        LocalDateTime duracion = evento.verFinal();
 
         // assert
-        assertEquals(0,duracion);
-        //su repeticion debe ser cero, es decir solo dura un dia, empieza ese dia y termina ese mismo dia
-        // por ende el array donde tiene las fechas de cuando se repite el evento/tarea solo debe tener una fecha y debe ser la misma fecha de inicio
+        assertEquals(duracion, finalEvento);
     }
 
-    //prueba de terminar el recordatorio en un dia en especifico
-    //por ejemplo: empieza el 20 de abril y se indica que se repite cada x cantidad de dias o semanas o mes o año
-    // (cantidad que supera el rango entre el inicio y fin) pero se pone que termina el 25 de abril,
-    // solo va a durar el inicio o los dias que esten dentro del rango que cumpla la condicion de (repeticion cada: ...)
-    public void cantidadDeRepeticionesMayorADuracionDelRecordatorio(){
-        // arrange
+    @Test
+    public void VerificarEventoDiaCompleto(){
+        LocalDateTime completa = LocalDateTime.of(2023, 12, 14, 0, 0);
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var eventodiacompleto = new Evento(completa, 24, 0);
+        var eventoparcial = new Evento(parcial, 4, 30);
+        //act
+        var prueba1 = eventodiacompleto.verficarDiaCompleto();
+        var prueba2 = eventoparcial.verficarDiaCompleto();
+        //
+        assertTrue(prueba1);
+        assertFalse(prueba2);
+    }
 
-        // act
+    @Test
+    public void VerificarEventoDura24HperoNoEsDiaCompleto(){
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var eventoparcial = new Evento(parcial, 24, 0);
+        //
+        var prueba = eventoparcial.verficarDiaCompleto();
+        //
+        assertFalse(prueba);
+    }
 
-        // assert
-
+    @Test
+    public void PruebaCambiarNombre(){
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var evento = new Evento(parcial, 24, 0);
+        //
+        evento.modificarNombre("Examenes fiuba");
+        evento.modificarNombre("Examenes fadu2");
+        evento.modificarNombre("Examenes fa3");
+        evento.modificarNombre("Algo diferente");
     }
 
 }
