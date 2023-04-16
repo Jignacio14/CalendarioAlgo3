@@ -3,15 +3,19 @@ package calendar;
 import java.time.LocalDateTime;
 
 public class Tarea extends Recordatorio{
+    private boolean completada;
 
-    private boolean completada = false;
-    public Tarea(LocalDateTime inicio, String nombre, String descripcion, LocalDateTime fin){
-        //Construir para dia completo o hora absoluta
-        super(inicio, nombre, descripcion, fin);
+    public Tarea(LocalDateTime inicio, Integer horas, Integer minutos, String nombre, String descripcion) {
+        super(inicio, horas, minutos, nombre, descripcion);
+        this.completada = false;
     }
 
-    public void Completar(){
-        this.completada = true;
+    public void CambiarCompletada(){
+        this.completada = !completada;
     }
+
+
 
 }
+
+
