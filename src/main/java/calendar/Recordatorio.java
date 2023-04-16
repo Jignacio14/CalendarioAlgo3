@@ -3,8 +3,8 @@ import java.time.LocalDateTime;
 
 abstract class Recordatorio {
 
-    protected String nombre; // despues hacer un metodo donde si es "null" que muestre "Sin Titulo"
-    protected String descripcion; // despues hacer un metodo donde si es "null" que muestre "Sin Descripcion"
+    protected String nombre = "Nuevo recordatorio";
+    protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
     protected Integer horas;
     protected Integer minutos;
@@ -13,8 +13,6 @@ abstract class Recordatorio {
         this.inicio = inicio;
         this.horas = horas;
         this.minutos = minutos;
-        this.nombre = "Nueva Tarea";
-        this.descripcion = "Sin descripcion";
     }
 
     public void modificarNombre(String nuevoNombre){
