@@ -6,11 +6,13 @@ import java.util.Locale;
 
 public class Evento extends Recordatorio {
 
-    private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
-    private boolean repetible;
+    //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
 
-    public Evento(LocalDateTime inicio, String nombre, String descripcion, LocalDateTime fin){
+    //private boolean repetible; ???
+
+    public Evento(LocalDateTime inicio, LocalDateTime fin, String nombre, String descripcion){
         //hacer verificaciones que validen repeticion
-        super(inicio, nombre, descripcion);
+        super(inicio, fin, nombre, descripcion);
     }
+
 }
