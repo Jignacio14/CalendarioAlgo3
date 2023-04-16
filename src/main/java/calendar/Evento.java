@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class Evento extends Recordatorio {
-    public Evento(LocalDateTime inicio, Integer horas, Integer minutos, String nombre, String descripcion) {
-        super(inicio, horas, minutos, nombre, descripcion);
+    public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
+        super(inicio, horas, minutos);
     }
+
 
     //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
 

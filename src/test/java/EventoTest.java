@@ -11,24 +11,19 @@ public class EventoTest {
 
     //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void fechaDeFinDelRecordatorioAntesQueElInicioDelRecordatorio() {
+    public void CalcularFechaFin() {
         // arrange
         String fechaInicio = "2023-04-20 12:30";
-        String fechaFin = "2023-04-10 12:30";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         LocalDateTime inicio = LocalDateTime.parse(fechaInicio, formatter);
-        LocalDateTime fin = LocalDateTime.parse(fechaFin, formatter);
-
-        var evento = new Evento(inicio, fin, null, null);
-
+        LocalDateTime finalEvento = LocalDateTime.parse(fechaInicio, formatter);
+        finalEvento = finalEvento.plusHours(1);
+        finalEvento = finalEvento.plusMinutes(30);
+        var evento = new Evento(inicio, 1, 30);
         // act
-        long duracion = evento.calcularDuracion();
-
+        LocalDateTime duracion = evento.verFinal();
         // assert
-        assertEquals(0,duracion);
-        //su repeticion debe ser cero, es decir solo dura un dia, empieza ese dia y termina ese mismo dia
-        // por ende el array donde tiene las fechas de cuando se repite el evento/tarea solo debe tener una fecha y debe ser la misma fecha de inicio
+        assertEquals(duracion, finalEvento);
     }
 
     //prueba de terminar el recordatorio en un dia en especifico

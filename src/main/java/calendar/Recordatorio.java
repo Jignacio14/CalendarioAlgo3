@@ -11,7 +11,7 @@ abstract class Recordatorio {
     protected Integer horas;
     protected Integer minutos;
 
-    public Recordatorio(LocalDateTime inicio,  Integer horas, Integer minutos, String nombre, String descripcion){
+    public Recordatorio(LocalDateTime inicio,  Integer horas, Integer minutos){
         this.inicio = inicio;
         this.horas = horas;
         this.minutos = minutos;
@@ -27,6 +27,9 @@ abstract class Recordatorio {
         this.nombre = nuevaDescripcion;
     }
 
-    public void crearAlarma(){}
+    public LocalDateTime verFinal() {
+        return this.inicio.plusHours(horas).plusMinutes(minutos);
+    }
+
 
 }
