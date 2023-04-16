@@ -1,4 +1,3 @@
-import calendar.Calendario;
 import calendar.Evento;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ public class EventoTest {
 
     //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void CalcularFechaFin() {
+    public void VerificarFechaFinEsCorrecta() {
         // arrange
         String fechaInicio = "2023-04-20 12:30";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -34,8 +33,8 @@ public class EventoTest {
         var eventodiacompleto = new Evento(completa, 24, 0);
         var eventoparcial = new Evento(parcial, 4, 30);
         //act
-        var prueba1 = eventodiacompleto.VerficarDiaCompleto();
-        var prueba2 = eventoparcial.VerficarDiaCompleto();
+        var prueba1 = eventodiacompleto.verficarDiaCompleto();
+        var prueba2 = eventoparcial.verficarDiaCompleto();
         //
         assertTrue(prueba1);
         assertFalse(prueba2);
@@ -46,22 +45,20 @@ public class EventoTest {
         LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
         var eventoparcial = new Evento(parcial, 24, 0);
         //
-        var prueba = eventoparcial.VerficarDiaCompleto();
+        var prueba = eventoparcial.verficarDiaCompleto();
         //
         assertFalse(prueba);
     }
 
-    //prueba de terminar el recordatorio en un dia en especifico
-    //por ejemplo: empieza el 20 de abril y se indica que se repite cada x cantidad de dias o semanas o mes o año
-    // (cantidad que supera el rango entre el inicio y fin) pero se pone que termina el 25 de abril,
-        // solo va a durar el inicio o los dias que esten dentro del rango que cumpla la condicion de (repeticion cada: ...)
-        public void cantidadDeRepeticionesMayorADuracionDelRecordatorio(){
-        // arrange
-
-        // act
-
-        // assert
-
+    @Test
+    public void PruebaCambiarNombre(){
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var evento = new Evento(parcial, 24, 0);
+        //
+        evento.modificarNombre("Examenes fiuba");
+        evento.modificarNombre("Examenes fadu2");
+        evento.modificarNombre("Examenes fa3");
+        evento.modificarNombre("Algo diferente");
     }
 
 }

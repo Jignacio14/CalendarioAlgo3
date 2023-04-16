@@ -1,7 +1,5 @@
 package calendar;
 import java.time.LocalDateTime;
-import java.time.Duration;
-import java.util.ArrayList;
 
 abstract class Recordatorio {
 
@@ -30,8 +28,12 @@ abstract class Recordatorio {
     public LocalDateTime verFinal() {
         return this.inicio.plusHours(horas).plusMinutes(minutos);
     }
-    public boolean VerficarDiaCompleto(){
+    public boolean verficarDiaCompleto(){
       return (inicio.getHour() == 0) && (horas == 24);
+    }
+
+    public boolean verificarRepeticion(){
+        return false;
     }
 
 }
