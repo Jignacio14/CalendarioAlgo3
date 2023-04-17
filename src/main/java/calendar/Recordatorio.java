@@ -3,7 +3,7 @@ import java.time.LocalDateTime;
 
 abstract class Recordatorio {
 
-    protected String nombre = "Nuevo recordatorio";
+    protected String nombre;
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
     protected Integer horas;
@@ -20,7 +20,7 @@ abstract class Recordatorio {
     }
 
     public void modificarDescripcion(String nuevaDescripcion){
-        this.nombre = nuevaDescripcion;
+        this.descripcion = nuevaDescripcion;
     }
 
     public LocalDateTime verFinal() {
@@ -32,6 +32,13 @@ abstract class Recordatorio {
 
     public boolean verificarRepeticion(){
         return false;
+    }
+
+    public String obtenerNombre(){
+        return nombre;
+    }
+    public String obtenerDescripcion(){
+        return descripcion;
     }
 
 }
