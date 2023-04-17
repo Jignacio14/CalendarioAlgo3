@@ -151,17 +151,22 @@ public class AlarmaTest {
     public void TestAlarmaConIntervaloTieneFechaHoraDeNotificacionCorrecta() {
     } */
 
-    /* @Test
+    @Test
     public void TestAlarmaProximaEsLaCorrecta() {
+        var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
+        var evento = new Evento(fechaHora, 24 ,0);
+        var tarea = new Tarea(fechaHora, 24 ,0);
+
         LocalDateTime fechaHoraAct = LocalDateTime.now();
-        //pseudocodigo:
-        1) se le manda la Fecha y Hora actual
+        /* 1) se le manda la Fecha y Hora actual
         2) se busca entre las tareas y eventos del calendarios y nos quedamos con
         los que coincide su FechaHora con la fecha y hora actual
         3) nos fijamos si tienen alarma y si tienen ver si una de sus alarmas tiene una
         programada con la fecha y hora actual
-        4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual
-    } */
+        4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual */
+
+        
+    }
 
     /* HAY QUE VERIFICAR ESTO?? 
     @Test
