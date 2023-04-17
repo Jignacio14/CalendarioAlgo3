@@ -114,6 +114,13 @@ public class AlarmaTest {
     /* @Test
     public void TestAlarmaProximaEsLaCorrecta() {
         LocalDateTime fechaHoraAct = LocalDateTime.now();
+        //pseudocodigo:
+        1) se le manda la Fecha y Hora actual
+        2) se busca entre las tareas y eventos del calendarios y nos quedamos con
+        los que coincide su FechaHora con la fecha y hora actual
+        3) nos fijamos si tienen alarma y si tienen ver si una de sus alarmas tiene una
+        programada con la fecha y hora actual
+        4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual
     } */
 
     /* HAY QUE VERIFICAR ESTO?? 
