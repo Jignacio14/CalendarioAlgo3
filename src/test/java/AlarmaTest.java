@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-
 import static org.junit.Assert.*;
 
 public class AlarmaTest {
@@ -165,7 +164,18 @@ public class AlarmaTest {
         programada con la fecha y hora actual
         4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual */
 
-        
+    }
+
+    @Test
+    public void TestEfectoAlarmaProximaEsNotificacion() {
+    }
+
+    @Test
+    public void TestEfectoAlarmaProximaEsSonido() {
+    }
+
+    @Test
+    public void TestEfectoAlarmaProximaEsEmail() {
     }
 
     /* HAY QUE VERIFICAR ESTO?? 
@@ -183,6 +193,5 @@ public class AlarmaTest {
 
         assertTrue(tarea.obtenerAlarmas().isEmpty());
     } */
-
     
 }

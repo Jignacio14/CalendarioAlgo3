@@ -10,7 +10,7 @@ public class EventoTest {
 
     //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void VerificarFechaFinEsCorrecta() {
+    public void TestVerificarFechaFinEsCorrecta() {
         // arrange
         String fechaInicio = "2023-04-20 12:30";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -27,7 +27,7 @@ public class EventoTest {
     }
 
     @Test
-    public void VerificarEventoDiaCompleto(){
+    public void TestVerificarEventoDiaCompleto(){
         LocalDateTime completa = LocalDateTime.of(2023, 12, 14, 0, 0);
         LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
         var eventodiacompleto = new Evento(completa, 24, 0);
@@ -41,7 +41,7 @@ public class EventoTest {
     }
 
     @Test
-    public void VerificarEventoDura24HperoNoEsDiaCompleto(){
+    public void TestVerificarEventoDura24HperoNoEsDiaCompleto(){
         LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
         var eventoparcial = new Evento(parcial, 24, 0);
         //
@@ -51,7 +51,7 @@ public class EventoTest {
     }
 
     @Test
-    public void PruebaCambiarNombre(){
+    public void TestPruebaCambiarNombre(){
         LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
         var evento = new Evento(parcial, 24, 0);
         //
@@ -59,6 +59,13 @@ public class EventoTest {
         evento.modificarNombre("Examenes fadu2");
         evento.modificarNombre("Examenes fa3");
         evento.modificarNombre("Algo diferente");
+    }
+
+    @Test
+    public void TestEventoSinPeriodicidad(){
+        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
+        var evento = new Evento(parcial, 24, 0);
+        assertFalse(evento.tieneRepeticion());
     }
 
 }

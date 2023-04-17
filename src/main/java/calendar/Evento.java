@@ -11,8 +11,7 @@ public class Evento extends Recordatorio {
 
     }
 
-    @Override
-    public boolean verificarRepeticion(){
+    public boolean tieneRepeticion(){
         return periodicidad != null;
     }
 

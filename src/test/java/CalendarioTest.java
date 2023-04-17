@@ -8,19 +8,29 @@ import static org.junit.Assert.*;
 public class CalendarioTest {
 
     @Test
-    public void calendarioVacio() {
-
-        // arrange
+    public void TestCalendarioVacio() {
         var calendario = new Calendario();
 
-        // act
         var calendarioVacio = calendario.verCalendario();
 
-        // assert
-        assertEquals(null, calendarioVacio);
+        assertNull(calendarioVacio);
     }
 
+    @Test
+    public void TestVerCalendarioDias() {
+    }
 
+    @Test
+    public void TestVerCalendarioSemana() {
+    }
+
+    @Test
+    public void TestVerCalendarioMes() {
+    }
+
+    @Test
+    public void TestVerCalendarioAnio() {
+    }
 
 
 }

@@ -8,7 +8,7 @@ public class Periodicidad {
     private final Integer cantIteraciones;
     private final Frecuencia frecuencia;
     private final LocalDateTime fechaLimite;
-    private final Integer ocurrencias;
+    //private final Integer ocurrencias;
 
     public Periodicidad(Integer cantIteraciones, Frecuencia frecuencia, LocalDateTime fechaLimite, Integer ocurrencias) {
         this.cantIteraciones = cantIteraciones;
@@ -17,7 +17,7 @@ public class Periodicidad {
     }
 
     private LocalDateTime calcularFechaLimite(Integer ocurrencias){
-
+        return null;
     }
 
     // se genera la cantidad de eventos repetidos que esten entre el rango fechaInicio y fechaFin
