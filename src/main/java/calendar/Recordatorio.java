@@ -15,11 +15,11 @@ abstract class Recordatorio {
         this.minutos = minutos;
     }
 
-    public void modificarNombre(String nuevoNombre){
+    public void cambiarNombre(String nuevoNombre){
         this.nombre = nuevoNombre;
     }
 
-    public void modificarDescripcion(String nuevaDescripcion){
+    public void cambiarDescripcion(String nuevaDescripcion){
         this.descripcion = nuevaDescripcion;
     }
 
@@ -41,4 +41,7 @@ abstract class Recordatorio {
         return descripcion;
     }
 
+    public void cambiarInicio(LocalDateTime nuevoInicio){
+        this.inicio = nuevoInicio;
+    }
 }

@@ -40,7 +40,7 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevoNombre = "Hacer TP algo III";
-        tarea.modificarNombre(nuevoNombre);
+        tarea.cambiarNombre(nuevoNombre);
         assertEquals(nuevoNombre, tarea.obtenerNombre());
     }
 
@@ -49,7 +49,7 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevaDescripcion = "Recuerda hacer el TP porque repruebas";
-        tarea.modificarDescripcion(nuevaDescripcion);
+        tarea.cambiarDescripcion(nuevaDescripcion);
         assertEquals(nuevaDescripcion, tarea.obtenerDescripcion());
     }
 
@@ -90,4 +90,17 @@ public class TareaTest {
         assertTrue(tarea.verficarDiaCompleto());
         assertFalse(tarea2.verficarDiaCompleto());
     }
+
+    @Test
+    public void TestTareaCambiarInicio(){
+        var fechaActual = LocalDateTime.now();
+        var tarea = new Tarea(fechaActual, 0, 0);
+        var fechaPosterior = fechaActual.plusHours(5);
+        assertFalse(tarea.verificarEstarVencida(fechaPosterior));
+
+        tarea.cambiarInicio(fechaPosterior);
+
+        assertTrue(tarea.verificarEstarVencida(fechaActual));
+    }
+
 }

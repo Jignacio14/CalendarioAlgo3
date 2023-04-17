@@ -55,10 +55,10 @@ public class EventoTest {
         LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
         var evento = new Evento(parcial, 24, 0);
         //
-        evento.modificarNombre("Examenes fiuba");
-        evento.modificarNombre("Examenes fadu2");
-        evento.modificarNombre("Examenes fa3");
-        evento.modificarNombre("Algo diferente");
+        evento.cambiarNombre("Examenes fiuba");
+        evento.cambiarNombre("Examenes fadu2");
+        evento.cambiarNombre("Examenes fa3");
+        evento.cambiarNombre("Algo diferente");
     }
 
 }
