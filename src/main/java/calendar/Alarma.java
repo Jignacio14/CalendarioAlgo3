@@ -15,7 +15,7 @@ public class Alarma {
 
     public Alarma(LocalDateTime fechaHora, Efecto efecto, int cantidadIntervalo, TipoIntervalo tipoIntervalo, LocalDateTime inicioRecordatorio){
         this.inicioRecordatorio = inicioRecordatorio;
-        this.fechaHora = (cantidadIntervalo == 0 ? fechaHora : calcularFechaHora(cantidadIntervalo, tipoIntervalo));
+        this.fechaHora = (tipoIntervalo == null ? fechaHora : calcularFechaHora(cantidadIntervalo, tipoIntervalo));
         //this.intervalo = intervalo;
         this.efecto = efecto;
     }
@@ -31,7 +31,7 @@ public class Alarma {
     }
 
     public void modificar(LocalDateTime fechaHoraNueva, Alarma.Efecto efectoNuevo, int intervaloNuevo, TipoIntervalo tipoIntervaloNuevo){
-        this.fechaHora = (intervaloNuevo == 0 ? fechaHoraNueva : calcularFechaHora(intervaloNuevo, tipoIntervaloNuevo));
+        this.fechaHora = (tipoIntervaloNuevo == null ? fechaHoraNueva : calcularFechaHora(intervaloNuevo, tipoIntervaloNuevo));
         this.efecto = efectoNuevo;
     }
 
