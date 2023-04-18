@@ -15,6 +15,10 @@ public class Evento extends Recordatorio {
         return repetidor != null;
     }
 
+    public void generarRepeticion(Frecuencia frecuencia, Integer iteraciones){
+        this.repetidor = new Periodicidad(iteraciones, frecuencia, inicio);
+    }
+
     //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
 
     //private boolean repetible; ???

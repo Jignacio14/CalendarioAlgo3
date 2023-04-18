@@ -1,64 +1,68 @@
 import calendar.Evento;
+import calendar.Frecuencia;
+import com.sun.source.tree.AssertTree;
+import org.junit.Assert;
 import org.junit.Test;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import static org.junit.Assert.*;
 
 public class EventoTest {
 
-    //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void VerificarFechaFinEsCorrecta() {
-        // arrange
-        String fechaInicio = "2023-04-20 12:30";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime inicio = LocalDateTime.parse(fechaInicio, formatter);
-        LocalDateTime finalEvento = LocalDateTime.parse(fechaInicio, formatter);
-        finalEvento = finalEvento.plusHours(1);
-        finalEvento = finalEvento.plusMinutes(30);
-        var evento = new Evento(inicio, 1, 30);
-        // act
-        LocalDateTime duracion = evento.verFinal();
-
-        // assert
-        assertEquals(duracion, finalEvento);
+    public void TestEventoCrear(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertNotNull(evento);
+    }
+    
+    @Test 
+    public void TestEventoNombrePorDefecto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertEquals("Nuevo evento", evento.obtenerNombre());
     }
 
     @Test
-    public void VerificarEventoDiaCompleto(){
-        LocalDateTime completa = LocalDateTime.of(2023, 12, 14, 0, 0);
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var eventodiacompleto = new Evento(completa, 24, 0);
-        var eventoparcial = new Evento(parcial, 4, 30);
-        //act
-        var prueba1 = eventodiacompleto.verficarDiaCompleto();
-        var prueba2 = eventoparcial.verficarDiaCompleto();
-        //
-        assertTrue(prueba1);
-        assertFalse(prueba2);
+    public void TestEventoDetallePorDefecto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertEquals(evento.obtenerDescripcion(), "Sin descripcion");
     }
 
     @Test
-    public void VerificarEventoDura24HperoNoEsDiaCompleto(){
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var eventoparcial = new Evento(parcial, 24, 0);
-        //
-        var prueba = eventoparcial.verficarDiaCompleto();
-        //
-        assertFalse(prueba);
+    public void TestEventoSeRepiteEsFalso(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertFalse(evento.verificarRepeticion());
     }
 
     @Test
-    public void PruebaCambiarNombre(){
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var evento = new Evento(parcial, 24, 0);
-        //
-        evento.cambiarNombre("Examenes fiuba");
-        evento.cambiarNombre("Examenes fadu2");
-        evento.cambiarNombre("Examenes fa3");
-        evento.cambiarNombre("Algo diferente");
+    public void TestEventoSeRepiteEsVerdadero(){
+        //Agrego pruebas para verificar si se repite o no segun su configuraciòn (por ahora no puedo preguntar como se repite)
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        evento.generarRepeticion(Frecuencia.Diario, 8 );
+        assertTrue(evento.verificarRepeticion());
+    }
+
+    @Test
+    public void TestEventoEsDeDiaCompleto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertFalse(evento.verficarDiaCompleto());
+
+        fecha = LocalDateTime.of(2023, 12, 5, 0, 0);
+        evento = new Evento(fecha, 24, 0);
+        assertTrue(evento.verficarDiaCompleto());
+
+        fecha = LocalDateTime.of(2023, 12, 5, 0, 0);
+        evento = new Evento(fecha, 26, 0);
+        assertFalse(evento.verficarDiaCompleto());
+
+        fecha = LocalDateTime.of(2023, 12, 5, 0, 0);
+        evento = new Evento(fecha, 24, 1);
+        assertFalse(evento.verficarDiaCompleto());
+
     }
 
 }

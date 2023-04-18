@@ -27,7 +27,7 @@ abstract class Recordatorio {
         return this.inicio.plusHours(horas).plusMinutes(minutos);
     }
     public boolean verficarDiaCompleto(){
-      return (inicio.getHour() == 0) && (horas == 24);
+      return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0);
     }
 
     public boolean verificarRepeticion(){
