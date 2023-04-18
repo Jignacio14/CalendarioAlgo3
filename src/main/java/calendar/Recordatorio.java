@@ -1,6 +1,7 @@
 package calendar;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 abstract class Recordatorio {
 
@@ -36,14 +37,20 @@ abstract class Recordatorio {
         return false;
     }
 
-    public void agregarAlarma(LocalDateTime fechaHora, Alarma.Efecto efecto, int intervalo, Alarma.TipoIntervalo tipoIntervalo){
-        Alarma alarmaNueva = new Alarma(fechaHora, efecto, intervalo, tipoIntervalo, this.inicio);
+    public void agregarAlarma(Integer min, Integer horas, Integer dias, Integer semanas, LocalDateTime fechaHoraAbs, AlarmaEfectos efecto){
+        LocalDateTime fechaHora = (fechaHoraAbs != null ? fechaHoraAbs : agregarIntervalo(min, horas, dias, semanas));
+        Alarma alarmaNueva = new Alarma(fechaHora, efecto);
         alarmas.add(alarmaNueva);
     }
 
-    public void modificarAlarma(int idAlarma, LocalDateTime fechaHoraNueva, Alarma.Efecto efectoNuevo, int intervaloNuevo, Alarma.TipoIntervalo tipoIntervaloNuevo){
-        alarmas.get(idAlarma).modificar(fechaHoraNueva, efectoNuevo, intervaloNuevo, tipoIntervaloNuevo);
+    private LocalDateTime agregarIntervalo(Integer min, Integer horas, Integer dias, Integer semanas){
+        return (verficarDiaCompleto() ? inicio.plusMinutes(min).plusHours(horas).minusDays(dias).minusWeeks(semanas) : inicio.minusMinutes(min).minusHours(horas).minusDays(dias).minusWeeks(semanas));
     }
+
+    /*public void modificarAlarma(Integer idAlarma, Integer min, Integer horas, Integer dias, Integer semanas, Alarma.Efecto efectoNuevo){
+        LocalDateTime fechaHoraNueva = inicio.minusMinutes(min).minusHours(horas).minusDays(dias).minusWeeks(semanas);
+        alarmas.get(idAlarma).modificar(fechaHoraNueva, efectoNuevo);
+    }*/
 
     public ArrayList<Alarma> obtenerAlarmas(){ return alarmas; }
 

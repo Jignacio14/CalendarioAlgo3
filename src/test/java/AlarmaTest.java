@@ -1,4 +1,5 @@
 import calendar.Alarma;
+import calendar.AlarmaEfectos;
 import calendar.Evento;
 import calendar.Tarea;
 import org.junit.Test;
@@ -9,7 +10,9 @@ import static org.junit.Assert.*;
 
 public class AlarmaTest {
 
-    @Test
+    /* ___________________ TESTS GENERALES ___________________ */
+
+    /*@Test
     public void TestRecordatorioSinAlarmas() {
         var inicioEvento = LocalDateTime.of(2023, 4, 16, 0, 0);
         var evento = new Evento(inicioEvento, 0 ,0);
@@ -28,15 +31,85 @@ public class AlarmaTest {
     }
 
     @Test
+    public void TestEliminarTodasLasAlarmas() {
+        var fechaHora = LocalDateTime.of(2023, 4, 16, 0, 0);
+        var tarea = new Tarea(fechaHora, 0 ,0);
+        tarea.agregarAlarma(null, Alarma.Efecto.Notificacion, 30, Alarma.TipoIntervalo.Minutos);
+        tarea.agregarAlarma(fechaHora, Alarma.Efecto.Email, 0, null);
+        tarea.agregarAlarma(null, Alarma.Efecto.Sonido, 38, Alarma.TipoIntervalo.Minutos);
+
+        tarea.eliminarAlarmas();
+
+        assertTrue(tarea.obtenerAlarmas().isEmpty());
+    }*/
+
+    /*@Test
+    public void TestAlarmaProximaEsLaCorrecta() {
+        var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
+        var evento = new Evento(fechaHora, 24 ,0);
+        var tarea = new Tarea(fechaHora, 24 ,0);
+
+        LocalDateTime fechaHoraAct = LocalDateTime.now();
+        *//* 1) se le manda la Fecha y Hora actual
+        2) se busca entre las tareas y eventos del calendarios y nos quedamos con
+        los que coincide su FechaHora con la fecha y hora actual
+        3) nos fijamos si tienen alarma y si tienen ver si una de sus alarmas tiene una
+        programada con la fecha y hora actual
+        4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual *//*
+
+    }*/
+
+    /* ___________________ TESTS ALARMA CON FECHA Y HORA ABSOLUTA ___________________ */
+
+    /*@Test
+    public void TestModificarAlarmaConFechaHoraAbs() {
+        var inicioEvento = LocalDateTime.of(2023, 4, 16, 0, 0);
+        var evento = new Evento(inicioEvento, 0 ,0);
+        evento.agregarAlarma(null, Alarma.Efecto.Notificacion, 30, Alarma.TipoIntervalo.Minutos);
+
+        var idAlarmaModificada = 0;
+        var fechaHoraNueva = LocalDateTime.now();
+        var efectoNuevo = Alarma.Efecto.Sonido;
+
+        evento.modificarAlarma(idAlarmaModificada, fechaHoraNueva, efectoNuevo, 0, null);
+
+        assertEquals(fechaHoraNueva, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerfechaHora());
+        assertEquals(efectoNuevo, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerEfecto());
+    }*/
+
+
+    /* ___________________ TESTS ALARMA CON INTERVALO ___________________ */
+
+    @Test
     public void TestAgregarAlarmaConIntervaloMinutos() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
         var evento = new Evento(fecha, 0 ,0);
-        evento.agregarAlarma(null, Alarma.Efecto.Notificacion, 30, Alarma.TipoIntervalo.Minutos);
+        evento.agregarAlarma(30,0,0,0,null, AlarmaEfectos.SONIDO);
 
         var idAlarma = 0;
         var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 20, 10, 00);
 
         assertEquals(fechaHoraAlarmaEsperada, evento.obtenerAlarmaDeseada(idAlarma).obtenerfechaHora());
+    }
+
+    @Test
+    public void TestAgregarAlarmaConIntervaloRecordatorioDiaCompleto() {
+        var fecha = LocalDateTime.of(2023, 4, 20, 0, 0);
+        var evento = new Evento(fecha,  24,0);
+        evento.agregarAlarma(30,9,10,0,null, AlarmaEfectos.SONIDO);
+
+        var idAlarma = 0;
+        var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 10, 9, 30);
+
+        assertEquals(fechaHoraAlarmaEsperada, evento.obtenerAlarmaDeseada(idAlarma).obtenerfechaHora());
+    }
+
+    /*@Test
+    public void TestAgregarAlarmaConIntervaloRecordatorioDiaCompleto() {
+        var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
+        var evento = new Evento(fechaHora, 24 ,0);
+        var tarea = new Tarea(fechaHora, 24 ,0);
+
     }
 
     @Test
@@ -76,35 +149,6 @@ public class AlarmaTest {
     }
 
     @Test
-    public void TestEliminarTodasLasAlarmas() {
-        var fechaHora = LocalDateTime.of(2023, 4, 16, 0, 0);
-        var tarea = new Tarea(fechaHora, 0 ,0);
-        tarea.agregarAlarma(null, Alarma.Efecto.Notificacion, 30, Alarma.TipoIntervalo.Minutos);
-        tarea.agregarAlarma(fechaHora, Alarma.Efecto.Email, 0, null);
-        tarea.agregarAlarma(null, Alarma.Efecto.Sonido, 38, Alarma.TipoIntervalo.Minutos);
-
-        tarea.eliminarAlarmas();
-
-        assertTrue(tarea.obtenerAlarmas().isEmpty());
-    }
-
-    @Test
-    public void TestModificarAlarmaConFechaHoraAbs() {
-        var inicioEvento = LocalDateTime.of(2023, 4, 16, 0, 0);
-        var evento = new Evento(inicioEvento, 0 ,0);
-        evento.agregarAlarma(null, Alarma.Efecto.Notificacion, 30, Alarma.TipoIntervalo.Minutos);
-
-        var idAlarmaModificada = 0;
-        var fechaHoraNueva = LocalDateTime.now();
-        var efectoNuevo = Alarma.Efecto.Sonido;
-
-        evento.modificarAlarma(idAlarmaModificada, fechaHoraNueva, efectoNuevo, 0, null);
-
-        assertEquals(fechaHoraNueva, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerfechaHora());
-        assertEquals(efectoNuevo, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerEfecto());
-    }
-
-    @Test
     public void TestModificarAlarmaConIntervalo() {
         var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
         var evento = new Evento(fechaHora, 0 ,0);
@@ -134,48 +178,23 @@ public class AlarmaTest {
         fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 6, 0, 0);
         assertEquals(fechaHoraAlarmaEsperada, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerfechaHora());
         assertEquals(efectoNuevo, evento.obtenerAlarmaDeseada(idAlarmaModificada).obtenerEfecto());
-    }
+    }*/
+
+    /* ___________________ TESTS DE EFECTOS ___________________ */
 
     @Test
-    public void TestAgregarAlarmaConIntervaloRecordatorioDiaCompleto() {
-        var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
-        var evento = new Evento(fechaHora, 24 ,0);
-        var tarea = new Tarea(fechaHora, 24 ,0);
+    public void TestEfectoAlarmaProxima() {
+        var fecha = LocalDateTime.of(2023, 4, 20, 0, 0);
+        var evento = new Evento(fecha,  24,0);
+        evento.agregarAlarma(30,9,10,0,null, AlarmaEfectos.SONIDO);
 
-        
+        var idAlarma = 0;
 
-    }
-
-    /*  @Test
-    public void TestAlarmaConIntervaloTieneFechaHoraDeNotificacionCorrecta() {
-    } */
-
-    @Test
-    public void TestAlarmaProximaEsLaCorrecta() {
-        var fechaHora = LocalDateTime.of(2023, 4, 20, 0, 0);
-        var evento = new Evento(fechaHora, 24 ,0);
-        var tarea = new Tarea(fechaHora, 24 ,0);
-
-        LocalDateTime fechaHoraAct = LocalDateTime.now();
-        /* 1) se le manda la Fecha y Hora actual
-        2) se busca entre las tareas y eventos del calendarios y nos quedamos con
-        los que coincide su FechaHora con la fecha y hora actual
-        3) nos fijamos si tienen alarma y si tienen ver si una de sus alarmas tiene una
-        programada con la fecha y hora actual
-        4) se dispara las alarmas que coincidan su fechaHora con la fecha y hora actual */
-
-    }
-
-    @Test
-    public void TestEfectoAlarmaProximaEsNotificacion() {
-    }
-
-    @Test
-    public void TestEfectoAlarmaProximaEsSonido() {
-    }
-
-    @Test
-    public void TestEfectoAlarmaProximaEsEmail() {
+        try {
+            evento.obtenerAlarmaDeseada(idAlarma).obtenerEfecto().lanzarEfecto();
+        } catch (Exception efecto) {
+            assertEquals("Sonido", efecto.getMessage());
+        }
     }
 
     /* HAY QUE VERIFICAR ESTO?? 

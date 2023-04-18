@@ -4,38 +4,21 @@ import java.time.LocalDateTime;
 
 public class Alarma {
     private LocalDateTime fechaHora;
-    private Efecto efecto;
+    private AlarmaEfectos efecto;
 
-    //private int intervalo;
+    /*public enum Efecto {Email, Notificacion, Sonido};*/
 
-    private final LocalDateTime inicioRecordatorio;
-
-    public enum Efecto {Email, Notificacion, Sonido};
-    public enum TipoIntervalo {Minutos, Horas, Dias, Semanas}
-
-    public Alarma(LocalDateTime fechaHora, Efecto efecto, int cantidadIntervalo, TipoIntervalo tipoIntervalo, LocalDateTime inicioRecordatorio){
-        this.inicioRecordatorio = inicioRecordatorio;
-        this.fechaHora = (tipoIntervalo == null ? fechaHora : calcularFechaHora(cantidadIntervalo, tipoIntervalo));
-        //this.intervalo = intervalo;
+    public Alarma(LocalDateTime fechaHora, AlarmaEfectos efecto){
+        this.fechaHora = fechaHora;
         this.efecto = efecto;
     }
 
-    private LocalDateTime calcularFechaHora(int intervalo, TipoIntervalo tipoIntervalo){
-        switch (tipoIntervalo) {
-            case Minutos -> this.fechaHora = inicioRecordatorio.minusMinutes(intervalo);
-            case Horas -> this.fechaHora = inicioRecordatorio.minusHours(intervalo);
-            case Dias -> this.fechaHora = inicioRecordatorio.minusDays(intervalo);
-            case Semanas -> this.fechaHora = inicioRecordatorio.minusWeeks(intervalo);
-        }
-        return this.fechaHora;
-    }
-
-    public void modificar(LocalDateTime fechaHoraNueva, Alarma.Efecto efectoNuevo, int intervaloNuevo, TipoIntervalo tipoIntervaloNuevo){
-        this.fechaHora = (tipoIntervaloNuevo == null ? fechaHoraNueva : calcularFechaHora(intervaloNuevo, tipoIntervaloNuevo));
+    public void modificar(LocalDateTime fechaHoraNueva, AlarmaEfectos efectoNuevo){
+        this.fechaHora = fechaHoraNueva;
         this.efecto = efectoNuevo;
     }
 
     public LocalDateTime obtenerfechaHora(){ return this.fechaHora; }
-    public Alarma.Efecto obtenerEfecto(){ return this.efecto; }
+    public AlarmaEfectos obtenerEfecto(){ return this.efecto; }
 
 }
