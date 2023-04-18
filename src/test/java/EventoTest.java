@@ -1,7 +1,5 @@
 import calendar.Evento;
 import calendar.Frecuencia;
-import com.sun.source.tree.AssertTree;
-import org.junit.Assert;
 import org.junit.Test;
 import java.time.LocalDateTime;
 import static org.junit.Assert.*;
