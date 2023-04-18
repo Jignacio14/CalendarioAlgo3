@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 
 public class Evento extends Recordatorio {
-    private Periodicidad repetidor;
+    private Repetidor repetidor;
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
         super.nombre = "Nuevo evento";
@@ -16,7 +16,7 @@ public class Evento extends Recordatorio {
     }
 
     public void generarRepeticion(Frecuencia frecuencia, Integer iteraciones){
-        this.repetidor = new Periodicidad(iteraciones, frecuencia, inicio);
+        this.repetidor = new Repetidor(iteraciones, frecuencia, inicio);
     }
 
     //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
