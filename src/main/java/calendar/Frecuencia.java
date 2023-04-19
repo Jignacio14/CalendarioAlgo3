@@ -1,7 +1,6 @@
 package calendar;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,5 +89,5 @@ public enum Frecuencia{
     public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
     public void setIntervalo(Integer intervalo){
         this.intervalo = intervalo;
-    };
+    }
 }

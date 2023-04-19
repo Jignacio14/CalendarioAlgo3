@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public enum Limite {
     Iteraciones(LocalDateTime.now(), 5){
         @Override
-        public void setFechaLimite(LocalDateTime fecha) {return;}
+        public void setFechaLimite(LocalDateTime fecha) {}
         @Override
         public void setIteraciones(Integer iteraciones) {this.iteraciones = iteraciones;}
         @Override
@@ -21,7 +21,7 @@ public enum Limite {
         @Override
         public void setFechaLimite(LocalDateTime fecha) {this.fechaLimite = fecha;}
         @Override
-        public void setIteraciones(Integer iteraciones) {return;}
+        public void setIteraciones(Integer iteraciones) {}
 
         @Override
         public boolean verificarProximasIteraciones(LocalDateTime fecha) {
@@ -34,7 +34,7 @@ public enum Limite {
         @Override
         public void setFechaLimite(LocalDateTime fecha) {this.fechaLimite = LocalDateTime.MAX;}
         @Override
-        public void setIteraciones(Integer iteraciones) {return;}
+        public void setIteraciones(Integer iteraciones) {}
        @Override
        public boolean verificarProximasIteraciones(LocalDateTime fecha) {
            return true;
