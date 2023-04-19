@@ -176,19 +176,19 @@ public class FrecuenciaTest {
     @Test
     public void TestFrecuenciaAnualHasta(){
         var inicio = LocalDateTime.of(2023, 1,2, 0, 0);
-        var frecuencia = Frecuencia.Mensual;
-        frecuencia.setIntervalo(3);
+        var frecuencia = Frecuencia.Anual;
+        frecuencia.setIntervalo(1);
 
         var limite = Limite.FechaMax;
-        limite.setFechaLimite(inicio.plusYears(1));
+        limite.setFechaLimite(inicio.plusYears(5));
 
-        var fechaMax = inicio.plusYears(2);
+        var fechaMax = inicio.plusYears(3);
 
         var resultadoEsperado =new ArrayList<LocalDateTime>();
         resultadoEsperado.add(inicio);
-        resultadoEsperado.add(inicio.plusMonths(3));
-        resultadoEsperado.add(inicio.plusMonths(6));
-        resultadoEsperado.add(inicio.plusMonths(9));
+        resultadoEsperado.add(inicio.plusYears(1));
+        resultadoEsperado.add(inicio.plusYears(2));
+
 
         var resultado = frecuencia.obtenerRepeticiones(limite, fechaMax, inicio);
 
@@ -197,5 +197,51 @@ public class FrecuenciaTest {
         }
     }
 
+    @Test
+    public void TestFrecuenciaDiariaSinLimite(){
+        var inicio = LocalDateTime.of(2023, 1,1, 0, 0);
+        var x = Frecuencia.Diaria;
+        x.setIntervalo(2);
 
+        var limite = Limite.SinLimite;
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(inicio);
+        resultadoEsperado.add(inicio.plusDays(2));
+        resultadoEsperado.add(inicio.plusDays(4));
+        resultadoEsperado.add(inicio.plusDays(6));
+        resultadoEsperado.add(inicio.plusDays(8));
+
+        var resultado = x.obtenerRepeticiones(limite, inicio.plusWeeks(2), inicio);
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+    }
+
+    @Test
+    public void TestFrecuenciaSemanalSinLimite(){
+        var x = Frecuencia.Semanal;
+        var diasSemana = Set.of(DayOfWeek.THURSDAY, DayOfWeek.TUESDAY);
+        x.setDiasSemana(diasSemana);
+
+        var fecha = LocalDateTime.of(2023, 1, 3, 0, 0);
+
+        var y = Limite.Iteraciones;
+        y.setIteraciones(4);
+
+        var limite = fecha.plusYears(1);
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusDays(2));
+        resultadoEsperado.add(fecha.plusDays(7));
+        resultadoEsperado.add(fecha.plusDays(9));
+        var z = x.obtenerRepeticiones(y, limite, fecha);
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), z.get(i));
+        }
+
+    }
 }

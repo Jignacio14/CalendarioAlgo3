@@ -3,7 +3,7 @@ package calendar;
 import java.time.LocalDateTime;
 
 public enum Limite {
-    Iteraciones{
+    Iteraciones(LocalDateTime.now(), 5){
         @Override
         public void setFechaLimite(LocalDateTime fecha) {return;}
         @Override
@@ -17,7 +17,7 @@ public enum Limite {
             iteraciones -= 1;
         }
     },
-    FechaMax{
+    FechaMax(LocalDateTime.now(), 5){
         @Override
         public void setFechaLimite(LocalDateTime fecha) {this.fechaLimite = fecha;}
         @Override
@@ -30,7 +30,7 @@ public enum Limite {
         @Override
         public void ajustarIteracion() {}
     },
-   SinLimite{
+   SinLimite(LocalDateTime.MAX, 5){
         @Override
         public void setFechaLimite(LocalDateTime fecha) {this.fechaLimite = LocalDateTime.MAX;}
         @Override
@@ -44,10 +44,13 @@ public enum Limite {
 
    };
 
-
-
     protected LocalDateTime fechaLimite;
     protected Integer iteraciones;
+
+    Limite(LocalDateTime fecha, Integer iteraciones){
+        this.fechaLimite = fecha;
+        this.iteraciones = iteraciones;
+    }
     public abstract void setFechaLimite(LocalDateTime fecha);
     public abstract void setIteraciones(Integer iteraciones);
     public abstract boolean verificarProximasIteraciones(LocalDateTime fecha);

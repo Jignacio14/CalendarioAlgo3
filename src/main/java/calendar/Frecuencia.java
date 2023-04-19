@@ -1,6 +1,7 @@
 package calendar;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.Set;
 public enum Frecuencia{
 
 
-    Diaria {
+    Diaria (1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
@@ -25,7 +26,7 @@ public enum Frecuencia{
             return repeticiones;
         }
     },
-    Semanal {
+    Semanal (1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {diasSemana = dias;}
 
@@ -42,7 +43,7 @@ public enum Frecuencia{
             return lista;
         }
     },
-    Mensual{
+    Mensual(1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
@@ -59,7 +60,7 @@ public enum Frecuencia{
             return repeticiones;
         }
     },
-    Anual{
+    Anual(1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
@@ -81,7 +82,10 @@ public enum Frecuencia{
     protected Set<DayOfWeek> diasSemana;
     protected Integer intervalo;
 
-
+    Frecuencia(Integer intervalo, Set<DayOfWeek> diasSemana){
+        this.intervalo = intervalo;
+        this.diasSemana = diasSemana;
+    }
     public abstract void setDiasSemana(Set<DayOfWeek> dias);
     public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
     public void setIntervalo(Integer intervalo){
