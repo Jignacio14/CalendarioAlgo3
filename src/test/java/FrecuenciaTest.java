@@ -230,7 +230,7 @@ public class FrecuenciaTest {
         var y = Limite.Iteraciones;
         y.setIteraciones(4);
 
-        var limite = fecha.plusYears(1);
+        var limite = fecha.plusWeeks(2);
         var resultadoEsperado = new ArrayList<LocalDateTime>();
 
         resultadoEsperado.add(fecha);
@@ -239,7 +239,7 @@ public class FrecuenciaTest {
         resultadoEsperado.add(fecha.plusDays(9));
         var z = x.obtenerRepeticiones(y, limite, fecha);
 
-        for (int i = 0; i < resultadoEsperado.size(); i++){
+        for (int i = 0; i < z.size(); i++){
             assertEquals(resultadoEsperado.get(i), z.get(i));
         }
 

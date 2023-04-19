@@ -38,6 +38,7 @@ public enum Frecuencia{
                     lista.add(guia);
                 }
                 guia = guia.plusDays(1);
+                limite.ajustarIteracion();
             } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
             return lista;
         }
