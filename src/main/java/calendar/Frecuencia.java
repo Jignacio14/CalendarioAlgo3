@@ -5,83 +5,86 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public enum Frecuencia {
-    Diario {
-        @Override
-        public LocalDateTime obtenerRepeticiones(LocalDateTime fecha, Integer iteracion){
-            return fecha.plusDays(iteracion);
-        }
+public enum Frecuencia{
 
-        @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {
 
-        }
+    Diaria {
+        @Override
+        public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public ArrayList<LocalDateTime> obtenerRepeticiones(LocalDateTime inicio, LocalDateTime fin) {
-            return null;
+        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
+            var repeticiones = new ArrayList<LocalDateTime>();
+            repeticiones.add(inicio);
+            var guia = inicio;
+            do {
+                guia = guia.plusDays(this.intervalo);
+                repeticiones.add(guia);
+                limite.ajustarIteracion();
+            } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
+            return repeticiones;
         }
-
     },
-
     Semanal {
         @Override
-        public LocalDateTime obtenerRepeticiones(LocalDateTime fecha, Integer iteracion) {
-            return null;
-        }
+        public void setDiasSemana(Set<DayOfWeek> dias) {diasSemana = dias;}
 
         @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {
-            this.dias = dias;
-        }
-
-        @Override
-        public ArrayList<LocalDateTime> obtenerRepeticiones(LocalDateTime inicio, LocalDateTime fin) {
+        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
             var guia = inicio;
             var lista = new ArrayList<LocalDateTime>();
             do {
-                if (dias.contains(guia.getDayOfWeek())){
+                if (diasSemana.contains(guia.getDayOfWeek())){
                     lista.add(guia);
                 }
                 guia = guia.plusDays(1);
-            } while (guia.isBefore(fin));
+            } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
             return lista;
         }
-
     },
-
     Mensual{
         @Override
-        public LocalDateTime obtenerRepeticiones(LocalDateTime fecha, Integer iteracion){
-            return fecha.plusMonths(iteracion);
-        }
-
-        @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public ArrayList<LocalDateTime> obtenerRepeticiones(LocalDateTime inicio, LocalDateTime fin) {
-            return null;
+        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
+            var repeticiones = new ArrayList<LocalDateTime>();
+            repeticiones.add(inicio);
+            var guia = inicio;
+            do {
+                guia = guia.plusMonths(this.intervalo);
+                repeticiones.add(guia);
+                limite.ajustarIteracion();
+            } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
+            return repeticiones;
         }
     },
-
     Anual{
-        @Override
-        public LocalDateTime obtenerRepeticiones(LocalDateTime fecha, Integer iteracion){
-            return fecha.plusYears(iteracion);
-        }
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public ArrayList<LocalDateTime> obtenerRepeticiones(LocalDateTime inicio, LocalDateTime fin) {
-            return null;
+        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
+            var repeticiones = new ArrayList<LocalDateTime>();
+            repeticiones.add(inicio);
+            var actual = inicio;
+            do {
+                actual = actual.plusYears(this.intervalo);
+                repeticiones.add(actual);
+                limite.ajustarIteracion();
+            } while (limite.verificarProximasIteraciones(actual) & actual.isBefore(tope));
+            return repeticiones;
         }
 
-    };
+    },
+    ;
+    protected Set<DayOfWeek> diasSemana;
+    protected Integer intervalo;
 
-    protected Set<DayOfWeek> dias;
-    public abstract LocalDateTime obtenerRepeticiones(LocalDateTime fecha, Integer iteracion);
+
     public abstract void setDiasSemana(Set<DayOfWeek> dias);
-    public abstract ArrayList<LocalDateTime> obtenerRepeticiones(LocalDateTime inicio, LocalDateTime fin);
+    public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
+    public void setIntervalo(Integer intervalo){
+        this.intervalo = intervalo;
+    };
 }

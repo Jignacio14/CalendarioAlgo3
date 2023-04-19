@@ -1,5 +1,6 @@
 package calendar;
 import java.time.LocalDateTime;
+import java.util.PriorityQueue;
 
 abstract class Recordatorio {
 
@@ -8,6 +9,7 @@ abstract class Recordatorio {
     protected LocalDateTime inicio;
     protected Integer horas;
     protected Integer minutos;
+    protected PriorityQueue<Alarma> alarmas;
 
     public Recordatorio(LocalDateTime inicio,  Integer horas, Integer minutos){
         this.inicio = inicio;
@@ -43,5 +45,9 @@ abstract class Recordatorio {
 
     public void cambiarInicio(LocalDateTime nuevoInicio){
         this.inicio = nuevoInicio;
+    }
+
+    public void asdasda(){
+
     }
 }
