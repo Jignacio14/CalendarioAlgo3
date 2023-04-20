@@ -1,7 +1,8 @@
 package calendar;
-
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class Repetidor {
 
@@ -14,12 +15,23 @@ public class Repetidor {
         this.frecuencia = frecuencia;
     }
 
-    public List<LocalDateTime> FuturasRepeticiones(LocalDateTime consulta){
-        return null;
+    public void configurarFechaLimite(LocalDateTime fechaLimite) {
+        this.limite.setFechaLimite(fechaLimite);
     }
 
-
-    public Limite getLimite() {
-        return limite;
+    public void configurarIntervalo(Integer intervalo) {
+        this.frecuencia.setIntervalo(intervalo);
     }
+
+    public  void configurarDias(Set<DayOfWeek> dias){
+        this.frecuencia.setDiasSemana(dias);
+    }
+    public boolean verificarHayRepeticiones() {
+        return limite.verificarProximasIteraciones(this.ultConsulta);
+    }
+
+    public List<LocalDateTime> verFuturasRepeticiones(LocalDateTime desde, LocalDateTime hasta) {
+        return frecuencia.obtenerRepeticiones(limite, hasta, desde);
+    }
+
 }

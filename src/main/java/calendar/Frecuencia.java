@@ -92,3 +92,5 @@ public enum Frecuencia{
         this.intervalo = intervalo;
     }
 }
+
+//Refactorizar haciendo una funcion generica y generar una funcion polimorfica que por dentro haga otra cosa

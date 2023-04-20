@@ -1,6 +1,8 @@
 package calendar;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 public class Evento extends Recordatorio {
@@ -15,11 +17,15 @@ public class Evento extends Recordatorio {
         return repetidor != null;
     }
 
+    public void configurarRepeticion(Frecuencia frecuencia, Limite limite){}
+
+    public void configurarFechaLimite(LocalDateTime fechaLimite){}
+
+    public void configurarIteracion(Integer iteraciones){}
+
+    public void configurarDias(Set<DayOfWeek> dias){}
 
 
-    //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
-
-    //private boolean repetible; ???
 
 
 
