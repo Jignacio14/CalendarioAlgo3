@@ -7,7 +7,6 @@ import java.util.Set;
 
 public enum Frecuencia{
 
-
     Diaria (1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}

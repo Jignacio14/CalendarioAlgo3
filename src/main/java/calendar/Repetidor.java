@@ -8,8 +8,7 @@ public class Repetidor {
 
     private final Limite limite;
     private final Frecuencia frecuencia;
-    private LocalDateTime ultConsulta;
-
+    private LocalDateTime ultConsulta = LocalDateTime.now();
     public Repetidor(Limite limite, Frecuencia frecuencia) {
         this.limite = limite;
         this.frecuencia = frecuencia;
@@ -19,6 +18,9 @@ public class Repetidor {
         this.limite.setFechaLimite(fechaLimite);
     }
 
+    public void configurarIteraciones(Integer iteraciones){
+        this.limite.setIteraciones(iteraciones);
+    }
     public void configurarIntervalo(Integer intervalo) {
         this.frecuencia.setIntervalo(intervalo);
     }
@@ -31,6 +33,9 @@ public class Repetidor {
     }
 
     public List<LocalDateTime> verFuturasRepeticiones(LocalDateTime desde, LocalDateTime hasta) {
+        if (ultConsulta.isBefore(hasta)){
+            ultConsulta = hasta;
+        }
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
     }
 
