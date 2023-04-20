@@ -10,7 +10,7 @@ abstract class Recordatorio {
     protected LocalDateTime inicio;
     protected Integer horas;
     protected Integer minutos;
-    protected ArrayList<Alarma> alarmas = new ArrayList<>();
+
 
     public Recordatorio(LocalDateTime inicio,  Integer horas, Integer minutos){
         this.inicio = inicio;
@@ -37,26 +37,14 @@ abstract class Recordatorio {
         return false;
     }
 
-    public void agregarAlarma(Integer min, Integer horas, Integer dias, Integer semanas, LocalDateTime fechaHoraAbs, AlarmaEfectos efecto){
-        LocalDateTime fechaHora = (fechaHoraAbs != null ? fechaHoraAbs : agregarIntervalo(min, horas, dias, semanas));
-        Alarma alarmaNueva = new Alarma(fechaHora, efecto);
-        alarmas.add(alarmaNueva);
+    public Alarma crearAlarma(){
+        return new Alarma(this.nombre, this.descripcion, this.inicio);
     }
 
-    private LocalDateTime agregarIntervalo(Integer min, Integer horas, Integer dias, Integer semanas){
-        return (verficarDiaCompleto() ? inicio.plusMinutes(min).plusHours(horas).minusDays(dias).minusWeeks(semanas) : inicio.minusMinutes(min).minusHours(horas).minusDays(dias).minusWeeks(semanas));
+    public void establecerDiaCompleto(){
+        this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonthValue(), inicio.getDayOfMonth(), 0, 0);
+        this.horas = 24;
+        this.minutos = 0;
+        //lo que hace calendar: si era un evento que no es dia completo y tenia una alarma cuando se lo establece como dia completo se elimina la alarma puesta y se debe volver a crear una alarma
     }
-
-    /*public void modificarAlarma(Integer idAlarma, Integer min, Integer horas, Integer dias, Integer semanas, Alarma.Efecto efectoNuevo){
-        LocalDateTime fechaHoraNueva = inicio.minusMinutes(min).minusHours(horas).minusDays(dias).minusWeeks(semanas);
-        alarmas.get(idAlarma).modificar(fechaHoraNueva, efectoNuevo);
-    }*/
-
-    public ArrayList<Alarma> obtenerAlarmas(){ return alarmas; }
-
-    public Alarma obtenerAlarmaDeseada(int idAlarma){ return  alarmas.get(idAlarma); }
-
-    public void eliminarAlarmaDeseada(int idAlarma) { alarmas.remove(idAlarma); }
-
-    public void eliminarAlarmas(){ alarmas.clear(); }
 }

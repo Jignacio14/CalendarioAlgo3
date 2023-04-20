@@ -11,7 +11,7 @@ public enum AlarmaEfectos {
         this.efecto = efecto;
     }
 
-    public Exception lanzarEfecto() {
-        throw new RuntimeException(efecto);
+    public String lanzarEfecto() {
+        return efecto;
     }
 }
