@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class Evento extends Recordatorio {
+public class Evento extends Recordatorio implements Repetible {
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
