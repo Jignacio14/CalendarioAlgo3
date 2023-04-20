@@ -12,11 +12,12 @@ public class Evento extends Recordatorio {
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
         super.nombre = "Nuevo evento";
+        this.ultRepeticion = super.inicio;
     }
 
     @Override
     public boolean verificarRepeticion(){
-        return repetidor == null ;
+        return repetidor != null ;
     }
 
     public boolean verificarHayProximaRepeticion(){
