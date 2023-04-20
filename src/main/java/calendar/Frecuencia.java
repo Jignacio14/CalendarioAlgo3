@@ -12,17 +12,11 @@ public enum Frecuencia{
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
-            var repeticiones = new ArrayList<LocalDateTime>();
-            repeticiones.add(inicio);
-            var guia = inicio;
-            do {
-                guia = guia.plusDays(this.intervalo);
-                repeticiones.add(guia);
-                limite.ajustarIteracion();
-            } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
-            return repeticiones;
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
+            return fecha.plusDays(intervalo);
         }
+
+
     },
     Semanal (1, Set.of(DayOfWeek.MONDAY)){
         @Override
@@ -41,22 +35,19 @@ public enum Frecuencia{
             } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
             return lista;
         }
+
+        @Override
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
+            return fecha.plusDays(1);
+        }
     },
     Mensual(1, Set.of(DayOfWeek.MONDAY)){
         @Override
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
-            var repeticiones = new ArrayList<LocalDateTime>();
-            repeticiones.add(inicio);
-            var guia = inicio;
-            do {
-                guia = guia.plusMonths(this.intervalo);
-                repeticiones.add(guia);
-                limite.ajustarIteracion();
-            } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
-            return repeticiones;
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
+            return fecha.plusMonths(intervalo);
         }
     },
     Anual(1, Set.of(DayOfWeek.MONDAY)){
@@ -64,17 +55,10 @@ public enum Frecuencia{
         public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
-        public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
-            var repeticiones = new ArrayList<LocalDateTime>();
-            repeticiones.add(inicio);
-            var actual = inicio;
-            do {
-                actual = actual.plusYears(this.intervalo);
-                repeticiones.add(actual);
-                limite.ajustarIteracion();
-            } while (limite.verificarProximasIteraciones(actual) & actual.isBefore(tope));
-            return repeticiones;
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
+            return fecha.plusYears(intervalo);
         }
+
 
     },
     ;
@@ -86,10 +70,23 @@ public enum Frecuencia{
         this.diasSemana = diasSemana;
     }
     public abstract void setDiasSemana(Set<DayOfWeek> dias);
-    public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
+    //public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
     public void setIntervalo(Integer intervalo){
         this.intervalo = intervalo;
     }
+
+    public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
+        var repeticiones = new ArrayList<LocalDateTime>();
+        repeticiones.add(inicio);
+        var guia = inicio;
+        do {
+            guia = incrementarFecha(guia);
+            repeticiones.add(guia);
+            limite.ajustarIteracion();
+        } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
+        return repeticiones;
+    }
+    public abstract LocalDateTime incrementarFecha(LocalDateTime fecha);
 }
 
 //Refactorizar haciendo una funcion generica y generar una funcion polimorfica que por dentro haga otra cosa
