@@ -9,19 +9,12 @@ public enum Frecuencia{
 
     Diaria (1, Set.of(DayOfWeek.MONDAY)){
         @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {}
-
-        @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
             return fecha.plusDays(intervalo);
         }
 
-
     },
     Semanal (1, Set.of(DayOfWeek.MONDAY)){
-        @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {diasSemana = dias;}
-
         @Override
         public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
             var guia = inicio;
@@ -42,8 +35,6 @@ public enum Frecuencia{
         }
     },
     Mensual(1, Set.of(DayOfWeek.MONDAY)){
-        @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {}
 
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
@@ -52,14 +43,9 @@ public enum Frecuencia{
     },
     Anual(1, Set.of(DayOfWeek.MONDAY)){
         @Override
-        public void setDiasSemana(Set<DayOfWeek> dias) {}
-
-        @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
             return fecha.plusYears(intervalo);
         }
-
-
     },
     ;
     protected Set<DayOfWeek> diasSemana;
@@ -69,8 +55,7 @@ public enum Frecuencia{
         this.intervalo = intervalo;
         this.diasSemana = diasSemana;
     }
-    public abstract void setDiasSemana(Set<DayOfWeek> dias);
-    //public abstract List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime fecha, LocalDateTime inicio);
+
     public void setIntervalo(Integer intervalo){
         this.intervalo = intervalo;
     }
@@ -87,6 +72,6 @@ public enum Frecuencia{
         return repeticiones;
     }
     public abstract LocalDateTime incrementarFecha(LocalDateTime fecha);
-}
 
-//Refactorizar haciendo una funcion generica y generar una funcion polimorfica que por dentro haga otra cosa
+    public void setDiasSemana(Set<DayOfWeek> dias) {diasSemana = dias;}
+}
