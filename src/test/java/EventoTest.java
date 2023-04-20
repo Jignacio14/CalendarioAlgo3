@@ -123,20 +123,58 @@ public class EventoTest {
     public void TestEventoRepeticionMensual(){
         var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
         var evento = new Evento(fecha, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
+        evento.configurarIntervalo(3);
+
+        assertTrue(evento.verificarRepeticion());
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusMonths(3));
+        resultadoEsperado.add(fecha.plusMonths(6));
+        resultadoEsperado.add(fecha.plusMonths(9));
+        resultadoEsperado.add(fecha.plusMonths(12));
+
+        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+
+        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        assertTrue(evento.verificarHayProximaRepeticion());
+
 
     }
 
     @Test
-    public void TestEventoRepeticionAnual(){}
+    public void TestEventoRepeticionAnual(){
+        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
+        var evento = new Evento(fecha, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
 
-    @Test
-    public void TestEventoRepeticionPorIteracion(){}
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusYears(1));
+        resultadoEsperado.add(fecha.plusYears(2));
+        resultadoEsperado.add(fecha.plusYears(3));
+        resultadoEsperado.add(fecha.plusYears(4));
 
-    @Test
-    public void TestEventoRepeticionHastaFecha(){}
+        var resultado = evento.verRepeticiones(fecha.plusYears(4));
 
-    @Test
-    public void TestEventoRepeticionInfinita(){}
+        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        assertTrue(evento.verificarHayProximaRepeticion());
+
+        var nuevoResultadoEsperado =  new ArrayList<LocalDateTime>();
+
+        nuevoResultadoEsperado.add(fecha.plusYears(4));
+        nuevoResultadoEsperado.add(fecha.plusYears(5));
+        nuevoResultadoEsperado.add(fecha.plusYears(6));
+        nuevoResultadoEsperado.add(fecha.plusYears(7));
+
+        resultado = evento.verRepeticiones(fecha.plusYears(7));
+
+        for (int i = 0; i < resultado.size(); i++){assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));}
+
+        assertTrue(evento.verificarHayProximaRepeticion());
+    }
+
 
 
 }
