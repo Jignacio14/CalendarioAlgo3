@@ -5,20 +5,39 @@ import java.util.*;
 
 public class Calendario {
 
-    private final Set<Recordatorio> recordatorios = new HashSet<Recordatorio>();
+    private final List<Recordatorio> recordatorios = new ArrayList<>();
 
-    public Set<Recordatorio> verCalendario(){
-        return this.recordatorios;
+    public Recordatorio verCalendario(int idRecordatorio){
+        return this.recordatorios.get(idRecordatorio);
     }
 
-    public void crearEvento(LocalDateTime inicio, Integer horas, Integer minutos){
+    public void agregarRecordatorio(Recordatorio recordatorio){
+        int posicionVacia = this.recordatorios.indexOf(null);
+        if (this.recordatorios.isEmpty() || posicionVacia < 0){
+            this.recordatorios.add(recordatorio);
+        } else {
+            this.recordatorios.set(posicionVacia, recordatorio);
+        }
+    }
+
+    public int crearEvento(LocalDateTime inicio, Integer horas, Integer minutos){
         var evento = new Evento(inicio, horas, minutos);
-        recordatorios.add(evento);
+        agregarRecordatorio(evento);
+        int idEvento = this.recordatorios.indexOf(evento);
+        this.recordatorios.get(idEvento).establecerId(idEvento);
+        return idEvento;
     }
 
-    public void crearTarea(LocalDateTime inicio, Integer horas, Integer minutos){
-        var evento = new Tarea(inicio, horas, minutos);
-        recordatorios.add(evento);
+    public int crearTarea(LocalDateTime inicio, Integer horas, Integer minutos){
+        var tarea = new Tarea(inicio, horas, minutos);
+        agregarRecordatorio(tarea);
+        int idTarea = this.recordatorios.indexOf(tarea);
+        this.recordatorios.get(idTarea).establecerId(idTarea);
+        return idTarea;
+    }
+
+    public void eliminarRecordatorio(int idRecordatorio){
+        this.recordatorios.set(idRecordatorio, null);
     }
 
     public void modificarNombre(Recordatorio recordatorio, String nombreNuevo){
@@ -37,25 +56,21 @@ public class Calendario {
         recordatorio.establecerDiaCompleto();
     }
 
-    public void agregarAlarma(Recordatorio recordatorio){
+    public int agregarAlarma(Recordatorio recordatorio){
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
-        recordatorio.agregarAlarma(alarma);
+        return  recordatorio.agregarAlarma(alarma);
     }
 
-    public void modificarAlarmaFechaHoraAbs(Recordatorio recordatorio, Integer idAlarma, LocalDateTime fechaHoraAbs){
+    public void modificarAlarmaFechaHoraAbs(Recordatorio recordatorio, int idAlarma, LocalDateTime fechaHoraAbs){
         recordatorio.modificarAlarmaFechaHoraAbs(idAlarma, fechaHoraAbs);
     }
 
-    public void modificarAlarmaIntervalo(Recordatorio recordatorio, Integer idAlarma, Integer min, Integer horas, Integer dias, Integer semanas){
+    public void modificarAlarmaIntervalo(Recordatorio recordatorio, int idAlarma, Integer min, Integer horas, Integer dias, Integer semanas){
         recordatorio.modificarAlarmaIntervalo(idAlarma, min, horas, dias, semanas);
     }
 
-    public void modificarAlarmaEfecto(Recordatorio recordatorio, Integer idAlarma, AlarmaEfectos efecto){
+    public void modificarAlarmaEfecto(Recordatorio recordatorio, int idAlarma, AlarmaEfectos efecto){
         recordatorio.modificarAlarmaEfecto(idAlarma, efecto);
-    }
-
-    public void eliminarRecordatorio(Recordatorio recordatorio){
-        recordatorios.remove(recordatorio);
     }
 
 }

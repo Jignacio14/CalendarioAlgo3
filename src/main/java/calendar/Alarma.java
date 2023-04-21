@@ -11,10 +11,11 @@ public class Alarma implements Repetible{
     private AlarmaEfectos efecto;
     private String nombre;
     private String descripcion;
-    private LocalDateTime fechaHoraRecordatorio;
+    private final LocalDateTime fechaHoraRecordatorio;
     private Integer diferenciaHoraria;
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
+    private int id;
 
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora){
         this.nombre = nombre;
@@ -32,11 +33,14 @@ public class Alarma implements Repetible{
         this.descripcion = nuevaDescripcion;
     }
 
+    /*
+    - VER COMO HACER CON LA ALARMA CUANDO SE CAMBIA LA FECHA Y HORA DE INICIO DEL EVENTO/TAREA A QUIEN PERTENECE
+    - POR AHORA HICE QUE CUANDO SE CAMBIA LA FECHA Y HORA DE UN EVENTO/TAREA LAS ALARMAS QUE TENIAN SE ELIMINAN TODAS Y HAY QUE VOLVER A CREARLAS
     public void modificarInicio(LocalDateTime nuevoInicio){
         this.fechaHoraRecordatorio = nuevoInicio;
         this.fechaHora = nuevoInicio;
         this.ultRepeticion = nuevoInicio;
-    }
+    }*/
 
     /* ____ SETTERS ____ */
 
@@ -58,6 +62,8 @@ public class Alarma implements Repetible{
     public void establecerEfecto(AlarmaEfectos efecto){
         this.efecto = efecto;
     }
+
+    public void establecerId(int id){ this.id = id; }
 
     /* ____ GETTERS ____ */
 
