@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 public class Alarma implements Repetible{
     private LocalDateTime fechaHora;
     private AlarmaEfectos efecto;
-    private final String nombre;
-    private final String descripcion;
-    private final LocalDateTime fechaHoraRecordatorio;
+    private String nombre;
+    private String descripcion;
+    private LocalDateTime fechaHoraRecordatorio;
     private Integer diferenciaHoraria;
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
@@ -22,6 +22,20 @@ public class Alarma implements Repetible{
         this.fechaHoraRecordatorio = fechaHora;
         this.fechaHora = fechaHora;
         this.ultRepeticion = fechaHora;
+    }
+
+    public void modificarNombre(String nuevoNombre){
+        this.nombre = nuevoNombre;
+    }
+
+    public void modificarDescripcion(String nuevaDescripcion){
+        this.descripcion = nuevaDescripcion;
+    }
+
+    public void modificarInicio(LocalDateTime nuevoInicio){
+        this.fechaHoraRecordatorio = nuevoInicio;
+        this.fechaHora = nuevoInicio;
+        this.ultRepeticion = nuevoInicio;
     }
 
     /* ____ SETTERS ____ */
