@@ -1,8 +1,10 @@
 import calendar.*;
 import org.junit.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -31,13 +33,13 @@ public class AlarmaTest {
     @Test
     public void TestModificarAlarmaConFechaHoraAbs() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
         var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 15, 10, 0);
 
-        alarmaNueva.establecerFechaHoraAbs(fechaHoraAlarmaEsperada);
-        alarmaNueva.establecerEfecto(AlarmaEfectos.SONIDO);
+        alarma.establecerFechaHoraAbs(fechaHoraAlarmaEsperada);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
-        assertEquals(fechaHoraAlarmaEsperada, alarmaNueva.obtenerfechaHora());
+        assertEquals(fechaHoraAlarmaEsperada, alarma.obtenerfechaHora());
     }
 
 
@@ -46,27 +48,27 @@ public class AlarmaTest {
     @Test
     public void TestAgregarAlarmaConIntervaloMinutos() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
 
-        alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
-        alarmaNueva.establecerEfecto(AlarmaEfectos.SONIDO);
+        alarma.establecerIntervalo(30, 0, 0, 0, false);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
         var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 20, 10, 0);
 
-        assertEquals(fechaHoraAlarmaEsperada, alarmaNueva.obtenerfechaHora());
+        assertEquals(fechaHoraAlarmaEsperada, alarma.obtenerfechaHora());
     }
 
     @Test
     public void TestAgregarAlarmaConIntervaloRecordatorioDiaCompleto() {
         var fecha = LocalDateTime.of(2023, 4, 20, 0, 0);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
 
-        alarmaNueva.establecerIntervalo(30, 9, 3, 0, true);
-        alarmaNueva.establecerEfecto(AlarmaEfectos.SONIDO);
+        alarma.establecerIntervalo(30, 9, 3, 0, true);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
         var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 17, 9, 30);
 
-        assertEquals(fechaHoraAlarmaEsperada, alarmaNueva.obtenerfechaHora());
+        assertEquals(fechaHoraAlarmaEsperada, alarma.obtenerfechaHora());
     }
 
     /* ___________________ TESTS DE EFECTOS ___________________ */
@@ -128,117 +130,263 @@ public class AlarmaTest {
         assertEquals("descripcion prueba", alarmaNueva.obtenerDescripcion());
     }
 
-    /* ___________________ TESTS DE ALARMA CON REPETICIONES ___________________ */
+    /* ___________________ TESTS DE ALARMA CON INTERVALO CON REPETICIONES ___________________ */
 
     @Test
     public void TestAlarmaRepeticionDiaria(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
-        alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
-        alarmaNueva.establecerEfecto(AlarmaEfectos.SONIDO);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerIntervalo(30, 0, 0, 0, false);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
-        alarmaNueva.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
-        alarmaNueva.configurarIntervalo(4);
-        alarmaNueva.configurarIteracion(4);
+        alarma.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
+        alarma.configurarIntervalo(4);
+        alarma.configurarIteracion(4);
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
 
         var resultadoEsperado = new ArrayList<LocalDateTime>();
-        resultadoEsperado.add(fecha);
-        resultadoEsperado.add(fecha.plusDays(4));
-        resultadoEsperado.add(fecha.plusDays(8));
-        resultadoEsperado.add(fecha.plusDays(12));
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusDays(4));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(8));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(12));
 
-        assertTrue(alarmaNueva.verificarRepeticion());
+        assertTrue(alarma.verificarRepeticion());
 
-        var resultado = alarmaNueva.verRepeticiones(fecha.plusYears(1));
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
 
         for (int i = 0; i < resultadoEsperado.size(); i++){
             assertEquals(resultadoEsperado.get(i), resultado.get(i));
         }
 
-        assertFalse(alarmaNueva.verificarHayProximaRepeticion());
+        assertFalse(alarma.verificarHayProximaRepeticion());
     }
 
-    /*@Test
-    public void TestEventoRepeticionSemanal(){
-        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
-        var evento = new Evento(fecha, 1, 0);
+    @Test
+    public void TestAlarmaRepeticionSemanal(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerIntervalo(30, 0, 0, 0, false);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+        var fechaConIntervalo = alarma.obtenerfechaHora();
 
-        assertFalse(evento.verificarRepeticion());
+        assertFalse(alarma.verificarRepeticion());
 
-        evento.configurarRepeticion(Frecuencia.Semanal, Limite.FechaMax);
-        evento.configurarDias(Set.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY));
-        evento.configurarFechaLimite(fecha.plusWeeks(2));
+        alarma.configurarRepeticion(Frecuencia.Semanal, Limite.FechaMax);
+        alarma.configurarDias(Set.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY));
+        alarma.configurarFechaLimite(fechaConIntervalo.plusWeeks(2));
 
-        assertTrue(evento.verificarRepeticion());
+        assertTrue(alarma.verificarRepeticion());
 
         var resultadoEsperado = new ArrayList<LocalDateTime>();
-        resultadoEsperado.add(fecha);
-        resultadoEsperado.add(fecha.plusDays(2));
-        resultadoEsperado.add(fecha.plusDays(7));
-        resultadoEsperado.add(fecha.plusDays(9));
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusDays(5));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(7));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(12));
 
-        assertTrue(evento.verificarRepeticion());
+        assertTrue(alarma.verificarRepeticion());
 
-        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
 
         for (int i = 0; i < resultadoEsperado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
-        assertFalse(evento.verificarHayProximaRepeticion());
+        assertFalse(alarma.verificarHayProximaRepeticion());
     }
 
     @Test
-    public void TestEventoRepeticionMensual(){
-        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
-        var evento = new Evento(fecha, 1, 0);
-        evento.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
-        evento.configurarIntervalo(3);
+    public void TestAlarmaRepeticionMensual(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerIntervalo(30, 0, 0, 0, false);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
-        assertTrue(evento.verificarRepeticion());
+        alarma.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
+        alarma.configurarIntervalo(3);
+
+        assertTrue(alarma.verificarRepeticion());
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
 
         var resultadoEsperado = new ArrayList<LocalDateTime>();
-        resultadoEsperado.add(fecha);
-        resultadoEsperado.add(fecha.plusMonths(3));
-        resultadoEsperado.add(fecha.plusMonths(6));
-        resultadoEsperado.add(fecha.plusMonths(9));
-        resultadoEsperado.add(fecha.plusMonths(12));
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(3));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(6));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(9));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(12));
 
-        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
 
         for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
-        assertTrue(evento.verificarHayProximaRepeticion());
-
-
+        assertTrue(alarma.verificarHayProximaRepeticion());
     }
 
     @Test
-    public void TestEventoRepeticionAnual(){
-        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
-        var evento = new Evento(fecha, 1, 0);
-        evento.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
+    public void TestAlarmaRepeticionAnual(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerIntervalo(30, 0, 0, 0, false);
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+
+        alarma.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
 
         var resultadoEsperado = new ArrayList<LocalDateTime>();
-        resultadoEsperado.add(fecha);
-        resultadoEsperado.add(fecha.plusYears(1));
-        resultadoEsperado.add(fecha.plusYears(2));
-        resultadoEsperado.add(fecha.plusYears(3));
-        resultadoEsperado.add(fecha.plusYears(4));
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusYears(1));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(2));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(3));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(4));
 
-        var resultado = evento.verRepeticiones(fecha.plusYears(4));
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(4));
 
         for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
-        assertTrue(evento.verificarHayProximaRepeticion());
+        assertTrue(alarma.verificarHayProximaRepeticion());
 
         var nuevoResultadoEsperado =  new ArrayList<LocalDateTime>();
 
-        nuevoResultadoEsperado.add(fecha.plusYears(4));
-        nuevoResultadoEsperado.add(fecha.plusYears(5));
-        nuevoResultadoEsperado.add(fecha.plusYears(6));
-        nuevoResultadoEsperado.add(fecha.plusYears(7));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(4));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(5));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(6));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(7));
 
-        resultado = evento.verRepeticiones(fecha.plusYears(7));
+        resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(7));
 
         for (int i = 0; i < resultado.size(); i++){assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));}
 
-        assertTrue(evento.verificarHayProximaRepeticion());
-    }*/
+        assertTrue(alarma.verificarHayProximaRepeticion());
+    }
 
+    /* ___________________ TESTS DE ALARMA CON FECHA Y HORA ABS CON REPETICIONES ___________________ */
+
+    @Test
+    public void TestAlarmaFechaHoraAbsRepeticionDiaria(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(2).minusHours(1).minusMinutes(30));
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+
+        alarma.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
+        alarma.configurarIntervalo(4);
+        alarma.configurarIteracion(4);
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusDays(4));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(8));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(12));
+
+        assertTrue(alarma.verificarRepeticion());
+
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+
+        assertFalse(alarma.verificarHayProximaRepeticion());
+    }
+
+    @Test
+    public void TestAlarmaFechaHoraAbsRepeticionSemanal(){
+        var fecha = LocalDateTime.of(2023, 4, 18, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+        var fechaConIntervalo = alarma.obtenerfechaHora();
+
+        assertFalse(alarma.verificarRepeticion());
+
+        alarma.configurarRepeticion(Frecuencia.Semanal, Limite.FechaMax);
+        alarma.configurarDias(Set.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY));
+        alarma.configurarFechaLimite(fechaConIntervalo.plusWeeks(2));
+
+        assertTrue(alarma.verificarRepeticion());
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusDays(2));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(7));
+        resultadoEsperado.add(fechaConIntervalo.plusDays(9));
+
+        assertTrue(alarma.verificarRepeticion());
+
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+        assertFalse(alarma.verificarHayProximaRepeticion());
+    }
+
+    @Test
+    public void TestAlarmaFechaHoraAbsRepeticionMensual(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+
+        alarma.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
+        alarma.configurarIntervalo(3);
+
+        assertTrue(alarma.verificarRepeticion());
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(3));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(6));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(9));
+        resultadoEsperado.add(fechaConIntervalo.plusMonths(12));
+
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(1));
+
+        for (int i = 0; i < resultado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+        assertTrue(alarma.verificarHayProximaRepeticion());
+    }
+
+    @Test
+    public void TestAlarmaFechaHoraAbsRepeticionAnual(){
+        var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
+        alarma.establecerEfecto(AlarmaEfectos.SONIDO);
+
+        alarma.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
+
+        var fechaConIntervalo = alarma.obtenerfechaHora();
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fechaConIntervalo);
+        resultadoEsperado.add(fechaConIntervalo.plusYears(1));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(2));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(3));
+        resultadoEsperado.add(fechaConIntervalo.plusYears(4));
+
+        var resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(4));
+
+        for (int i = 0; i < resultado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+        assertTrue(alarma.verificarHayProximaRepeticion());
+
+        var nuevoResultadoEsperado =  new ArrayList<LocalDateTime>();
+
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(4));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(5));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(6));
+        nuevoResultadoEsperado.add(fechaConIntervalo.plusYears(7));
+
+        resultado = alarma.verRepeticiones(fechaConIntervalo.plusYears(7));
+
+        for (int i = 0; i < resultado.size(); i++){
+            assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));
+        }
+
+        assertTrue(alarma.verificarHayProximaRepeticion());
+    }
 }
