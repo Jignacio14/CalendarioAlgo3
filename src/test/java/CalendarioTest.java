@@ -38,7 +38,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void TestCalendarioModificarEvento() {
+    public void TestCalendarioModificarRecordatorios() {
         LocalDateTime fecha = LocalDateTime.now();
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1,30);

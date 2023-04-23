@@ -55,7 +55,7 @@ public class Alarma implements Repetible{
     }
 
     public void establecerFechaHoraAbsRepeticiones(LocalDateTime fechaHoraAbs){
-        this.fechaHora = fechaHoraAbs;
+        this.establecerFechaHoraAbs(fechaHoraAbs);
         this.diferenciaHoraria = (fechaHoraRecordatorio.getDayOfMonth() - fechaHoraAbs.getDayOfMonth());
         this.ultRepeticion = LocalDateTime.of(fechaHoraRecordatorio.getYear(), fechaHoraRecordatorio.getMonthValue(), fechaHoraRecordatorio.getDayOfMonth(), fechaHoraAbs.getHour(), fechaHoraAbs.getMinute());
     }

@@ -11,7 +11,7 @@ public class Calendario {
         return this.recordatorios.get(idRecordatorio);
     }
 
-    public void agregarRecordatorio(Recordatorio recordatorio){
+    private void agregarRecordatorio(Recordatorio recordatorio){
         int posicionVacia = this.recordatorios.indexOf(null);
         if (this.recordatorios.isEmpty() || posicionVacia < 0){
             this.recordatorios.add(recordatorio);
