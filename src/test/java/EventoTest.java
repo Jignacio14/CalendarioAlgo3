@@ -20,6 +20,14 @@ public class EventoTest {
     }
 
     @Test
+    public void TestVerFinal() {
+        var fecha = LocalDateTime.of(2023, 1, 1, 1, 0);
+        var finalEvento = fecha.plusHours(5);
+        var nuevoEvento = new Evento(fecha, 5, 0);
+        assertEquals(finalEvento, nuevoEvento.verFinal());
+    }
+
+    @Test
     public void TestEventoNombrePorDefecto() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
