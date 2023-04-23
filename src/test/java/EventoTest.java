@@ -1,71 +1,180 @@
 import calendar.Evento;
+import calendar.Frecuencia;
+import calendar.Limite;
 import org.junit.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
 public class EventoTest {
 
-    //prueba de terminar el recordatorio en un dia en especifico
     @Test
-    public void VerificarFechaFinEsCorrecta() {
-        // arrange
-        String fechaInicio = "2023-04-20 12:30";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime inicio = LocalDateTime.parse(fechaInicio, formatter);
-        LocalDateTime finalEvento = LocalDateTime.parse(fechaInicio, formatter);
-        finalEvento = finalEvento.plusHours(1);
-        finalEvento = finalEvento.plusMinutes(30);
-        var evento = new Evento(inicio, 1, 30);
-        // act
-        LocalDateTime duracion = evento.verFinal();
-
-        // assert
-        assertEquals(duracion, finalEvento);
+    public void TestEventoCrear(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertNotNull(evento);
+    }
+    
+    @Test 
+    public void TestEventoNombrePorDefecto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertEquals("Nuevo evento", evento.obtenerNombre());
     }
 
     @Test
-    public void VerificarEventoDiaCompleto(){
-        LocalDateTime completa = LocalDateTime.of(2023, 12, 14, 0, 0);
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var eventodiacompleto = new Evento(completa, 24, 0);
-        var eventoparcial = new Evento(parcial, 4, 30);
-        //act
-        var prueba1 = eventodiacompleto.verficarDiaCompleto();
-        var prueba2 = eventoparcial.verficarDiaCompleto();
-        //
-        assertTrue(prueba1);
-        assertFalse(prueba2);
+    public void TestEventoDetallePorDefecto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertEquals(evento.obtenerDescripcion(), "Sin descripcion");
     }
 
     @Test
-    public void VerificarEventoDura24HperoNoEsDiaCompleto(){
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var eventoparcial = new Evento(parcial, 24, 0);
-        //
-        var prueba = eventoparcial.verficarDiaCompleto();
-        //
-        assertFalse(prueba);
+    public void TestEventoSeRepiteEsFalso(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 1);
+        assertFalse(evento.verificarRepeticion());
     }
 
     @Test
-    public void PruebaCambiarNombre(){
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var evento = new Evento(parcial, 24, 0);
-        //
-        evento.modificarNombre("Examenes fiuba");
-        evento.modificarNombre("Examenes fadu2");
-        evento.modificarNombre("Examenes fa3");
-        evento.modificarNombre("Algo diferente");
+    public void TestEventoCambiarNombre(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 0);
+        var nombre = "Entrega del TP";
+        evento.cambiarNombre("Entrega del TP");
+        assertEquals(nombre, evento.obtenerNombre());
+    }
+
+
+    @Test
+    public void TestEventoCambiarDescripcion(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 0);
+        var descripcion = "Todo lo relacionado al TP";
+        evento.cambiarDescripcion(descripcion);
+        assertEquals(descripcion, evento.obtenerDescripcion());
+    }
+    @Test
+    public void TestEventoDiaCompleto(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 0);
+        assertFalse(evento.verficarDiaCompleto());
+        evento.establecerDiaCompleto();
+        assertTrue(evento.verficarDiaCompleto());
     }
 
     @Test
-    public void TestEventoSinPeriodicidad(){
-        LocalDateTime parcial = LocalDateTime.of(2023, 9, 14, 19, 0);
-        var evento = new Evento(parcial, 24, 0);
-        assertFalse(evento.tieneRepeticion());
+    public void TestEventoRepeticionDiaria(){
+        var fecha = LocalDateTime.now();
+        var evento = new Evento(fecha, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
+        evento.configurarIntervalo(4);
+        evento.configurarIteracion(4);
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusDays(4));
+        resultadoEsperado.add(fecha.plusDays(8));
+        resultadoEsperado.add(fecha.plusDays(12));
+
+        assertTrue(evento.verificarRepeticion());
+
+        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
+
+        assertFalse(evento.verificarHayProximaRepeticion());
     }
+
+    @Test
+    public void TestEventoRepeticionSemanal(){
+        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
+        var evento = new Evento(fecha, 1, 0);
+
+        assertFalse(evento.verificarRepeticion());
+
+        evento.configurarRepeticion(Frecuencia.Semanal, Limite.FechaMax);
+        evento.configurarDias(Set.of(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY));
+        evento.configurarFechaLimite(fecha.plusWeeks(2));
+
+        assertTrue(evento.verificarRepeticion());
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusDays(2));
+        resultadoEsperado.add(fecha.plusDays(7));
+        resultadoEsperado.add(fecha.plusDays(9));
+
+        assertTrue(evento.verificarRepeticion());
+
+        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+
+        for (int i = 0; i < resultadoEsperado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        assertFalse(evento.verificarHayProximaRepeticion());
+    }
+
+    @Test
+    public void TestEventoRepeticionMensual(){
+        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
+        var evento = new Evento(fecha, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
+        evento.configurarIntervalo(3);
+
+        assertTrue(evento.verificarRepeticion());
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusMonths(3));
+        resultadoEsperado.add(fecha.plusMonths(6));
+        resultadoEsperado.add(fecha.plusMonths(9));
+        resultadoEsperado.add(fecha.plusMonths(12));
+
+        var resultado = evento.verRepeticiones(fecha.plusYears(1));
+
+        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        assertTrue(evento.verificarHayProximaRepeticion());
+
+
+    }
+
+    @Test
+    public void TestEventoRepeticionAnual(){
+        var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
+        var evento = new Evento(fecha, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
+
+        var resultadoEsperado = new ArrayList<LocalDateTime>();
+        resultadoEsperado.add(fecha);
+        resultadoEsperado.add(fecha.plusYears(1));
+        resultadoEsperado.add(fecha.plusYears(2));
+        resultadoEsperado.add(fecha.plusYears(3));
+        resultadoEsperado.add(fecha.plusYears(4));
+
+        var resultado = evento.verRepeticiones(fecha.plusYears(4));
+
+        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        assertTrue(evento.verificarHayProximaRepeticion());
+
+        var nuevoResultadoEsperado =  new ArrayList<LocalDateTime>();
+
+        nuevoResultadoEsperado.add(fecha.plusYears(4));
+        nuevoResultadoEsperado.add(fecha.plusYears(5));
+        nuevoResultadoEsperado.add(fecha.plusYears(6));
+        nuevoResultadoEsperado.add(fecha.plusYears(7));
+
+        resultado = evento.verRepeticiones(fecha.plusYears(7));
+
+        for (int i = 0; i < resultado.size(); i++){assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));}
+
+        assertTrue(evento.verificarHayProximaRepeticion());
+    }
+
+
 
 }

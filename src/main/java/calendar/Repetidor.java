@@ -38,4 +38,5 @@ public class Repetidor {
         }
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
     }
+
 }

@@ -1,36 +1,55 @@
 package calendar;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
+import java.util.Set;
 
-public class Evento extends Recordatorio {
-    private Periodicidad repetidor;
+
+public class Evento extends Recordatorio implements Repetible {
+    private Repetidor repetidor;
+    private LocalDateTime ultRepeticion;
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
-
+        super.nombre = "Nuevo evento";
+        this.ultRepeticion = super.inicio;
     }
 
-    public boolean tieneRepeticion(){
-        return periodicidad != null;
+    @Override
+    public boolean verificarRepeticion(){
+        return repetidor != null ;
     }
 
-    //private final ArrayList<LocalDateTime> repeticiones = new ArrayList<>();
-
-    // -cantRepeticiones: la cantidad de veces ue se va a repetir (sea con un tipoFrecuencia o despues de "x" repeticiones)
-    // -tipoFrencuencia:  Diario, Semanal, Mensual, Anual
-    // -fechaLimite: fecha(se indico que termina en una fecha en especifico), nunca (algo que indique que es infinito),
-    // -ocurrencias: si es 0 significa que termina nunca o en una fecha especifica, >0 significa que termina despues de "x" apariciones
-    public void agregarPeriodicidad (Integer cantRepeticiones, Frecuencia tipoFrecuencia, LocalDateTime fechaLimite, Integer ocurrencias){
-        this.periodicidad = new Periodicidad(cantRepeticiones, tipoFrecuencia, fechaLimite, ocurrencias);
+    public boolean verificarHayProximaRepeticion(){
+        return repetidor.verificarHayRepeticiones();
     }
 
-    public void verRepeticiones(LocalDateTime fechaInicio, LocalDateTime fechaFin){
-        periodicidad.generarRepeticiones(fechaInicio, fechaFin);
+    public void configurarRepeticion(Frecuencia frecuencia, Limite limite){
+        this.repetidor = new Repetidor(limite, frecuencia);
     }
 
-    // GETTERS
-    public LocalDateTime obtenerFechaLimite(){
-        return periodicidad.obtenerFechaLimite();
+    public void configurarFechaLimite(LocalDateTime fechaLimite){
+        this.repetidor.configurarFechaLimite(fechaLimite);
     }
+
+    public void configurarIteracion(Integer iteraciones){
+        this.repetidor.configurarIteraciones(iteraciones);
+    }
+
+    public void configurarIntervalo(Integer intervalo){
+        this.repetidor.configurarIntervalo(intervalo);
+    }
+
+    public void configurarDias(Set<DayOfWeek> dias){
+        this.repetidor.configurarDias(dias);
+    }
+
+    public List<LocalDateTime> verRepeticiones(LocalDateTime hasta){
+        var consultaFechas = repetidor.verFuturasRepeticiones(ultRepeticion, hasta);
+        ultRepeticion = consultaFechas.get(consultaFechas.size()-1);
+        return consultaFechas;
+    }
+
+
+
 }
