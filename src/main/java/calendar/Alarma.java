@@ -7,9 +7,11 @@ import java.util.Set;
 
 public class Alarma implements Repetible {
     private LocalDateTime horallamada;
-    private enum efecto {Email, Notificacion, Sonido};
 
-    public Alarma(){}
+    private enum efecto {Email, Notificacion, Sonido}
+
+    public Alarma() {
+    }
 
     public boolean verificarRepeticion() {
         return false;
