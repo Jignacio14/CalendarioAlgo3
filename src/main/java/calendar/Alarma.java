@@ -38,14 +38,6 @@ public class Alarma {
     public void establecerId(Integer id){
         this.id = id;
     }
-    /*
-    - VER COMO HACER CON LA ALARMA CUANDO SE CAMBIA LA FECHA Y HORA DE INICIO DEL EVENTO/TAREA A QUIEN PERTENECE
-    - POR AHORA HICE QUE CUANDO SE CAMBIA LA FECHA Y HORA DE UN EVENTO/TAREA LAS ALARMAS QUE TENIAN SE ELIMINAN TODAS Y HAY QUE VOLVER A CREARLAS
-    public void modificarInicio(LocalDateTime nuevoInicio){
-        this.fechaHoraRecordatorio = nuevoInicio;
-        this.fechaHora = nuevoInicio;
-        this.ultRepeticion = nuevoInicio;
-    }*/
 
     /* ____ SETTERS ____ */
 
