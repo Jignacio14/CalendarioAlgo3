@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class Evento extends Recordatorio {
-    private Periodicidad periodicidad;
+    private Periodicidad repetidor;
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
 
