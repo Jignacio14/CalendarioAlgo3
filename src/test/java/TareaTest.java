@@ -1,26 +1,30 @@
 import calendar.Tarea;
 import org.junit.Test;
+
 import java.time.LocalDateTime;
+
 import static org.junit.Assert.*;
 
 public class TareaTest {
 
     @Test
-    public void TestTareaCrear(){
-        var fecha =  LocalDateTime.of(2023, 4, 16, 0, 0);
+    public void TestTareaCrear() {
+        var fecha = LocalDateTime.of(2023, 4, 16, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         assertNotNull(tarea);
     }
+
     @Test
-    public void TestTareaNombreDefecto(){
+    public void TestTareaNombreDefecto() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         String porDefecto = "Sin titulo";
         var nombreDefecto = tarea.obtenerNombre();
         assertEquals(nombreDefecto, porDefecto);
     }
+
     @Test
-    public void TestTareaDescripcionDefecto(){
+    public void TestTareaDescripcionDefecto() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         String porDefecto = "Sin descripcion";
@@ -29,14 +33,14 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaCompletadaPorDefecto(){
+    public void TestTareaCompletadaPorDefecto() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         assertFalse(tarea.verCompletada());
     }
 
     @Test
-    public void TestTareaCambiarNombre(){
+    public void TestTareaCambiarNombre() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevoNombre = "Hacer TP algo III";
@@ -45,7 +49,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaCambiarDescripcion(){
+    public void TestTareaCambiarDescripcion() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevaDescripcion = "Recuerda hacer el TP porque repruebas";
@@ -54,7 +58,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaCompletar(){
+    public void TestTareaCompletar() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         tarea.cambiarCompletada();
@@ -64,7 +68,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaNoVencida(){
+    public void TestTareaNoVencida() {
         var fecha = LocalDateTime.now();
         var fechaPosterior = fecha.plusHours(1);
         var tarea = new Tarea(fecha, 0, 0);
@@ -72,7 +76,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaVencida(){
+    public void TestTareaVencida() {
         var fecha = LocalDateTime.now();
         var fechaAnterior = fecha.minusHours(1);
         var tarea = new Tarea(fecha, 0, 0);
@@ -80,7 +84,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaDiaCompleto(){
+    public void TestTareaDiaCompleto() {
         var fecha = LocalDateTime.of(2023, 4, 16, 0, 0);
         var tarea = new Tarea(fecha, 24, 0);
 
@@ -92,7 +96,7 @@ public class TareaTest {
     }
 
     @Test
-    public void TestTareaCambiarInicio(){
+    public void TestTareaCambiarInicio() {
         var fechaActual = LocalDateTime.now();
         var tarea = new Tarea(fechaActual, 0, 0);
         var fechaPosterior = fechaActual.plusHours(5);

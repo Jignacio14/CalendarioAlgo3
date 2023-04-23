@@ -1,26 +1,27 @@
 package calendar;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public enum Frecuencia{
+public enum Frecuencia {
 
-    Diaria (1, Set.of(DayOfWeek.MONDAY)){
+    Diaria(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
             return fecha.plusDays(intervalo);
         }
 
     },
-    Semanal (1, Set.of(DayOfWeek.MONDAY)){
+    Semanal(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
         public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
             var guia = inicio;
             var lista = new ArrayList<LocalDateTime>();
             do {
-                if (diasSemana.contains(guia.getDayOfWeek())){
+                if (diasSemana.contains(guia.getDayOfWeek())) {
                     lista.add(guia);
                     limite.ajustarIteracion();
                 }
@@ -34,14 +35,13 @@ public enum Frecuencia{
             return fecha.plusDays(1);
         }
     },
-    Mensual(1, Set.of(DayOfWeek.MONDAY)){
-
+    Mensual(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
             return fecha.plusMonths(intervalo);
         }
     },
-    Anual(1, Set.of(DayOfWeek.MONDAY)){
+    Anual(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) {
             return fecha.plusYears(intervalo);
@@ -51,12 +51,12 @@ public enum Frecuencia{
     protected Set<DayOfWeek> diasSemana;
     protected Integer intervalo;
 
-    Frecuencia(Integer intervalo, Set<DayOfWeek> diasSemana){
+    Frecuencia(Integer intervalo, Set<DayOfWeek> diasSemana) {
         this.intervalo = intervalo;
         this.diasSemana = diasSemana;
     }
 
-    public void setIntervalo(Integer intervalo){
+    public void setIntervalo(Integer intervalo) {
         this.intervalo = intervalo;
     }
 
@@ -71,7 +71,10 @@ public enum Frecuencia{
         } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
         return repeticiones;
     }
+
     public abstract LocalDateTime incrementarFecha(LocalDateTime fecha);
 
-    public void setDiasSemana(Set<DayOfWeek> dias) {diasSemana = dias;}
+    public void setDiasSemana(Set<DayOfWeek> dias) {
+        diasSemana = dias;
+    }
 }

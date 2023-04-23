@@ -7,7 +7,7 @@ public enum AlarmaEfectos {
 
     private final String efecto;
 
-    AlarmaEfectos(String efecto){
+    AlarmaEfectos(String efecto) {
         this.efecto = efecto;
     }
 

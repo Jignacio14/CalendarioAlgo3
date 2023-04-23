@@ -13,35 +13,35 @@ import static org.junit.Assert.*;
 public class EventoTest {
 
     @Test
-    public void TestEventoCrear(){
+    public void TestEventoCrear() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
         assertNotNull(evento);
     }
-    
-    @Test 
-    public void TestEventoNombrePorDefecto(){
+
+    @Test
+    public void TestEventoNombrePorDefecto() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
         assertEquals("Sin titulo", evento.obtenerNombre());
     }
 
     @Test
-    public void TestEventoDetallePorDefecto(){
+    public void TestEventoDetallePorDefecto() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
         assertEquals(evento.obtenerDescripcion(), "Sin descripcion");
     }
 
     @Test
-    public void TestEventoSeRepiteEsFalso(){
+    public void TestEventoSeRepiteEsFalso() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
         assertFalse(evento.verificarRepeticion());
     }
 
     @Test
-    public void TestEventoCambiarNombre(){
+    public void TestEventoCambiarNombre() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         var nombre = "Entrega del TP";
@@ -51,15 +51,16 @@ public class EventoTest {
 
 
     @Test
-    public void TestEventoCambiarDescripcion(){
+    public void TestEventoCambiarDescripcion() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         var descripcion = "Todo lo relacionado al TP";
         evento.modificarDescripcion(descripcion);
         assertEquals(descripcion, evento.obtenerDescripcion());
     }
+
     @Test
-    public void TestEventoDiaCompleto(){
+    public void TestEventoDiaCompleto() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         assertFalse(evento.verficarDiaCompleto());
@@ -68,7 +69,7 @@ public class EventoTest {
     }
 
     @Test
-    public void TestEventoRepeticionDiaria(){
+    public void TestEventoRepeticionDiaria() {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
@@ -85,7 +86,7 @@ public class EventoTest {
 
         var resultado = evento.verRepeticiones(fecha.plusYears(1));
 
-        for (int i = 0; i < resultadoEsperado.size(); i++){
+        for (int i = 0; i < resultadoEsperado.size(); i++) {
             assertEquals(resultadoEsperado.get(i), resultado.get(i));
         }
 
@@ -93,7 +94,7 @@ public class EventoTest {
     }
 
     @Test
-    public void TestEventoRepeticionSemanal(){
+    public void TestEventoRepeticionSemanal() {
         var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
         var evento = new Evento(fecha, 1, 0);
 
@@ -115,12 +116,14 @@ public class EventoTest {
 
         var resultado = evento.verRepeticiones(fecha.plusYears(1));
 
-        for (int i = 0; i < resultadoEsperado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        for (int i = 0; i < resultadoEsperado.size(); i++) {
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
         assertFalse(evento.verificarHayProximaRepeticion());
     }
 
     @Test
-    public void TestEventoRepeticionMensual(){
+    public void TestEventoRepeticionMensual() {
         var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
         var evento = new Evento(fecha, 1, 0);
         evento.configurarRepeticion(Frecuencia.Mensual, Limite.SinLimite);
@@ -137,14 +140,16 @@ public class EventoTest {
 
         var resultado = evento.verRepeticiones(fecha.plusYears(1));
 
-        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        for (int i = 0; i < resultado.size(); i++) {
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
         assertTrue(evento.verificarHayProximaRepeticion());
 
 
     }
 
     @Test
-    public void TestEventoRepeticionAnual(){
+    public void TestEventoRepeticionAnual() {
         var fecha = LocalDateTime.of(2023, 4, 18, 0, 0);
         var evento = new Evento(fecha, 1, 0);
         evento.configurarRepeticion(Frecuencia.Anual, Limite.SinLimite);
@@ -158,10 +163,12 @@ public class EventoTest {
 
         var resultado = evento.verRepeticiones(fecha.plusYears(4));
 
-        for (int i = 0; i < resultado.size(); i++){assertEquals(resultadoEsperado.get(i), resultado.get(i));}
+        for (int i = 0; i < resultado.size(); i++) {
+            assertEquals(resultadoEsperado.get(i), resultado.get(i));
+        }
         assertTrue(evento.verificarHayProximaRepeticion());
 
-        var nuevoResultadoEsperado =  new ArrayList<LocalDateTime>();
+        var nuevoResultadoEsperado = new ArrayList<LocalDateTime>();
 
         nuevoResultadoEsperado.add(fecha.plusYears(4));
         nuevoResultadoEsperado.add(fecha.plusYears(5));
@@ -170,11 +177,12 @@ public class EventoTest {
 
         resultado = evento.verRepeticiones(fecha.plusYears(7));
 
-        for (int i = 0; i < resultado.size(); i++){assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));}
+        for (int i = 0; i < resultado.size(); i++) {
+            assertEquals(nuevoResultadoEsperado.get(i), resultado.get(i));
+        }
 
         assertTrue(evento.verificarHayProximaRepeticion());
     }
-
 
 
 }
