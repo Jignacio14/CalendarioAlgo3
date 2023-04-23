@@ -23,7 +23,7 @@ public class EventoTest {
     public void TestEventoNombrePorDefecto(){
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 1);
-        assertEquals("Nuevo evento", evento.obtenerNombre());
+        assertEquals("Sin titulo", evento.obtenerNombre());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class EventoTest {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         var nombre = "Entrega del TP";
-        evento.cambiarNombre("Entrega del TP");
+        evento.modificarNombre("Entrega del TP");
         assertEquals(nombre, evento.obtenerNombre());
     }
 
@@ -55,7 +55,7 @@ public class EventoTest {
         var fecha = LocalDateTime.now();
         var evento = new Evento(fecha, 1, 0);
         var descripcion = "Todo lo relacionado al TP";
-        evento.cambiarDescripcion(descripcion);
+        evento.modificarDescripcion(descripcion);
         assertEquals(descripcion, evento.obtenerDescripcion());
     }
     @Test

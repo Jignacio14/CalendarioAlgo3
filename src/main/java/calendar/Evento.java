@@ -11,7 +11,6 @@ public class Evento extends Recordatorio implements Repetible {
     private LocalDateTime ultRepeticion;
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
-        super.nombre = "Nuevo evento";
         this.ultRepeticion = super.inicio;
     }
 

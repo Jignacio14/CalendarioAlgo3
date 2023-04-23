@@ -15,7 +15,7 @@ public class Alarma implements Repetible{
     private Integer diferenciaHoraria;
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
-    private int id;
+    private Integer id;
 
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora){
         this.nombre = nombre;
@@ -23,6 +23,7 @@ public class Alarma implements Repetible{
         this.fechaHoraRecordatorio = fechaHora;
         this.fechaHora = fechaHora;
         this.ultRepeticion = fechaHora;
+        this.id = null;
     }
 
     public void modificarNombre(String nuevoNombre){

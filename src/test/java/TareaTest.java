@@ -15,7 +15,7 @@ public class TareaTest {
     public void TestTareaNombreDefecto(){
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
-        String porDefecto = "Nueva Tarea";
+        String porDefecto = "Sin titulo";
         var nombreDefecto = tarea.obtenerNombre();
         assertEquals(nombreDefecto, porDefecto);
     }
@@ -40,7 +40,7 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevoNombre = "Hacer TP algo III";
-        tarea.cambiarNombre(nuevoNombre);
+        tarea.modificarNombre(nuevoNombre);
         assertEquals(nuevoNombre, tarea.obtenerNombre());
     }
 
@@ -49,7 +49,7 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         var nuevaDescripcion = "Recuerda hacer el TP porque repruebas";
-        tarea.cambiarDescripcion(nuevaDescripcion);
+        tarea.modificarDescripcion(nuevaDescripcion);
         assertEquals(nuevaDescripcion, tarea.obtenerDescripcion());
     }
 
@@ -98,7 +98,7 @@ public class TareaTest {
         var fechaPosterior = fechaActual.plusHours(5);
         assertFalse(tarea.verificarEstarVencida(fechaPosterior));
 
-        tarea.cambiarInicio(fechaPosterior);
+        tarea.modificarInicio(fechaPosterior);
 
         assertTrue(tarea.verificarEstarVencida(fechaActual));
     }

@@ -22,9 +22,9 @@ public enum Frecuencia{
             do {
                 if (diasSemana.contains(guia.getDayOfWeek())){
                     lista.add(guia);
+                    limite.ajustarIteracion();
                 }
                 guia = guia.plusDays(1);
-                limite.ajustarIteracion();
             } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
             return lista;
         }

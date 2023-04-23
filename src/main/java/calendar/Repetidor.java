@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public class Repetidor {
+public class Repetidor{
 
     private final Limite limite;
     private final Frecuencia frecuencia;
