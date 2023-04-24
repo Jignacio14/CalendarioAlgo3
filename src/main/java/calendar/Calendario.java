@@ -7,9 +7,7 @@ public class Calendario {
 
     private final List<Recordatorio> recordatorios = new ArrayList<>();
 
-    public Recordatorio verCalendario(int idRecordatorio) {
-        return this.recordatorios.get(idRecordatorio);
-    }
+    public Recordatorio verCalendario(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
     private void agregarRecordatorio(Recordatorio recordatorio) {
         int posicionVacia = this.recordatorios.indexOf(null);
@@ -36,7 +34,8 @@ public class Calendario {
         return idTarea;
     }
 
-    public void eliminarRecordatorio(int idRecordatorio) {
+    public void eliminarRecordatorio(Recordatorio recordatorio) {
+        var idRecordatorio = recordatorio.obtenerId();
         this.recordatorios.set(idRecordatorio, null);
     }
 
@@ -52,9 +51,7 @@ public class Calendario {
         recordatorio.modificarInicio(inicioNuevo);
     }
 
-    public void establecerDiaCompleto(Recordatorio recordatorio) {
-        recordatorio.establecerDiaCompleto();
-    }
+    public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
 
     public int agregarAlarma(Recordatorio recordatorio) {
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
@@ -72,5 +69,7 @@ public class Calendario {
     public void modificarAlarmaEfecto(Recordatorio recordatorio, int idAlarma, AlarmaEfectos efecto) {
         recordatorio.modificarAlarmaEfecto(idAlarma, efecto);
     }
+
+    public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
 }

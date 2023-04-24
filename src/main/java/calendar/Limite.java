@@ -9,34 +9,24 @@ public enum Limite {
         }
 
         @Override
-        public void setIteraciones(Integer iteraciones) {
-            this.iteraciones = iteraciones;
-        }
+        public void setIteraciones(Integer iteraciones) { this.iteraciones = iteraciones; }
 
         @Override
-        public boolean verificarProximasIteraciones(LocalDateTime fecha) {
-            return iteraciones > 0;
-        }
+        public boolean verificarProximasIteraciones(LocalDateTime fecha) { return iteraciones > 0; }
 
         @Override
-        public void ajustarIteracion() {
-            iteraciones -= 1;
-        }
+        public void ajustarIteracion() { iteraciones -= 1; }
     },
     FechaMax(LocalDateTime.now().plusDays(10), 5) {
         @Override
-        public void setFechaLimite(LocalDateTime fecha) {
-            this.fechaLimite = fecha;
-        }
+        public void setFechaLimite(LocalDateTime fecha) { this.fechaLimite = fecha; }
 
         @Override
         public void setIteraciones(Integer iteraciones) {
         }
 
         @Override
-        public boolean verificarProximasIteraciones(LocalDateTime fecha) {
-            return fecha.isBefore(fechaLimite);
-        }
+        public boolean verificarProximasIteraciones(LocalDateTime fecha) { return fecha.isBefore(fechaLimite); }
 
         @Override
         public void ajustarIteracion() {
@@ -44,18 +34,14 @@ public enum Limite {
     },
     SinLimite(LocalDateTime.MAX, 5) {
         @Override
-        public void setFechaLimite(LocalDateTime fecha) {
-            this.fechaLimite = LocalDateTime.MAX;
-        }
+        public void setFechaLimite(LocalDateTime fecha) { this.fechaLimite = LocalDateTime.MAX; }
 
         @Override
         public void setIteraciones(Integer iteraciones) {
         }
 
         @Override
-        public boolean verificarProximasIteraciones(LocalDateTime fecha) {
-            return true;
-        }
+        public boolean verificarProximasIteraciones(LocalDateTime fecha) { return true; }
 
         @Override
         public void ajustarIteracion() {

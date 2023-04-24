@@ -7,11 +7,7 @@ public enum AlarmaEfectos {
 
     private final String efecto;
 
-    AlarmaEfectos(String efecto) {
-        this.efecto = efecto;
-    }
+    AlarmaEfectos(String efecto) { this.efecto = efecto; }
 
-    public String lanzarEfecto() {
-        return efecto;
-    }
+    public String lanzarEfecto() { return efecto; }
 }

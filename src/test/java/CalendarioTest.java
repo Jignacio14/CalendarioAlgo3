@@ -39,7 +39,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void TestCalendarioModificarRecordatorios() {
+    public void TestCalendarioModificarEvento() {
         LocalDateTime fecha = LocalDateTime.now();
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
@@ -141,7 +141,8 @@ public class CalendarioTest {
 
         assertNotNull(calendario.verCalendario(idEvento3));
 
-        calendario.eliminarRecordatorio(idEvento3);
+        var eventoAeliminar = calendario.verCalendario(idEvento3);
+        calendario.eliminarRecordatorio(eventoAeliminar);
 
         assertNull(calendario.verCalendario(idEvento3));
         assertNotNull(calendario.verCalendario(idEvento1));
@@ -227,5 +228,27 @@ public class CalendarioTest {
         assertEquals("Descripcion Prueba", eventoCreado.obtenerAlarma(idAlarma).obtenerDescripcion());
         assertEquals(fecha.minusDays(3).minusHours(3), eventoCreado.obtenerAlarma(idAlarma).obtenerfechaHora());
         assertEquals(AlarmaEfectos.SONIDO, eventoCreado.obtenerAlarma(idAlarma).obtenerEfecto());
+    }
+
+    @Test
+    public void TestCalendarioEliminarAlarma() {
+        LocalDateTime fecha = LocalDateTime.now();
+        var calendario = new Calendario();
+        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+
+        Recordatorio eventoCreado = calendario.verCalendario(idEvento1);
+
+        var idAlarma1 = calendario.agregarAlarma(eventoCreado);
+        var idAlarma2 = calendario.agregarAlarma(eventoCreado);
+        var idAlarma3 = calendario.agregarAlarma(eventoCreado);
+
+        assertNotNull(eventoCreado.obtenerAlarma(idAlarma2));
+
+        var alarmaAeliminar = eventoCreado.obtenerAlarma(idAlarma2);
+        calendario.eliminarAlarma(eventoCreado, alarmaAeliminar);
+
+        assertNull(eventoCreado.obtenerAlarma(idAlarma2));
+        assertNotNull(eventoCreado.obtenerAlarma(idAlarma1));
+        assertNotNull(eventoCreado.obtenerAlarma(idAlarma3));
     }
 }

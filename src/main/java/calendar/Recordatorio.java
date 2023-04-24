@@ -39,28 +39,19 @@ public abstract class Recordatorio {
         alarmas.clear();
     }
 
-    public LocalDateTime verFinal() {
-        return this.inicio.plusHours(horas).plusMinutes(minutos);
-    }
+    public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
-    public boolean verficarDiaCompleto() {
-        return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0);
-    }
+    public boolean verficarDiaCompleto() { return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0); }
 
-    public boolean verificarRepeticion() {
-        return false;
-    }
+    public boolean verificarRepeticion() { return false; }
 
     public void establecerDiaCompleto() {
         this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonthValue(), inicio.getDayOfMonth(), 0, 0);
         this.horas = 24;
         this.minutos = 0;
-        //lo que hace calendar: si era un evento que no es dia completo y tenia una alarma cuando se lo establece como dia completo se elimina la alarma puesta y se debe volver a crear una alarma
     }
 
-    public void establecerId(int id) {
-        this.id = id;
-    }
+    public void establecerId(int id) { this.id = id; }
 
     /* _________ ALARMA _________ */
 
@@ -80,7 +71,6 @@ public abstract class Recordatorio {
         return idAlarma;
     }
 
-    //ver que hacer con las alarmas de un recordatorio cuando se modifica el inicio de ese recordatorio
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {
             alarma.modificarNombre(nombre);
@@ -104,21 +94,20 @@ public abstract class Recordatorio {
         alarmas.get(idAlarma).establecerEfecto(efecto);
     }
 
+    public void eliminarAlarma(Alarma alarma) {
+        var idAlarma = alarma.obtenerId();
+        this.alarmas.set(idAlarma, null);
+    }
+
     /* _________ GETTERS _________ */
 
-    public String obtenerNombre() {
-        return nombre;
-    }
+    public String obtenerNombre() { return nombre; }
 
-    public String obtenerDescripcion() {
-        return descripcion;
-    }
+    public String obtenerDescripcion() { return descripcion; }
 
-    public LocalDateTime obtenerInicio() {
-        return inicio;
-    }
+    public LocalDateTime obtenerInicio() { return inicio; }
 
-    public Alarma obtenerAlarma(Integer idAlarma) {
-        return alarmas.get(idAlarma);
-    }
+    public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
+
+    public int obtenerId(){ return this.id; }
 }
