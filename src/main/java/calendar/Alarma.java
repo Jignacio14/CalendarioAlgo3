@@ -15,7 +15,6 @@ public class Alarma {
     private Integer diferenciaHoraria;
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
-
     private Integer id;
 
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
@@ -77,6 +76,10 @@ public class Alarma {
 
     public String obtenerDescripcion() {
         return this.descripcion;
+    }
+
+    public int obtenerId(){
+        return this.id;
     }
 
     /* ____ ALARMA CON REPETICIONES ____ */

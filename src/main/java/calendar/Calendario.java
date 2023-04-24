@@ -36,7 +36,8 @@ public class Calendario {
         return idTarea;
     }
 
-    public void eliminarRecordatorio(int idRecordatorio) {
+    public void eliminarRecordatorio(Recordatorio recordatorio) {
+        var idRecordatorio = recordatorio.obtenerId();
         this.recordatorios.set(idRecordatorio, null);
     }
 
@@ -71,6 +72,10 @@ public class Calendario {
 
     public void modificarAlarmaEfecto(Recordatorio recordatorio, int idAlarma, AlarmaEfectos efecto) {
         recordatorio.modificarAlarmaEfecto(idAlarma, efecto);
+    }
+
+    public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){
+        recordatorio.eliminarAlarma(alarma);
     }
 
 }
