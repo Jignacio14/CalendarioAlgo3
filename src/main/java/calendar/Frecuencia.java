@@ -10,9 +10,7 @@ public enum Frecuencia {
 
     Diaria(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
-            return fecha.plusDays(intervalo);
-        }
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusDays(intervalo); }
 
     },
     Semanal(1, Set.of(DayOfWeek.MONDAY)) {
@@ -31,21 +29,15 @@ public enum Frecuencia {
         }
 
         @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
-            return fecha.plusDays(1);
-        }
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusDays(1); }
     },
     Mensual(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
-            return fecha.plusMonths(intervalo);
-        }
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusMonths(intervalo); }
     },
     Anual(1, Set.of(DayOfWeek.MONDAY)) {
         @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) {
-            return fecha.plusYears(intervalo);
-        }
+        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusYears(intervalo); }
     },
     ;
     protected Set<DayOfWeek> diasSemana;
@@ -56,9 +48,7 @@ public enum Frecuencia {
         this.diasSemana = diasSemana;
     }
 
-    public void setIntervalo(Integer intervalo) {
-        this.intervalo = intervalo;
-    }
+    public void setIntervalo(Integer intervalo) { this.intervalo = intervalo; }
 
     public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
         var repeticiones = new ArrayList<LocalDateTime>();
@@ -74,7 +64,5 @@ public enum Frecuencia {
 
     public abstract LocalDateTime incrementarFecha(LocalDateTime fecha);
 
-    public void setDiasSemana(Set<DayOfWeek> dias) {
-        diasSemana = dias;
-    }
+    public void setDiasSemana(Set<DayOfWeek> dias) { diasSemana = dias; }
 }

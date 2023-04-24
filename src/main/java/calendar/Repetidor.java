@@ -16,25 +16,15 @@ public class Repetidor {
         this.frecuencia = frecuencia;
     }
 
-    public void configurarFechaLimite(LocalDateTime fechaLimite) {
-        this.limite.setFechaLimite(fechaLimite);
-    }
+    public void configurarFechaLimite(LocalDateTime fechaLimite) { this.limite.setFechaLimite(fechaLimite); }
 
-    public void configurarIteraciones(Integer iteraciones) {
-        this.limite.setIteraciones(iteraciones);
-    }
+    public void configurarIteraciones(Integer iteraciones) { this.limite.setIteraciones(iteraciones); }
 
-    public void configurarIntervalo(Integer intervalo) {
-        this.frecuencia.setIntervalo(intervalo);
-    }
+    public void configurarIntervalo(Integer intervalo) { this.frecuencia.setIntervalo(intervalo); }
 
-    public void configurarDias(Set<DayOfWeek> dias) {
-        this.frecuencia.setDiasSemana(dias);
-    }
+    public void configurarDias(Set<DayOfWeek> dias) { this.frecuencia.setDiasSemana(dias); }
 
-    public boolean verificarHayRepeticiones() {
-        return limite.verificarProximasIteraciones(this.ultConsulta);
-    }
+    public boolean verificarHayRepeticiones() { return limite.verificarProximasIteraciones(this.ultConsulta); }
 
     public List<LocalDateTime> verFuturasRepeticiones(LocalDateTime desde, LocalDateTime hasta) {
         if (ultConsulta.isBefore(hasta)) {

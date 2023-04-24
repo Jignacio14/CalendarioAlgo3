@@ -39,17 +39,11 @@ public abstract class Recordatorio {
         alarmas.clear();
     }
 
-    public LocalDateTime verFinal() {
-        return this.inicio.plusHours(horas).plusMinutes(minutos);
-    }
+    public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
-    public boolean verficarDiaCompleto() {
-        return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0);
-    }
+    public boolean verficarDiaCompleto() { return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0); }
 
-    public boolean verificarRepeticion() {
-        return false;
-    }
+    public boolean verificarRepeticion() { return false; }
 
     public void establecerDiaCompleto() {
         this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonthValue(), inicio.getDayOfMonth(), 0, 0);
@@ -57,9 +51,7 @@ public abstract class Recordatorio {
         this.minutos = 0;
     }
 
-    public void establecerId(int id) {
-        this.id = id;
-    }
+    public void establecerId(int id) { this.id = id; }
 
     /* _________ ALARMA _________ */
 
@@ -111,17 +103,11 @@ public abstract class Recordatorio {
 
     public String obtenerNombre() { return nombre; }
 
-    public String obtenerDescripcion() {
-        return descripcion;
-    }
+    public String obtenerDescripcion() { return descripcion; }
 
-    public LocalDateTime obtenerInicio() {
-        return inicio;
-    }
+    public LocalDateTime obtenerInicio() { return inicio; }
 
-    public Alarma obtenerAlarma(Integer idAlarma) {
-        return alarmas.get(idAlarma);
-    }
+    public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
 
     public int obtenerId(){ return this.id; }
 }

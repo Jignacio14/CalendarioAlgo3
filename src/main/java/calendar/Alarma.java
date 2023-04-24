@@ -26,17 +26,11 @@ public class Alarma {
         this.id = -1;
     }
 
-    public void modificarNombre(String nuevoNombre) {
-        this.nombre = nuevoNombre;
-    }
+    public void modificarNombre(String nuevoNombre) { this.nombre = nuevoNombre; }
 
-    public void modificarDescripcion(String nuevaDescripcion) {
-        this.descripcion = nuevaDescripcion;
-    }
+    public void modificarDescripcion(String nuevaDescripcion) { this.descripcion = nuevaDescripcion; }
 
-    public void establecerId(Integer id){
-        this.id = id;
-    }
+    public void establecerId(Integer id){ this.id = id; }
 
     /* ____ SETTERS ____ */
 
@@ -45,9 +39,7 @@ public class Alarma {
         this.ultRepeticion = fechaHora;
     }
 
-    public void establecerFechaHoraAbs(LocalDateTime fechaHoraAbs) {
-        this.fechaHora = fechaHoraAbs;
-    }
+    public void establecerFechaHoraAbs(LocalDateTime fechaHoraAbs) { this.fechaHora = fechaHoraAbs; }
 
     public void establecerFechaHoraAbsRepeticiones(LocalDateTime fechaHoraAbs) {
         this.establecerFechaHoraAbs(fechaHoraAbs);
@@ -55,62 +47,40 @@ public class Alarma {
         this.ultRepeticion = LocalDateTime.of(fechaHoraRecordatorio.getYear(), fechaHoraRecordatorio.getMonthValue(), fechaHoraRecordatorio.getDayOfMonth(), fechaHoraAbs.getHour(), fechaHoraAbs.getMinute());
     }
 
-    public void establecerEfecto(AlarmaEfectos efecto) {
-        this.efecto = efecto;
-    }
+    public void establecerEfecto(AlarmaEfectos efecto) { this.efecto = efecto; }
 
 
     /* ____ GETTERS ____ */
 
-    public LocalDateTime obtenerfechaHora() {
-        return this.fechaHora;
-    }
+    public LocalDateTime obtenerfechaHora() { return this.fechaHora; }
 
-    public AlarmaEfectos obtenerEfecto() {
-        return this.efecto;
-    }
+    public AlarmaEfectos obtenerEfecto() { return this.efecto; }
 
-    public String obtenerNombre() {
-        return this.nombre;
-    }
+    public String obtenerNombre() { return this.nombre; }
 
-    public String obtenerDescripcion() {
-        return this.descripcion;
-    }
+    public String obtenerDescripcion() { return this.descripcion; }
 
-    public int obtenerId(){
-        return this.id;
-    }
+    public int obtenerId(){ return this.id; }
 
     /* ____ ALARMA CON REPETICIONES ____ */
 
-    public boolean verificarRepeticion() {
-        return repetidor != null;
-    }
+    public boolean verificarRepeticion() { return repetidor != null; }
 
-    public boolean verificarHayProximaRepeticion() {
-        return repetidor.verificarHayRepeticiones();
-    }
+    public boolean verificarHayProximaRepeticion() { return repetidor.verificarHayRepeticiones(); }
 
     public void configurarRepeticion(Frecuencia frecuencia, Limite limite) {
         this.repetidor = new Repetidor(limite, frecuencia);
     }
 
-    public void configurarFechaLimite(LocalDateTime fechaLimite) {
-        this.repetidor.configurarFechaLimite(fechaLimite);
-    }
+    public void configurarFechaLimite(LocalDateTime fechaLimite) { this.repetidor.configurarFechaLimite(fechaLimite); }
 
     public void configurarIteracion(Integer iteraciones) {
         this.repetidor.configurarIteraciones(iteraciones);
     }
 
-    public void configurarIntervalo(Integer intervalo) {
-        this.repetidor.configurarIntervalo(intervalo);
-    }
+    public void configurarIntervalo(Integer intervalo) { this.repetidor.configurarIntervalo(intervalo); }
 
-    public void configurarDias(Set<DayOfWeek> dias) {
-        this.repetidor.configurarDias(dias);
-    }
+    public void configurarDias(Set<DayOfWeek> dias) { this.repetidor.configurarDias(dias); }
 
     public List<LocalDateTime> verRepeticiones(LocalDateTime hasta) {
         var consultaFechas = repetidor.verFuturasRepeticiones(ultRepeticion, hasta);
