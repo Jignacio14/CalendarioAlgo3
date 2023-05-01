@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
+
 public enum Frecuencia {
-
-    Diaria(1, Set.of(DayOfWeek.MONDAY)) {
-        @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusDays(intervalo); }
-
-    },
-    Semanal(1, Set.of(DayOfWeek.MONDAY)) {
+    Diaria {},
+    Semanal{
         @Override
         public List<LocalDateTime> obtenerRepeticiones(Limite limite, LocalDateTime tope, LocalDateTime inicio) {
             var guia = inicio;
@@ -27,15 +24,12 @@ public enum Frecuencia {
             } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
             return lista;
         }
-
-        @Override
-        public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusDays(1); }
     },
-    Mensual(1, Set.of(DayOfWeek.MONDAY)) {
+    Mensual{
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusMonths(intervalo); }
     },
-    Anual(1, Set.of(DayOfWeek.MONDAY)) {
+    Anual {
         @Override
         public LocalDateTime incrementarFecha(LocalDateTime fecha) { return fecha.plusYears(intervalo); }
     },
@@ -43,9 +37,9 @@ public enum Frecuencia {
     protected Set<DayOfWeek> diasSemana;
     protected Integer intervalo;
 
-    Frecuencia(Integer intervalo, Set<DayOfWeek> diasSemana) {
-        this.intervalo = intervalo;
-        this.diasSemana = diasSemana;
+    Frecuencia() {
+        this.intervalo = intervaloDefecto;
+        this.diasSemana = diaDefecto;
     }
 
     public void setIntervalo(Integer intervalo) { this.intervalo = intervalo; }
@@ -62,7 +56,11 @@ public enum Frecuencia {
         return repeticiones;
     }
 
-    public abstract LocalDateTime incrementarFecha(LocalDateTime fecha);
-
+    public LocalDateTime incrementarFecha(LocalDateTime fecha){
+        return fecha.plusDays(intervalo);
+    }
     public void setDiasSemana(Set<DayOfWeek> dias) { diasSemana = dias; }
+
+    final Integer intervaloDefecto = 1;
+    final Set<DayOfWeek> diaDefecto = Set.of(DayOfWeek.MONDAY);
 }
