@@ -14,7 +14,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioCrearEvento() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
 
@@ -27,7 +27,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioCrearTarea() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idTarea = calendario.crearTarea(fecha, 0, 0);
 
@@ -40,7 +40,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioModificarEvento() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
         int idEvento2 = calendario.crearEvento(fecha, 1, 30);
@@ -73,7 +73,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioModificarTarea() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
         int idEvento2 = calendario.crearEvento(fecha, 1, 30);
@@ -106,7 +106,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioEstablecerDiaCompletoEvento() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
 
@@ -119,7 +119,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioEstablecerDiaCompletoTarea() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idTarea = calendario.crearEvento(fecha, 1, 30);
 
@@ -132,7 +132,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioEliminarRecordatorio() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
         int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
@@ -152,7 +152,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioAgregarAlarmaEvento() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
         Recordatorio eventoCreado = calendario.verCalendario(idEvento);
@@ -167,7 +167,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioAgregarAlarmaTarea() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idTarea = calendario.crearTarea(fecha, 1, 30);
         Recordatorio tareaCreada = calendario.verCalendario(idTarea);
@@ -182,7 +182,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioModificarAlarmaEventoIntervalo() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
         Recordatorio eventoCreado = calendario.verCalendario(idEvento);
@@ -207,7 +207,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioModificarAlarmaEventoFechaHoraAbs() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
         Recordatorio eventoCreado = calendario.verCalendario(idEvento);
@@ -232,7 +232,7 @@ public class CalendarioTest {
 
     @Test
     public void TestCalendarioEliminarAlarma() {
-        LocalDateTime fecha = LocalDateTime.now();
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
 

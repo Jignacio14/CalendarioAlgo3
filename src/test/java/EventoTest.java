@@ -14,7 +14,7 @@ public class EventoTest {
 
     @Test
     public void TestEventoCrear() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 1);
         assertNotNull(evento);
     }
@@ -29,28 +29,28 @@ public class EventoTest {
 
     @Test
     public void TestEventoNombrePorDefecto() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 1);
         assertEquals("Sin titulo", evento.obtenerNombre());
     }
 
     @Test
     public void TestEventoDetallePorDefecto() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 1);
         assertEquals(evento.obtenerDescripcion(), "Sin descripcion");
     }
 
     @Test
     public void TestEventoSeRepiteEsFalso() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 1);
         assertFalse(evento.verificarRepeticion());
     }
 
     @Test
     public void TestEventoCambiarNombre() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 0);
         var nombre = "Entrega del TP";
         evento.modificarNombre("Entrega del TP");
@@ -60,7 +60,7 @@ public class EventoTest {
 
     @Test
     public void TestEventoCambiarDescripcion() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 0);
         var descripcion = "Todo lo relacionado al TP";
         evento.modificarDescripcion(descripcion);
@@ -69,7 +69,7 @@ public class EventoTest {
 
     @Test
     public void TestEventoDiaCompleto() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 0);
         assertFalse(evento.verficarDiaCompleto());
         evento.establecerDiaCompleto();
@@ -78,7 +78,7 @@ public class EventoTest {
 
     @Test
     public void TestEventoRepeticionDiaria() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var evento = new Evento(fecha, 1, 0);
         evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
         evento.configurarIntervalo(4);

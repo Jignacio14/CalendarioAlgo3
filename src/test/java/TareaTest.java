@@ -69,7 +69,7 @@ public class TareaTest {
 
     @Test
     public void TestTareaNoVencida() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var fechaPosterior = fecha.plusHours(1);
         var tarea = new Tarea(fecha, 0, 0);
         assertFalse(tarea.verificarEstarVencida(fechaPosterior));
@@ -77,7 +77,7 @@ public class TareaTest {
 
     @Test
     public void TestTareaVencida() {
-        var fecha = LocalDateTime.now();
+        var fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var fechaAnterior = fecha.minusHours(1);
         var tarea = new Tarea(fecha, 0, 0);
         assertTrue(tarea.verificarEstarVencida(fechaAnterior));
@@ -88,7 +88,7 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 16, 0, 0);
         var tarea = new Tarea(fecha, 24, 0);
 
-        var fecha2 = LocalDateTime.now();
+        var fecha2 = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var tarea2 = new Tarea(fecha2, 0, 0);
 
         assertTrue(tarea.verficarDiaCompleto());
@@ -97,7 +97,7 @@ public class TareaTest {
 
     @Test
     public void TestTareaCambiarInicio() {
-        var fechaActual = LocalDateTime.now();
+        var fechaActual = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var tarea = new Tarea(fechaActual, 0, 0);
         var fechaPosterior = fechaActual.plusHours(5);
         assertFalse(tarea.verificarEstarVencida(fechaPosterior));
