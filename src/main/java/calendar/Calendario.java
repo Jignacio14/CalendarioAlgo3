@@ -7,7 +7,7 @@ public class Calendario {
 
     private final List<Recordatorio> recordatorios = new ArrayList<>();
 
-    public Recordatorio verCalendario(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
+    public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
     private void agregarRecordatorio(Recordatorio recordatorio) {
         int posicionVacia = this.recordatorios.indexOf(null);

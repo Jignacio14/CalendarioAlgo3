@@ -18,7 +18,7 @@ public class CalendarioTest {
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
 
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
 
         assertEquals("Sin titulo", eventoCreado.obtenerNombre());
         assertEquals("Sin descripcion", eventoCreado.obtenerDescripcion());
@@ -31,7 +31,7 @@ public class CalendarioTest {
         var calendario = new Calendario();
         int idTarea = calendario.crearTarea(fecha, 0, 0);
 
-        Recordatorio tareaCreada = calendario.verCalendario(idTarea);
+        Recordatorio tareaCreada = calendario.obtenerRecordatorio(idTarea);
 
         assertEquals("Sin titulo", tareaCreada.obtenerNombre());
         assertEquals("Sin descripcion", tareaCreada.obtenerDescripcion());
@@ -46,9 +46,9 @@ public class CalendarioTest {
         int idEvento2 = calendario.crearEvento(fecha, 1, 30);
         int idTarea3 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
 
-        Recordatorio eventoCreado1 = calendario.verCalendario(idEvento1);
-        Recordatorio eventoCreado2 = calendario.verCalendario(idEvento2);
-        Recordatorio TareaCreado3 = calendario.verCalendario(idTarea3);
+        Recordatorio eventoCreado1 = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idEvento2);
+        Recordatorio TareaCreado3 = calendario.obtenerRecordatorio(idTarea3);
 
         assertEquals("Sin titulo", eventoCreado2.obtenerNombre());
         assertEquals("Sin descripcion", eventoCreado2.obtenerDescripcion());
@@ -79,9 +79,9 @@ public class CalendarioTest {
         int idEvento2 = calendario.crearEvento(fecha, 1, 30);
         int idTarea3 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
 
-        Recordatorio eventoCreado1 = calendario.verCalendario(idEvento1);
-        Recordatorio eventoCreado2 = calendario.verCalendario(idEvento2);
-        Recordatorio TareaCreado3 = calendario.verCalendario(idTarea3);
+        Recordatorio eventoCreado1 = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idEvento2);
+        Recordatorio TareaCreado3 = calendario.obtenerRecordatorio(idTarea3);
 
         assertEquals("Sin titulo", eventoCreado2.obtenerNombre());
         assertEquals("Sin descripcion", eventoCreado2.obtenerDescripcion());
@@ -110,7 +110,7 @@ public class CalendarioTest {
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
 
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
         assertFalse(eventoCreado.verficarDiaCompleto());
 
         calendario.establecerDiaCompleto(eventoCreado);
@@ -123,7 +123,7 @@ public class CalendarioTest {
         var calendario = new Calendario();
         int idTarea = calendario.crearEvento(fecha, 1, 30);
 
-        Recordatorio tareaCreado = calendario.verCalendario(idTarea);
+        Recordatorio tareaCreado = calendario.obtenerRecordatorio(idTarea);
         assertFalse(tareaCreado.verficarDiaCompleto());
 
         calendario.establecerDiaCompleto(tareaCreado);
@@ -139,15 +139,15 @@ public class CalendarioTest {
         int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
         int idTarea4 = calendario.crearTarea(fecha, 1, 30);
 
-        assertNotNull(calendario.verCalendario(idEvento3));
+        assertNotNull(calendario.obtenerRecordatorio(idEvento3));
 
-        var eventoAeliminar = calendario.verCalendario(idEvento3);
+        var eventoAeliminar = calendario.obtenerRecordatorio(idEvento3);
         calendario.eliminarRecordatorio(eventoAeliminar);
 
-        assertNull(calendario.verCalendario(idEvento3));
-        assertNotNull(calendario.verCalendario(idEvento1));
-        assertNotNull(calendario.verCalendario(idTarea2));
-        assertNotNull(calendario.verCalendario(idTarea4));
+        assertNull(calendario.obtenerRecordatorio(idEvento3));
+        assertNotNull(calendario.obtenerRecordatorio(idEvento1));
+        assertNotNull(calendario.obtenerRecordatorio(idTarea2));
+        assertNotNull(calendario.obtenerRecordatorio(idTarea4));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
 
         var idAlarma = calendario.agregarAlarma(eventoCreado);
 
@@ -170,7 +170,7 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idTarea = calendario.crearTarea(fecha, 1, 30);
-        Recordatorio tareaCreada = calendario.verCalendario(idTarea);
+        Recordatorio tareaCreada = calendario.obtenerRecordatorio(idTarea);
 
         var idAlarma = calendario.agregarAlarma(tareaCreada);
 
@@ -185,7 +185,7 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
 
         var idAlarma = calendario.agregarAlarma(eventoCreado);
 
@@ -210,7 +210,7 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento = calendario.crearEvento(fecha, 1, 30);
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
 
         var idAlarma = calendario.agregarAlarma(eventoCreado);
 
@@ -236,7 +236,7 @@ public class CalendarioTest {
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
 
-        Recordatorio eventoCreado = calendario.verCalendario(idEvento1);
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento1);
 
         var idAlarma1 = calendario.agregarAlarma(eventoCreado);
         var idAlarma2 = calendario.agregarAlarma(eventoCreado);
