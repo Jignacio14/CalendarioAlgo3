@@ -251,4 +251,42 @@ public class CalendarioTest {
         assertNotNull(eventoCreado.obtenerAlarma(idAlarma1));
         assertNotNull(eventoCreado.obtenerAlarma(idAlarma3));
     }
+
+    @Test
+    public void TestCalendarioEventoConMasDeUnaAlarma() {
+        LocalDateTime fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        var calendario = new Calendario();
+        int idEvento = calendario.crearEvento(fecha, 1, 30);
+        int cantidadAlarmasAgregadas = 4;
+
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento);
+
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+
+        for (int i = 0; i < cantidadAlarmasAgregadas; i++) {
+            assertNotNull(eventoCreado.obtenerAlarma(i));
+        }
+    }
+
+    @Test
+    public void TestCalendarioTareaConMasDeUnaAlarma() {
+        LocalDateTime fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
+        var calendario = new Calendario();
+        int idTarea = calendario.crearTarea(fecha, 1, 30);
+        int cantidadAlarmasAgregadas = 4;
+
+        Recordatorio tareaCreada = calendario.obtenerRecordatorio(idTarea);
+
+        calendario.agregarAlarma(tareaCreada);
+        calendario.agregarAlarma(tareaCreada);
+        calendario.agregarAlarma(tareaCreada);
+        calendario.agregarAlarma(tareaCreada);
+
+        for (int i = 0; i < cantidadAlarmasAgregadas; i++) {
+            assertNotNull(tareaCreada.obtenerAlarma(i));
+        }
+    }
 }
