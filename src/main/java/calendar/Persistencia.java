@@ -1,6 +1,8 @@
 package calendar;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,32 +24,25 @@ public class Persistencia {
     }
 
     public List<Recordatorio> deserializacion() throws IOException {
-        FileReader archivo = new FileReader("./src/main/calendario.json");
-        BufferedReader lector = new BufferedReader(archivo);
-        String linea = lector.readLine();
-        String texto = "";
-
-        while (linea != null) {
-            texto = texto + linea; //ver clase prcatica donde se hablaba de esta alerta
-            linea = lector.readLine();
-        }
+        Path archivo = Path.of("./src/main/calendario.json");
+        Reader lector = Files.newBufferedReader(archivo);
+        Gson gson = new Gson();
+        JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
 
         List<Recordatorio> recordatorios = new ArrayList<>();
 
-        JsonArray listaRecordatoriosJson = JsonParser.parseString(texto).getAsJsonArray();
+        for (JsonElement recordatorioJson : recordatoriosJson) {
 
-        for (JsonElement recordatorio : listaRecordatoriosJson) {
+            JsonObject recordatorio = recordatorioJson.getAsJsonObject();
 
-            JsonObject recordatorioJson = recordatorio.getAsJsonObject();
-
-            String nombre = recordatorioJson.get("nombre").getAsString();
-            String descripcion = recordatorioJson.get("descripcion").getAsString();
-            LocalDateTime inicio = LocalDateTime.parse(recordatorioJson.get("inicio").getAsString());
-            Integer horas = recordatorioJson.get("horas").getAsInt();
-            Integer minutos = recordatorioJson.get("minutos").getAsInt();
-            int id = recordatorioJson.get("id").getAsInt();
-            String tipoRecordatorio = recordatorioJson.get("tipo").getAsString();
-            JsonArray alarmas = recordatorioJson.get("alarmas").getAsJsonArray();
+            String nombre = recordatorio.get("nombre").getAsString();
+            String descripcion = recordatorio.get("descripcion").getAsString();
+            LocalDateTime inicio = LocalDateTime.parse(recordatorio.get("inicio").getAsString());
+            Integer horas = recordatorio.get("horas").getAsInt();
+            Integer minutos = recordatorio.get("minutos").getAsInt();
+            int id = recordatorio.get("id").getAsInt();
+            String tipoRecordatorio = recordatorio.get("tipo").getAsString();
+            JsonArray alarmas = recordatorio.get("alarmas").getAsJsonArray();
             String alarmasJson = alarmas.toString();
 
             Recordatorio recordatorioAct = crearRecordatorio(tipoRecordatorio, nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
