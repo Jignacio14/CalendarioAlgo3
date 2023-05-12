@@ -2,6 +2,7 @@
 import calendar.AlarmaEfectos;
 import calendar.Calendario;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import calendar.Recordatorio;
@@ -288,5 +289,57 @@ public class CalendarioTest {
         for (int i = 0; i < cantidadAlarmasAgregadas; i++) {
             assertNotNull(tareaCreada.obtenerAlarma(i));
         }
+    }
+
+    @Test
+    public void TestCalendarioSerializacion() throws IOException {
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
+        var calendario = new Calendario();
+        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
+        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
+        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
+
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idTarea4);
+
+        int idalarma = calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+
+        eventoCreado.obtenerAlarma(idalarma).establecerEfecto(AlarmaEfectos.SONIDO);
+
+        calendario.agregarAlarma(eventoCreado2);
+        calendario.agregarAlarma(eventoCreado2);
+
+        calendario.guardar();
+    }
+
+    @Test
+    public void TestCalendarioDeserializacion() throws IOException {
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
+        var calendario = new Calendario();
+        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
+        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
+        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
+
+        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idTarea4);
+
+        int idalarma = calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+        calendario.agregarAlarma(eventoCreado);
+
+        eventoCreado.obtenerAlarma(idalarma).establecerEfecto(AlarmaEfectos.SONIDO);
+
+        calendario.agregarAlarma(eventoCreado2);
+        calendario.agregarAlarma(eventoCreado2);
+
+        calendario.guardar();
+
+        calendario.cargar();
     }
 }

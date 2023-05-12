@@ -109,5 +109,7 @@ public abstract class Recordatorio {
 
     public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
 
+    public List<Alarma> obtenerAlarmas() { return alarmas; }
+
     public int obtenerId(){ return this.id; }
 }

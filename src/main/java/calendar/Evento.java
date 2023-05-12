@@ -7,6 +7,7 @@ import java.util.Set;
 
 
 public class Evento extends Recordatorio {
+    private final String tipo = "Evento";
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
 

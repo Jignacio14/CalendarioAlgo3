@@ -3,6 +3,7 @@ package calendar;
 import java.time.LocalDateTime;
 
 public class Tarea extends Recordatorio {
+    private final String tipo = "Tarea";
     private boolean completada = false;
 
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) { super(inicio, horas, minutos); }
