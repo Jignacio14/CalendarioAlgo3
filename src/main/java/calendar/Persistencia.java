@@ -2,6 +2,7 @@ package calendar;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.*;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 public class Persistencia {
     public void serializacion(List<Recordatorio> recordatorios) throws IOException {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
         String json = gson.toJson(recordatorios);
 
@@ -46,9 +47,8 @@ public class Persistencia {
             Integer minutos = recordatorioJson.get("minutos").getAsInt();
             int id = recordatorioJson.get("id").getAsInt();
             String tipoRecordatorio = recordatorioJson.get("tipo").getAsString();
-            JsonArray alarmasJson = recordatorioJson.get("alarmas").getAsJsonArray();
-
-            //Recordatorio recordatorioAct = tipoRecordatorio.equals("Evento") ? crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson) : crearTarea(nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
+            JsonArray alarmas = recordatorioJson.get("alarmas").getAsJsonArray();
+            String alarmasJson = alarmas.toString();
 
             Recordatorio recordatorioAct = crearRecordatorio(tipoRecordatorio, nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
 
@@ -59,20 +59,16 @@ public class Persistencia {
         return recordatorios;
     }
 
-    private void cargarAlarmas(JsonArray alarmasJson, Recordatorio recordatorio){
-        for (JsonElement alarma : alarmasJson) {
-            JsonObject alarmaJson = alarma.getAsJsonObject();
-            String nombre = alarmaJson.get("nombre").getAsString();
-            String descripcion = alarmaJson.get("descripcion").getAsString();
-            LocalDateTime fechaHora = LocalDateTime.parse(alarmaJson.get("fechaHora").getAsString());
-            //String efecto = alarmaJson.get("efecto").getAsString();
-            Alarma alarmaNueva = new Alarma(nombre, descripcion, fechaHora);
-            //alarmaNueva.establecerEfecto(efecto);
-            recordatorio.agregarAlarma(alarmaNueva);
-        }
+    private void cargarAlarmas(String alarmasJson, Recordatorio recordatorio){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(AlarmaEfectos.class, new AlarmaEfectosDeserializer());
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+        Alarma[] alarma = gson.fromJson(alarmasJson, Alarma[].class);
+        recordatorio.establecerAlarmas(Arrays.asList(alarma));
     }
 
-    private Recordatorio crearRecordatorio(String tipoRecordatorio, String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, JsonArray alarmasJson){
+    private Recordatorio crearRecordatorio(String tipoRecordatorio, String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, String alarmasJson){
         Recordatorio recordatorio = tipoRecordatorio.equals("Evento") ? new Evento(inicio, horas, minutos) : new Tarea(inicio, horas, minutos);
         recordatorio.modificarNombre(nombre);
         recordatorio.modificarDescripcion(descripcion);
@@ -81,24 +77,4 @@ public class Persistencia {
 
         return recordatorio;
     }
-
-    /*private Recordatorio crearEvento(String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, JsonArray alarmasJson){
-        Recordatorio evento = new Evento(inicio, horas, minutos);
-        evento.modificarNombre(nombre);
-        evento.modificarDescripcion(descripcion);
-        evento.establecerId(id);
-        if(!(alarmasJson.isEmpty())) { cargarAlarmas(alarmasJson, evento); }
-
-        return evento;
-    }
-
-    private Recordatorio crearTarea(String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, JsonArray alarmasJson){
-        Recordatorio tarea = new Tarea(inicio, horas, minutos);
-        tarea.modificarNombre(nombre);
-        tarea.modificarDescripcion(descripcion);
-        tarea.establecerId(id);
-        if(!(alarmasJson.isEmpty())) { cargarAlarmas(alarmasJson, tarea); }
-
-        return tarea;
-    }*/
 }

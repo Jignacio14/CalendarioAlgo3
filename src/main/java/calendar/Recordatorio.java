@@ -12,7 +12,7 @@ public abstract class Recordatorio {
     protected Integer horas;
     protected Integer minutos;
     protected int id;
-    private final List<Alarma> alarmas = new ArrayList<>();
+    private List<Alarma> alarmas = new ArrayList<>();
 
     public Recordatorio(LocalDateTime inicio, Integer horas, Integer minutos) {
         this.inicio = inicio;
@@ -70,6 +70,8 @@ public abstract class Recordatorio {
         alarmas.get(idAlarma).establecerId(idAlarma);
         return idAlarma;
     }
+
+    public void establecerAlarmas(List<Alarma> alarmas){ this.alarmas = alarmas; }
 
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {

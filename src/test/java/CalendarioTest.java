@@ -325,18 +325,21 @@ public class CalendarioTest {
         int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
         int idTarea4 = calendario.crearTarea(fecha, 1, 30);
 
-        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idTarea2);
-        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idTarea4);
+        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea4);
+        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idEvento3);
 
-        int idalarma = calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
+        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
 
-        eventoCreado.obtenerAlarma(idalarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
 
-        calendario.agregarAlarma(eventoCreado2);
-        calendario.agregarAlarma(eventoCreado2);
+        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado3);
+        recordatorioCreado3.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
 
         calendario.guardar();
 
