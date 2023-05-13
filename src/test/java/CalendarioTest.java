@@ -2,14 +2,23 @@
 import calendar.*;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import calendar.LocalDateTimePersistencia;
 
 public class CalendarioTest {
 
@@ -300,20 +309,43 @@ public class CalendarioTest {
         int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
         int idTarea4 = calendario.crearTarea(fecha, 1, 30);
 
-        Recordatorio eventoCreado = calendario.obtenerRecordatorio(idTarea2);
-        Recordatorio eventoCreado2 = calendario.obtenerRecordatorio(idTarea4);
+        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
+        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
 
-        int idalarma = calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
-        calendario.agregarAlarma(eventoCreado);
+        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
 
-        eventoCreado.obtenerAlarma(idalarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
 
-        calendario.agregarAlarma(eventoCreado2);
-        calendario.agregarAlarma(eventoCreado2);
+        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
+        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
+
+        var calendarioEsperado = new ArrayList<Recordatorio>();
+        calendarioEsperado.add(recordatorioCreado);
+        calendarioEsperado.add(recordatorioCreado2);
+        calendarioEsperado.add(recordatorioCreado3);
+        calendarioEsperado.add(recordatorioCreado4);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+        String calendarioEsperadoJson = gson.toJson(calendarioEsperado);
 
         calendario.guardar();
+
+        Path archivo = Path.of("./src/main/calendario.json");
+        Reader lector = Files.newBufferedReader(archivo);
+        JsonArray calendarioSerializado = (new Gson().fromJson(lector, JsonArray.class));
+        String calendarioSerializadoJson = gson.toJson(calendarioSerializado);
+
+        lector.close();
+        assertEquals(calendarioEsperadoJson, calendarioSerializadoJson);
     }
 
     @Test
