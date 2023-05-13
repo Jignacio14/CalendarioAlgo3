@@ -1,6 +1,5 @@
 package calendar;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -79,7 +78,8 @@ public class Calendario {
         persistencia.serializacion(recordatorios);
     }
 
-    public void cargar() throws IOException {
+    public List<Recordatorio> cargar() throws IOException {
        this.recordatorios = persistencia.deserializacion();
+       return this.recordatorios;
     }
 }

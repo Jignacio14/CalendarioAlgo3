@@ -1,11 +1,10 @@
 
-import calendar.AlarmaEfectos;
-import calendar.Calendario;
+import calendar.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
-import calendar.Recordatorio;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -325,24 +324,24 @@ public class CalendarioTest {
         int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
         int idTarea4 = calendario.crearTarea(fecha, 1, 30);
 
-        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idTarea2);
-        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea4);
-        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento1);
-        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idEvento3);
+        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
+        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
 
         int idAlarma = calendario.agregarAlarma(recordatorioCreado);
         int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
         calendario.agregarAlarma(recordatorioCreado);
         calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
+
+        ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
 
         recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
         recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
-
-        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado3);
-        recordatorioCreado3.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
+        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
 
         calendario.guardar();
-
         calendario.cargar();
     }
 }

@@ -13,7 +13,6 @@ public class Tarea extends Recordatorio {
     public boolean verificarEstarVencida(LocalDateTime fecha) { return super.inicio.isAfter(fecha); }
 
     public boolean verCompletada() { return completada; }
-
 }
 
 

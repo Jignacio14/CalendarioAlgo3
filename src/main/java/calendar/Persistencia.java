@@ -31,6 +31,13 @@ public class Persistencia {
 
         List<Recordatorio> recordatorios = new ArrayList<>();
 
+        cargarCalendario(recordatoriosJson, recordatorios);
+
+        lector.close();
+        return recordatorios;
+    }
+
+    private void cargarCalendario(JsonArray recordatoriosJson, List<Recordatorio> recordatorios){
         for (JsonElement recordatorioJson : recordatoriosJson) {
 
             JsonObject recordatorio = recordatorioJson.getAsJsonObject();
@@ -45,13 +52,28 @@ public class Persistencia {
             JsonArray alarmas = recordatorio.get("alarmas").getAsJsonArray();
             String alarmasJson = alarmas.toString();
 
-            Recordatorio recordatorioAct = crearRecordatorio(tipoRecordatorio, nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
+            Recordatorio recordatorioAct;
+            if (tipoRecordatorio.equals("Evento")){
+                String repetidorJson = recordatorio.get("repetidor") != null ? recordatorio.get("repetidor").getAsJsonObject().toString() : null;
+                Repetidor repetidor = crearRepetidor(repetidorJson);
+                LocalDateTime ultRepeticion = LocalDateTime.parse(recordatorio.get("ultRepeticion").getAsString());
+                recordatorioAct = crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson, repetidor, ultRepeticion);
+            }else {
+                recordatorioAct = crearTarea(nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
+            }
 
             recordatorios.add(recordatorioAct);
         }
+    }
 
-        lector.close();
-        return recordatorios;
+    private Repetidor crearRepetidor(String repetidorJson){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Limite.class, new LimiteDeserializer());
+        gsonBuilder.registerTypeAdapter(Frecuencia.class, new FrecuenciaDeserializer());
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+
+        return gson.fromJson(repetidorJson, Repetidor.class);
     }
 
     private void cargarAlarmas(String alarmasJson, Recordatorio recordatorio){
@@ -63,13 +85,24 @@ public class Persistencia {
         recordatorio.establecerAlarmas(Arrays.asList(alarma));
     }
 
-    private Recordatorio crearRecordatorio(String tipoRecordatorio, String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, String alarmasJson){
-        Recordatorio recordatorio = tipoRecordatorio.equals("Evento") ? new Evento(inicio, horas, minutos) : new Tarea(inicio, horas, minutos);
+    private Evento crearEvento(String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, String alarmasJson, Repetidor repetidor, LocalDateTime ultRepeticion){
+        Evento evento = new Evento(inicio, horas, minutos);
+        evento.establecerRepetidor(repetidor);
+        evento.establecerUltRepeticion(ultRepeticion);
+        cargarDatosRecordatorio(evento, nombre, descripcion, id, alarmasJson);
+        return evento;
+    }
+
+    private Tarea crearTarea(String nombre, String descripcion, Integer horas, Integer minutos, LocalDateTime inicio, int id, String alarmasJson){
+        Tarea tarea = new Tarea(inicio, horas, minutos);
+        cargarDatosRecordatorio(tarea, nombre, descripcion, id, alarmasJson);
+        return tarea;
+    }
+
+    private void cargarDatosRecordatorio(Recordatorio recordatorio, String nombre, String descripcion, int id, String alarmasJson){
         recordatorio.modificarNombre(nombre);
         recordatorio.modificarDescripcion(descripcion);
         recordatorio.establecerId(id);
         if(!(alarmasJson.isEmpty())) { cargarAlarmas(alarmasJson, recordatorio); }
-
-        return recordatorio;
     }
 }

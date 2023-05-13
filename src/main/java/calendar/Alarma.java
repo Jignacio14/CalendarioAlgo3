@@ -91,5 +91,4 @@ public class Alarma {
     private List<LocalDateTime> descontarDiferenciaHoraria(List<LocalDateTime> consultaFechas) {
         return consultaFechas.stream().map(fecha -> fecha.minusDays(diferenciaHoraria)).collect(Collectors.toList());
     }
-
 }

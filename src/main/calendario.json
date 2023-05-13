@@ -11,12 +11,37 @@
     "alarmas": [
       {
         "fechaHora": "2023-05-01T19:40",
-        "efecto": "EMAIL",
+        "efecto": "SONIDO",
         "nombre": "Sin titulo",
         "descripcion": "Sin descripcion",
         "fechaHoraRecordatorio": "2023-05-01T19:40",
         "ultRepeticion": "2023-05-01T19:40",
         "id": 0
+      },
+      {
+        "fechaHora": "2023-05-01T19:40",
+        "efecto": "NOTIFICACION",
+        "nombre": "Sin titulo",
+        "descripcion": "Sin descripcion",
+        "fechaHoraRecordatorio": "2023-05-01T19:40",
+        "ultRepeticion": "2023-05-01T19:40",
+        "id": 1
+      },
+      {
+        "fechaHora": "2023-05-01T19:40",
+        "nombre": "Sin titulo",
+        "descripcion": "Sin descripcion",
+        "fechaHoraRecordatorio": "2023-05-01T19:40",
+        "ultRepeticion": "2023-05-01T19:40",
+        "id": 2
+      },
+      {
+        "fechaHora": "2023-05-01T19:40",
+        "nombre": "Sin titulo",
+        "descripcion": "Sin descripcion",
+        "fechaHoraRecordatorio": "2023-05-01T19:40",
+        "ultRepeticion": "2023-05-01T19:40",
+        "id": 3
       }
     ]
   },
@@ -29,45 +54,15 @@
     "horas": 2,
     "minutos": 0,
     "id": 1,
-    "alarmas": [
-      {
-        "fechaHora": "2023-05-06T19:40",
-        "efecto": "SONIDO",
-        "nombre": "Sin titulo",
-        "descripcion": "Sin descripcion",
-        "fechaHoraRecordatorio": "2023-05-06T19:40",
-        "ultRepeticion": "2023-05-06T19:40",
-        "id": 0
-      },
-      {
-        "fechaHora": "2023-05-06T19:40",
-        "efecto": "NOTIFICACION",
-        "nombre": "Sin titulo",
-        "descripcion": "Sin descripcion",
-        "fechaHoraRecordatorio": "2023-05-06T19:40",
-        "ultRepeticion": "2023-05-06T19:40",
-        "id": 1
-      },
-      {
-        "fechaHora": "2023-05-06T19:40",
-        "nombre": "Sin titulo",
-        "descripcion": "Sin descripcion",
-        "fechaHoraRecordatorio": "2023-05-06T19:40",
-        "ultRepeticion": "2023-05-06T19:40",
-        "id": 2
-      },
-      {
-        "fechaHora": "2023-05-06T19:40",
-        "nombre": "Sin titulo",
-        "descripcion": "Sin descripcion",
-        "fechaHoraRecordatorio": "2023-05-06T19:40",
-        "ultRepeticion": "2023-05-06T19:40",
-        "id": 3
-      }
-    ]
+    "alarmas": []
   },
   {
     "tipo": "Evento",
+    "repetidor": {
+      "limite": "SinLimite",
+      "frecuencia": "Diaria",
+      "ultConsulta": "2023-05-13T16:16:28.092513500"
+    },
     "ultRepeticion": "2023-05-03T19:40",
     "nombre": "Sin titulo",
     "descripcion": "Sin descripcion",
@@ -86,6 +81,16 @@
     "horas": 1,
     "minutos": 30,
     "id": 3,
-    "alarmas": []
+    "alarmas": [
+      {
+        "fechaHora": "2023-05-01T19:40",
+        "efecto": "EMAIL",
+        "nombre": "Sin titulo",
+        "descripcion": "Sin descripcion",
+        "fechaHoraRecordatorio": "2023-05-01T19:40",
+        "ultRepeticion": "2023-05-01T19:40",
+        "id": 0
+      }
+    ]
   }
 ]

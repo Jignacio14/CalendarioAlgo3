@@ -39,4 +39,7 @@ public class Evento extends Recordatorio {
         return consultaFechas;
     }
 
+    public void establecerRepetidor(Repetidor repetidor){ this.repetidor = repetidor; }
+
+    public void establecerUltRepeticion(LocalDateTime ultRepeticion){ this.ultRepeticion = ultRepeticion; }
 }
