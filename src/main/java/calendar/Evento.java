@@ -7,12 +7,12 @@ import java.util.Set;
 
 
 public class Evento extends Recordatorio {
-    private final String tipo = "Evento";
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
 
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
+        this.tipo = "Evento";
         this.ultRepeticion = super.inicio;
     }
 
@@ -42,4 +42,8 @@ public class Evento extends Recordatorio {
     public void establecerRepetidor(Repetidor repetidor){ this.repetidor = repetidor; }
 
     public void establecerUltRepeticion(LocalDateTime ultRepeticion){ this.ultRepeticion = ultRepeticion; }
+
+    public Repetidor obtenerRepetidor() { return this.repetidor; }
+
+    public LocalDateTime obtenerUltRepeticion() { return this.ultRepeticion; }
 }

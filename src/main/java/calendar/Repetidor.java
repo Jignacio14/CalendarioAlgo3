@@ -33,4 +33,10 @@ public class Repetidor {
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
     }
 
+    public Limite obtenerLimite() { return this.limite; }
+
+    public Frecuencia obtenerFrecuencia() { return this.frecuencia; }
+
+    public LocalDateTime obtenerUltConsulta() { return this.ultConsulta; }
+
 }

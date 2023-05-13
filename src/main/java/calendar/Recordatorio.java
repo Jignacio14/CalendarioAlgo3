@@ -6,6 +6,7 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
@@ -113,5 +114,11 @@ public abstract class Recordatorio {
 
     public List<Alarma> obtenerAlarmas() { return alarmas; }
 
-    public int obtenerId(){ return this.id; }
+    public int obtenerId() { return this.id; }
+
+    public Integer obtenerHoras() { return this.horas; }
+
+    public  Integer obtenerMinutos() { return this.minutos; }
+
+    public String obtenerTipo() { return this.tipo; }
 }
