@@ -6,13 +6,14 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
     protected Integer horas;
     protected Integer minutos;
     protected int id;
-    private final List<Alarma> alarmas = new ArrayList<>();
+    private List<Alarma> alarmas = new ArrayList<>();
 
     public Recordatorio(LocalDateTime inicio, Integer horas, Integer minutos) {
         this.inicio = inicio;
@@ -71,6 +72,8 @@ public abstract class Recordatorio {
         return idAlarma;
     }
 
+    public void establecerAlarmas(List<Alarma> alarmas){ this.alarmas = alarmas; }
+
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {
             alarma.modificarNombre(nombre);
@@ -109,5 +112,13 @@ public abstract class Recordatorio {
 
     public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
 
-    public int obtenerId(){ return this.id; }
+    public List<Alarma> obtenerAlarmas() { return alarmas; }
+
+    public int obtenerId() { return this.id; }
+
+    public Integer obtenerHoras() { return this.horas; }
+
+    public  Integer obtenerMinutos() { return this.minutos; }
+
+    public String obtenerTipo() { return this.tipo; }
 }

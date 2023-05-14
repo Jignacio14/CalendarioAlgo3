@@ -12,6 +12,7 @@ public class Evento extends Recordatorio {
 
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
+        this.tipo = "Evento";
         this.ultRepeticion = super.inicio;
     }
 
@@ -38,4 +39,11 @@ public class Evento extends Recordatorio {
         return consultaFechas;
     }
 
+    public void establecerRepetidor(Repetidor repetidor){ this.repetidor = repetidor; }
+
+    public void establecerUltRepeticion(LocalDateTime ultRepeticion){ this.ultRepeticion = ultRepeticion; }
+
+    public Repetidor obtenerRepetidor() { return this.repetidor; }
+
+    public LocalDateTime obtenerUltRepeticion() { return this.ultRepeticion; }
 }

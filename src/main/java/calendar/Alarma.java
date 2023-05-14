@@ -62,6 +62,14 @@ public class Alarma {
 
     public int obtenerId(){ return this.id; }
 
+    public LocalDateTime obtenerFechaHoraRecordatorio() { return this.fechaHoraRecordatorio; }
+
+    public Integer obtenerDiferenciaHoraria() { return this.diferenciaHoraria; }
+
+    public Repetidor obtenerRepetidor() { return this.repetidor; }
+
+    public LocalDateTime obtenerUltRepeticion() { return this.ultRepeticion; }
+
     /* ____ ALARMA CON REPETICIONES ____ */
 
     public boolean verificarRepeticion() { return repetidor != null; }
@@ -91,5 +99,4 @@ public class Alarma {
     private List<LocalDateTime> descontarDiferenciaHoraria(List<LocalDateTime> consultaFechas) {
         return consultaFechas.stream().map(fecha -> fecha.minusDays(diferenciaHoraria)).collect(Collectors.toList());
     }
-
 }
