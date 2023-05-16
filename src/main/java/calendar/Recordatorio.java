@@ -13,7 +13,7 @@ public abstract class Recordatorio {
     protected Integer horas;
     protected Integer minutos;
     protected int id;
-    private List<Alarma> alarmas = new ArrayList<>();
+    protected List<Alarma> alarmas = new ArrayList<>();
 
     public Recordatorio(LocalDateTime inicio, Integer horas, Integer minutos) {
         this.inicio = inicio;
@@ -67,7 +67,7 @@ public abstract class Recordatorio {
 
     public int agregarAlarma(Alarma alarma) {
         almacenarAlarma(alarma);
-        int idAlarma = alarmas.indexOf(alarma);
+        int idAlarma = alarmas.lastIndexOf(alarma);
         alarmas.get(idAlarma).establecerId(idAlarma);
         return idAlarma;
     }
@@ -81,7 +81,7 @@ public abstract class Recordatorio {
         }
     }
 
-    public void modificarAlarmaFechaHoraAbs(Integer idAlarma, LocalDateTime fechaHoraAbs) {
+    public void modificarAlarmaFechaHoraAbs(int idAlarma, LocalDateTime fechaHoraAbs) {
         if (verificarRepeticion()) {
             alarmas.get(idAlarma).establecerFechaHoraAbsRepeticiones(fechaHoraAbs);
         } else {
@@ -89,11 +89,11 @@ public abstract class Recordatorio {
         }
     }
 
-    public void modificarAlarmaIntervalo(Integer idAlarma, Integer min, Integer horas, Integer dias, Integer semanas) {
+    public void modificarAlarmaIntervalo(int idAlarma, Integer min, Integer horas, Integer dias, Integer semanas) {
         alarmas.get(idAlarma).establecerIntervalo(min, horas, dias, semanas, verficarDiaCompleto());
     }
 
-    public void modificarAlarmaEfecto(Integer idAlarma, AlarmaEfectos efecto) {
+    public void modificarAlarmaEfecto(int idAlarma, AlarmaEfectos efecto) {
         alarmas.get(idAlarma).establecerEfecto(efecto);
     }
 
@@ -110,15 +110,23 @@ public abstract class Recordatorio {
 
     public LocalDateTime obtenerInicio() { return inicio; }
 
-    public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
-
-    public List<Alarma> obtenerAlarmas() { return alarmas; }
+    public Alarma obtenerAlarma(int idAlarma) { return alarmas.get(idAlarma); }
 
     public int obtenerId() { return this.id; }
 
-    public Integer obtenerHoras() { return this.horas; }
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-    public  Integer obtenerMinutos() { return this.minutos; }
-
-    public String obtenerTipo() { return this.tipo; }
+        Recordatorio recordatorioAComparar = (Recordatorio) obj;
+        return this.inicio.equals(recordatorioAComparar.inicio) &&
+                this.horas.equals(recordatorioAComparar.horas) &&
+                this.minutos.equals(recordatorioAComparar.minutos) &&
+                this.nombre.equals(recordatorioAComparar.nombre) &&
+                this.descripcion.equals(recordatorioAComparar.descripcion) &&
+                this.id == recordatorioAComparar.id &&
+                this.alarmas.equals(recordatorioAComparar.alarmas);
+    }
 }

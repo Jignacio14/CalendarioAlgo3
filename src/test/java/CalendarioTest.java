@@ -243,6 +243,7 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+        calendario.crearEvento(fecha, 1, 30);
 
         Recordatorio eventoCreado = calendario.obtenerRecordatorio(idEvento1);
 
@@ -374,63 +375,13 @@ public class CalendarioTest {
 
         calendario.guardar();
 
-        var calendarioEsperado = new ArrayList<Recordatorio>();
+        List<Recordatorio> calendarioEsperado = new ArrayList<>();
         calendarioEsperado.add(recordatorioCreado);
         calendarioEsperado.add(recordatorioCreado2);
         calendarioEsperado.add(recordatorioCreado3);
         calendarioEsperado.add(recordatorioCreado4);
 
         var calendarioDeserializado = calendario.cargar();
-
-        assertEquals(calendarioEsperado.size(), calendarioDeserializado.size());
-
-        int tamanio = calendarioEsperado.size();
-        for (int i = 0; i < tamanio; i++) {
-            Recordatorio recordatorioEsperado = calendarioEsperado.get(i);
-            Recordatorio recordatorioDeserializado = calendarioDeserializado.get(i);
-            assertEquals(recordatorioEsperado.obtenerTipo(), recordatorioDeserializado.obtenerTipo());
-            assertEquals(recordatorioEsperado.obtenerNombre(), recordatorioDeserializado.obtenerNombre());
-            assertEquals(recordatorioEsperado.obtenerDescripcion(), recordatorioDeserializado.obtenerDescripcion());
-            assertEquals(recordatorioEsperado.obtenerInicio(), recordatorioDeserializado.obtenerInicio());
-            assertEquals(recordatorioEsperado.obtenerHoras(), recordatorioDeserializado.obtenerHoras());
-            assertEquals(recordatorioEsperado.obtenerMinutos(), recordatorioDeserializado.obtenerMinutos());
-            assertEquals(recordatorioEsperado.obtenerId(), recordatorioDeserializado.obtenerId());
-            testearAlarmas(recordatorioEsperado.obtenerAlarmas(), recordatorioDeserializado.obtenerAlarmas());
-            if (recordatorioEsperado.obtenerTipo().equals("Evento")){
-                testearRepetidor(((Evento)recordatorioEsperado).obtenerRepetidor(), ((Evento)recordatorioDeserializado).obtenerRepetidor());
-                assertEquals(((Evento) recordatorioEsperado).obtenerUltRepeticion(), ((Evento) recordatorioDeserializado).obtenerUltRepeticion());
-            }
-        }
-
+        assertEquals(calendarioEsperado, calendarioDeserializado);
     }
-
-    private void testearAlarmas(List<Alarma> alarmasEsperadas, List<Alarma> alarmasDeserealizadas){
-        assertEquals(alarmasEsperadas.size(), alarmasDeserealizadas.size());
-
-        int tamanio = alarmasEsperadas.size();
-        for (int i = 0; i < tamanio; i++) {
-            Alarma alarmaEsperada = alarmasEsperadas.get(i);
-            Alarma alarmaDeserializada = alarmasDeserealizadas.get(i);
-            assertEquals(alarmaEsperada.obtenerNombre(), alarmaDeserializada.obtenerNombre());
-            assertEquals(alarmaEsperada.obtenerDescripcion(), alarmaDeserializada.obtenerDescripcion());
-            assertEquals(alarmaEsperada.obtenerfechaHora(), alarmaDeserializada.obtenerfechaHora());
-            assertEquals(alarmaEsperada.obtenerEfecto(), alarmaDeserializada.obtenerEfecto());
-            assertEquals(alarmaEsperada.obtenerFechaHoraRecordatorio(), alarmaDeserializada.obtenerFechaHoraRecordatorio());
-            assertEquals(alarmaEsperada.obtenerDiferenciaHoraria(), alarmaDeserializada.obtenerDiferenciaHoraria());
-            assertEquals(alarmaEsperada.obtenerUltRepeticion(), alarmaDeserializada.obtenerUltRepeticion());
-            assertEquals(alarmaEsperada.obtenerId(), alarmaDeserializada.obtenerId());
-            testearRepetidor(alarmaEsperada.obtenerRepetidor(), alarmaDeserializada.obtenerRepetidor());
-        }
-    }
-
-    private void testearRepetidor(Repetidor repetidorEsperado, Repetidor repetidorDeserealizado){
-        if (repetidorEsperado == null || repetidorDeserealizado == null){
-            assertEquals(repetidorEsperado, repetidorDeserealizado);
-        } else {
-            assertEquals(repetidorEsperado.obtenerLimite(), repetidorDeserealizado.obtenerLimite());
-            assertEquals(repetidorEsperado.obtenerFrecuencia(), repetidorDeserealizado.obtenerFrecuencia());
-            assertEquals(repetidorEsperado.obtenerUltConsulta(), repetidorDeserealizado.obtenerUltConsulta());
-        }
-    }
-
 }

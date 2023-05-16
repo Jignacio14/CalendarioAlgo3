@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-
 public class Evento extends Recordatorio {
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
@@ -43,7 +42,22 @@ public class Evento extends Recordatorio {
 
     public void establecerUltRepeticion(LocalDateTime ultRepeticion){ this.ultRepeticion = ultRepeticion; }
 
-    public Repetidor obtenerRepetidor() { return this.repetidor; }
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-    public LocalDateTime obtenerUltRepeticion() { return this.ultRepeticion; }
+        Evento eventoAComparar = (Evento) obj;
+        return super.equals(obj) &&
+                this.ultRepeticion.equals(eventoAComparar.ultRepeticion) &&
+                compararRepetidor(eventoAComparar.repetidor);
+    }
+
+    private boolean compararRepetidor(Repetidor repetidorAcomparar){
+        if (this.repetidor==null || repetidorAcomparar==null){
+            return this.repetidor == repetidorAcomparar;
+        }
+        return this.repetidor.equals(repetidorAcomparar);
+    }
 }

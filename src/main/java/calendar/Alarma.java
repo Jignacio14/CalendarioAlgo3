@@ -15,7 +15,7 @@ public class Alarma {
     private Integer diferenciaHoraria;
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
-    private Integer id;
+    private int id;
 
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
         this.nombre = nombre;
@@ -30,7 +30,7 @@ public class Alarma {
 
     public void modificarDescripcion(String nuevaDescripcion) { this.descripcion = nuevaDescripcion; }
 
-    public void establecerId(Integer id){ this.id = id; }
+    public void establecerId(int id){ this.id = id; }
 
     /* ____ SETTERS ____ */
 
@@ -62,14 +62,6 @@ public class Alarma {
 
     public int obtenerId(){ return this.id; }
 
-    public LocalDateTime obtenerFechaHoraRecordatorio() { return this.fechaHoraRecordatorio; }
-
-    public Integer obtenerDiferenciaHoraria() { return this.diferenciaHoraria; }
-
-    public Repetidor obtenerRepetidor() { return this.repetidor; }
-
-    public LocalDateTime obtenerUltRepeticion() { return this.ultRepeticion; }
-
     /* ____ ALARMA CON REPETICIONES ____ */
 
     public boolean verificarRepeticion() { return repetidor != null; }
@@ -98,5 +90,30 @@ public class Alarma {
 
     private List<LocalDateTime> descontarDiferenciaHoraria(List<LocalDateTime> consultaFechas) {
         return consultaFechas.stream().map(fecha -> fecha.minusDays(diferenciaHoraria)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Alarma alarmaAComparar = (Alarma) obj;
+        return this.fechaHora.equals(alarmaAComparar.fechaHora) &&
+                this.repetidor == null ? this.efecto==alarmaAComparar.efecto : this.efecto.equals(alarmaAComparar.efecto) &&
+                this.nombre.equals(alarmaAComparar.nombre) &&
+                this.descripcion.equals(alarmaAComparar.descripcion) &&
+                this.fechaHoraRecordatorio.equals(alarmaAComparar.fechaHoraRecordatorio) &&
+                this.diferenciaHoraria.equals(alarmaAComparar.diferenciaHoraria) &&
+                compararRepetidor(alarmaAComparar.repetidor) &&
+                this.ultRepeticion.equals(alarmaAComparar.ultRepeticion) &&
+                this.id==alarmaAComparar.id;
+    }
+
+    private boolean compararRepetidor(Repetidor repetidorAcomparar){
+        if (this.repetidor==null || repetidorAcomparar==null){
+            return this.repetidor == repetidorAcomparar;
+        }
+        return this.repetidor.equals(repetidorAcomparar);
     }
 }
