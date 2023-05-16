@@ -23,7 +23,7 @@ public class Calendario {
     public int crearEvento(LocalDateTime inicio, Integer horas, Integer minutos) {
         var evento = new Evento(inicio, horas, minutos);
         agregarRecordatorio(evento);
-        int idEvento = this.recordatorios.indexOf(evento);
+        int idEvento = this.recordatorios.lastIndexOf(evento);
         this.recordatorios.get(idEvento).establecerId(idEvento); //se viola polk
         return idEvento;
     }
@@ -31,7 +31,7 @@ public class Calendario {
     public int crearTarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         var tarea = new Tarea(inicio, horas, minutos);
         agregarRecordatorio(tarea);
-        int idTarea = this.recordatorios.indexOf(tarea);
+        int idTarea = this.recordatorios.lastIndexOf(tarea);
         this.recordatorios.get(idTarea).establecerId(idTarea);//se viola polk
         return idTarea;
     }

@@ -15,6 +15,17 @@ public class Tarea extends Recordatorio {
     public boolean verificarEstarVencida(LocalDateTime fecha) { return super.inicio.isAfter(fecha); }
 
     public boolean verCompletada() { return completada; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Tarea tareaAComparar = (Tarea) obj;
+        return super.equals(obj) &&
+                this.completada == tareaAComparar.completada;
+    }
 }
 
 
