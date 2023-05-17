@@ -119,9 +119,6 @@ public class PersistorJSON implements Persistor {
         if(!(alarmasJson.isEmpty())) { cargarAlarmas(alarmasJson, recordatorio); }
     }
 
-    private Recordatorio crearRecordatorio(){
-    return null;
-    }
 }
 
 

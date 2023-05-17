@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Calendario {
+public class Calendario implements Persistible{
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
     private final Persistencia persistencia = new Persistencia();
