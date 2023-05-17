@@ -1,5 +1,6 @@
 
 import calendar.*;
+import Persistencia.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -384,4 +385,36 @@ public class CalendarioTest {
         var calendarioDeserializado = calendario.cargar();
         assertEquals(calendarioEsperado, calendarioDeserializado);
     }
+
+    @Test
+    public void pruebasNuevoSerializador() throws IOException {
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
+        var calendario = new Calendario();
+        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
+        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
+        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
+
+        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
+        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
+        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
+
+        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
+
+        ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
+
+        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
+        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
+
+        var persistor = new PersistorJSON();
+
+        calendario.guardar(persistor);
+    }
+
 }

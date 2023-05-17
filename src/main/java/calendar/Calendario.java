@@ -1,4 +1,5 @@
 package calendar;
+import Persistencia.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -74,12 +75,31 @@ public class Calendario {
 
     public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
+
+    public void guardar(Persistor persistor) throws IOException{
+        try{
+        persistor.serializar(recordatorios);
+        }
+        catch (IOException e ){
+        // manejar lo que pueda ocurrir
+        }
+    }
+
+    public void cargar(Persistor persistor) throws IOException{
+        try{
+        recordatorios = persistor.deserealizar();
+        }
+        catch (IOException e ){
+        // manejar lo que pueda ocurrir
+        }
+    }
+
     public void guardar() throws IOException {
         persistencia.serializacion(recordatorios);
     }
 
     public List<Recordatorio> cargar() throws IOException {
        this.recordatorios = persistencia.deserializacion();
-       return this.recordatorios;
+     return this.recordatorios;
     }
 }
