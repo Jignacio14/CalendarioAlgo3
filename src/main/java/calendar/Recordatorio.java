@@ -6,13 +6,14 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
     protected Integer horas;
     protected Integer minutos;
     protected int id;
-    private final List<Alarma> alarmas = new ArrayList<>();
+    protected List<Alarma> alarmas = new ArrayList<>();
 
     public Recordatorio(LocalDateTime inicio, Integer horas, Integer minutos) {
         this.inicio = inicio;
@@ -66,10 +67,12 @@ public abstract class Recordatorio {
 
     public int agregarAlarma(Alarma alarma) {
         almacenarAlarma(alarma);
-        int idAlarma = alarmas.indexOf(alarma);
+        int idAlarma = alarmas.lastIndexOf(alarma);
         alarmas.get(idAlarma).establecerId(idAlarma);
         return idAlarma;
     }
+
+    public void establecerAlarmas(List<Alarma> alarmas){ this.alarmas = alarmas; }
 
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {
@@ -78,7 +81,7 @@ public abstract class Recordatorio {
         }
     }
 
-    public void modificarAlarmaFechaHoraAbs(Integer idAlarma, LocalDateTime fechaHoraAbs) {
+    public void modificarAlarmaFechaHoraAbs(int idAlarma, LocalDateTime fechaHoraAbs) {
         if (verificarRepeticion()) {
             alarmas.get(idAlarma).establecerFechaHoraAbsRepeticiones(fechaHoraAbs);
         } else {
@@ -86,11 +89,11 @@ public abstract class Recordatorio {
         }
     }
 
-    public void modificarAlarmaIntervalo(Integer idAlarma, Integer min, Integer horas, Integer dias, Integer semanas) {
+    public void modificarAlarmaIntervalo(int idAlarma, Integer min, Integer horas, Integer dias, Integer semanas) {
         alarmas.get(idAlarma).establecerIntervalo(min, horas, dias, semanas, verficarDiaCompleto());
     }
 
-    public void modificarAlarmaEfecto(Integer idAlarma, AlarmaEfectos efecto) {
+    public void modificarAlarmaEfecto(int idAlarma, AlarmaEfectos efecto) {
         alarmas.get(idAlarma).establecerEfecto(efecto);
     }
 
@@ -107,7 +110,23 @@ public abstract class Recordatorio {
 
     public LocalDateTime obtenerInicio() { return inicio; }
 
-    public Alarma obtenerAlarma(Integer idAlarma) { return alarmas.get(idAlarma); }
+    public Alarma obtenerAlarma(int idAlarma) { return alarmas.get(idAlarma); }
 
-    public int obtenerId(){ return this.id; }
+    public int obtenerId() { return this.id; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Recordatorio recordatorioAComparar = (Recordatorio) obj;
+        return this.inicio.equals(recordatorioAComparar.inicio) &&
+                this.horas.equals(recordatorioAComparar.horas) &&
+                this.minutos.equals(recordatorioAComparar.minutos) &&
+                this.nombre.equals(recordatorioAComparar.nombre) &&
+                this.descripcion.equals(recordatorioAComparar.descripcion) &&
+                this.id == recordatorioAComparar.id &&
+                this.alarmas.equals(recordatorioAComparar.alarmas);
+    }
 }

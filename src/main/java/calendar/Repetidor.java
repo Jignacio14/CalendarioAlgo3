@@ -33,4 +33,16 @@ public class Repetidor {
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Repetidor repetidorAComparar = (Repetidor) obj;
+        return  this.limite.equals(repetidorAComparar.limite) &&
+                this.frecuencia.equals(repetidorAComparar.frecuencia) &&
+                this.ultConsulta.equals(repetidorAComparar.ultConsulta);
+    }
+
 }

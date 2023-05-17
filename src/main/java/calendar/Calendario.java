@@ -1,11 +1,13 @@
 package calendar;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Calendario {
 
-    private final List<Recordatorio> recordatorios = new ArrayList<>();
+    private List<Recordatorio> recordatorios = new ArrayList<>();
+    private final Persistencia persistencia = new Persistencia();
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
@@ -21,16 +23,16 @@ public class Calendario {
     public int crearEvento(LocalDateTime inicio, Integer horas, Integer minutos) {
         var evento = new Evento(inicio, horas, minutos);
         agregarRecordatorio(evento);
-        int idEvento = this.recordatorios.indexOf(evento);
-        this.recordatorios.get(idEvento).establecerId(idEvento);
+        int idEvento = this.recordatorios.lastIndexOf(evento);
+        this.recordatorios.get(idEvento).establecerId(idEvento); //se viola polk
         return idEvento;
     }
 
     public int crearTarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         var tarea = new Tarea(inicio, horas, minutos);
         agregarRecordatorio(tarea);
-        int idTarea = this.recordatorios.indexOf(tarea);
-        this.recordatorios.get(idTarea).establecerId(idTarea);
+        int idTarea = this.recordatorios.lastIndexOf(tarea);
+        this.recordatorios.get(idTarea).establecerId(idTarea);//se viola polk
         return idTarea;
     }
 
@@ -72,4 +74,12 @@ public class Calendario {
 
     public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
+    public void guardar() throws IOException {
+        persistencia.serializacion(recordatorios);
+    }
+
+    public List<Recordatorio> cargar() throws IOException {
+       this.recordatorios = persistencia.deserializacion();
+       return this.recordatorios;
+    }
 }
