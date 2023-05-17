@@ -1,7 +1,7 @@
 package Persistencia;
 
 import calendar.AlarmaEfectos;
-public class AlarmaEfectoDeserializer extends Deserealizador {
+public class AlarmaEfectosDeserializer extends Deserealizador {
 
     @Override
     public Enum<?>[] listar(){

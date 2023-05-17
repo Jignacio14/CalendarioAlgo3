@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import calendar.LocalDateTimePersistencia;
 
 public class CalendarioTest {
 
@@ -415,6 +414,15 @@ public class CalendarioTest {
         var persistor = new PersistorJSON();
 
         calendario.guardar(persistor);
+
+        List<Recordatorio> calendarioEsperado = new ArrayList<>();
+        calendarioEsperado.add(recordatorioCreado);
+        calendarioEsperado.add(recordatorioCreado2);
+        calendarioEsperado.add(recordatorioCreado3);
+        calendarioEsperado.add(recordatorioCreado4);
+
+        calendario.cargar(persistor);
+        //assertEquals(calendarioEsperado, calendarioDeserializado);
     }
 
 }

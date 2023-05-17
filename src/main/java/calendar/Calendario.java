@@ -100,6 +100,6 @@ public class Calendario {
 
     public List<Recordatorio> cargar() throws IOException {
        this.recordatorios = persistencia.deserializacion();
-     return this.recordatorios;
+       return this.recordatorios;
     }
 }
