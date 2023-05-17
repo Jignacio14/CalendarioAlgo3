@@ -80,12 +80,12 @@ public class PersistorJSON implements Persistor {
     }
 
     private Repetidor crearRepetidor(String repetidorJson){
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Limite.class, new LimiteDeserializer());
         gsonBuilder.registerTypeAdapter(Frecuencia.class, new FrecuenciaDeserializer());
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
-
         return gson.fromJson(repetidorJson, Repetidor.class);
     }
 

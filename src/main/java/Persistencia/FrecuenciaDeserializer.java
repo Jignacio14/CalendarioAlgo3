@@ -1,6 +1,10 @@
 package Persistencia;
 
 import calendar.Frecuencia;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+
+import java.lang.reflect.Type;
 
 
 public class FrecuenciaDeserializer extends Deserealizador{
@@ -10,7 +14,8 @@ public class FrecuenciaDeserializer extends Deserealizador{
         return Frecuencia.values();
     }
 
-
-
-
+    @Override
+    public Frecuencia deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+        return (Frecuencia) super.deserialize(json, typeOfT, context);
+    }
 }

@@ -1,6 +1,11 @@
 package Persistencia;
 
 import calendar.AlarmaEfectos;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+
+import java.lang.reflect.Type;
+
 public class AlarmaEfectosDeserializer extends Deserealizador {
 
     @Override
@@ -8,5 +13,8 @@ public class AlarmaEfectosDeserializer extends Deserealizador {
         return AlarmaEfectos.values();
     }
 
-
+    @Override
+    public AlarmaEfectos deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+        return (AlarmaEfectos) super.deserialize(json, typeOfT, context);
+    }
 }

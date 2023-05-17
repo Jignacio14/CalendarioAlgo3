@@ -414,15 +414,19 @@ public class CalendarioTest {
         var persistor = new PersistorJSON();
 
         calendario.guardar(persistor);
+    }
 
-        List<Recordatorio> calendarioEsperado = new ArrayList<>();
-        calendarioEsperado.add(recordatorioCreado);
-        calendarioEsperado.add(recordatorioCreado2);
-        calendarioEsperado.add(recordatorioCreado3);
-        calendarioEsperado.add(recordatorioCreado4);
+    @Test
+    public void pruebasCalendarioVacio() throws IOException{
+        var calendario = new Calendario();
+        var persistor = new PersistorJSON();
 
-        calendario.cargar(persistor);
-        //assertEquals(calendarioEsperado, calendarioDeserializado);
+        //calendario.guardar(persistor);
+        var nuevoCalendario = new Calendario();
+        nuevoCalendario.cargar(persistor);
+
+        assertEquals(nuevoCalendario, calendario);
+
     }
 
 }
