@@ -76,6 +76,9 @@ public class PersistorJSON implements Persistor {
                 recordatorioAct = crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson, repetidor, ultRepeticion);
             }else {
                 recordatorioAct = crearTarea(nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
+                if (recordatorio.get("completada").getAsBoolean()) {
+                    recordatorioAct.cambiarCompletada();
+                };
             }
 
             recordatorios.add(recordatorioAct);

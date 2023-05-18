@@ -289,6 +289,47 @@ public class CalendarioTest {
         }
     }
 
+    @Test
+    public void pruebasPersistenciaCalendarioEvento() throws IOException{
+        var calendario = new Calendario();
+        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaEvento.json");
+        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
+        var idEvento = calendario.crearEvento(fecha, 2, 0);
+        var nombre = "Prueba nombre nuevo";
+        var descripcion = "Prueba descripcion nueva";
+
+        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idEvento));
+        calendario.modificarNombre(calendario.obtenerRecordatorio(idEvento), nombre);
+        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idEvento), descripcion);
+
+        calendario.guardar(persistor);
+
+        var nuevoCalendario = new Calendario();
+        nuevoCalendario.cargar(persistor);
+
+        assertEquals(calendario, nuevoCalendario);
+    }
+
+    @Test
+    public void pruebasPersistenciaCalendarioTarea() throws IOException{
+        var calendario = new Calendario();
+        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaTarea.json");
+        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
+        var idTarea = calendario.crearTarea(fecha, 2, 0);
+        var nombre = "Prueba nombre nuevo";
+        var descripcion = "Prueba descripcion nueva";
+
+        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idTarea));
+        calendario.modificarNombre(calendario.obtenerRecordatorio(idTarea), nombre);
+        calendario.modificarCompletada(calendario.obtenerRecordatorio(idTarea));
+        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idTarea), descripcion);
+        calendario.guardar(persistor);
+
+        var nuevoCalendario = new Calendario();
+        nuevoCalendario.cargar(persistor);
+
+        assertEquals(calendario, nuevoCalendario);
+    }
 
     @Test
     public void pruebasNuevoSerializador() throws IOException {
@@ -325,46 +366,4 @@ public class CalendarioTest {
         nuevoCalendario.cargar(persistor);
         assertEquals(calendario, nuevoCalendario);
     }
-
-    @Test
-    public void pruebasPersistenciaCalendarioEvento() throws IOException{
-        var calendario = new Calendario();
-        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaEvento.json");
-        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
-        var idEventoUno = calendario.crearEvento(fecha, 2, 0);
-        var nombre = "Prueba nombre nuevo";
-        var descripcion = "Prueba descripcion nueva";
-
-        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idEventoUno));
-        calendario.modificarNombre(calendario.obtenerRecordatorio(idEventoUno), nombre);
-        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idEventoUno), descripcion);
-
-        calendario.guardar(persistor);
-
-        var nuevoCalendario = new Calendario();
-        nuevoCalendario.cargar(persistor);
-
-        assertEquals(calendario, nuevoCalendario);
-    }
-
-    @Test
-    public void pruebasPersistenciaCalendarioTarea() throws IOException{
-        var calendario = new Calendario();
-        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaTarea.json");
-        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
-        var idEventoUno = calendario.crearTarea(fecha, 2, 0);
-        var nombre = "Prueba nombre nuevo";
-        var descripcion = "Prueba descripcion nueva";
-
-        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idEventoUno));
-        calendario.modificarNombre(calendario.obtenerRecordatorio(idEventoUno), nombre);
-        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idEventoUno), descripcion);
-        calendario.guardar(persistor);
-
-        var nuevoCalendario = new Calendario();
-        nuevoCalendario.cargar(persistor);
-
-        assertEquals(calendario, nuevoCalendario);
-    }
-
 }

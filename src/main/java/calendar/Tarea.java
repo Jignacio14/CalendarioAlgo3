@@ -9,11 +9,13 @@ public class Tarea extends Recordatorio {
         super(inicio, horas, minutos);
     }
 
+    @Override
     public void cambiarCompletada() { this.completada = !completada; }
 
     public boolean verificarEstarVencida(LocalDateTime fecha) { return super.inicio.isAfter(fecha); }
 
-    public boolean verCompletada() { return completada; }
+    @Override
+    public boolean verificarCompletada() { return completada; }
 
     @Override
     public boolean equals(Object obj) {

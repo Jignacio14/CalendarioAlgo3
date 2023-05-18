@@ -36,7 +36,7 @@ public class TareaTest {
     public void TestTareaCompletadaPorDefecto() {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
-        assertFalse(tarea.verCompletada());
+        assertFalse(tarea.verificarCompletada());
     }
 
     @Test
@@ -62,9 +62,9 @@ public class TareaTest {
         var fecha = LocalDateTime.of(2023, 4, 15, 0, 0);
         var tarea = new Tarea(fecha, 0, 0);
         tarea.cambiarCompletada();
-        assertTrue(tarea.verCompletada());
+        assertTrue(tarea.verificarCompletada());
         tarea.cambiarCompletada();
-        assertFalse(tarea.verCompletada());
+        assertFalse(tarea.verificarCompletada());
     }
 
     @Test

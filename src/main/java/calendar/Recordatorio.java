@@ -101,6 +101,10 @@ public abstract class Recordatorio {
         this.alarmas.set(idAlarma, null);
     }
 
+    public void cambiarCompletada(){}
+
+    public boolean verificarCompletado(){return false;}
+
     /* _________ GETTERS _________ */
 
     public String obtenerNombre() { return nombre; }
@@ -112,6 +116,8 @@ public abstract class Recordatorio {
     public Alarma obtenerAlarma(int idAlarma) { return alarmas.get(idAlarma); }
 
     public int obtenerId() { return this.id; }
+
+    public abstract boolean verificarCompletada();
 
     @Override
     public boolean equals(Object obj) {
