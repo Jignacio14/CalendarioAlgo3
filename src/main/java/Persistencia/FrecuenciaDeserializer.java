@@ -1,13 +1,13 @@
 package Persistencia;
-
 import calendar.Frecuencia;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 
 
-public class FrecuenciaDeserializer extends Deserealizador{
+public class FrecuenciaDeserializer extends Deserealizador implements JsonDeserializer<Frecuencia> {
 
 
     public Enum<?>[] listar(){

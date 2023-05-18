@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class PersistorJSON implements Persistor {
 
+    final String FILELOCATION = "./src/main/CalendarioPersistido.json";
     public PersistorJSON(){}
 
     public void serializar(List<Recordatorio> recordatorios) throws IOException {
@@ -30,14 +32,14 @@ public class PersistorJSON implements Persistor {
     }
 
     private void persistirArchivo(String json) throws IOException {
-        FileWriter archivo = new FileWriter("./src/main/calendarioNuevo.json");
+        FileWriter archivo = new FileWriter(FILELOCATION);
         PrintWriter out = new PrintWriter(archivo);
         out.write(json);
         archivo.close();
     }
 
     public List<Recordatorio> deserealizar() throws IOException {
-        Path archivo = Path.of("./src/main/calendario.json");
+        Path archivo = Path.of(FILELOCATION);
         Reader lector = Files.newBufferedReader(archivo);
         Gson gson = new Gson();
         JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
@@ -68,7 +70,10 @@ public class PersistorJSON implements Persistor {
             Recordatorio recordatorioAct;
             if (tipoRecordatorio.equals("Evento")){
                 String repetidorJson = recordatorio.get("repetidor") != null ? recordatorio.get("repetidor").getAsJsonObject().toString() : null;
-                Repetidor repetidor = crearRepetidor(repetidorJson);
+                Repetidor repetidor = null;
+                if (repetidorJson != null) {
+                    repetidor = crearRepetidor(repetidorJson);
+                }
                 LocalDateTime ultRepeticion = LocalDateTime.parse(recordatorio.get("ultRepeticion").getAsString());
                 recordatorioAct = crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson, repetidor, ultRepeticion);
             }else {
@@ -80,7 +85,9 @@ public class PersistorJSON implements Persistor {
     }
 
     private Repetidor crearRepetidor(String repetidorJson){
-
+        if (repetidorJson == null){
+            return null;
+        }
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Limite.class, new LimiteDeserializer());
         gsonBuilder.registerTypeAdapter(Frecuencia.class, new FrecuenciaDeserializer());

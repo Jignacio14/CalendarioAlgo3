@@ -90,7 +90,7 @@ public class Calendario implements Persistible{
         recordatorios = persistor.deserealizar();
         }
         catch (IOException e ){
-        // manejar lo que pueda ocurrir
+            System.out.println("Todo salio mal");
         }
     }
 
@@ -102,4 +102,26 @@ public class Calendario implements Persistible{
        this.recordatorios = persistencia.deserializacion();
        return this.recordatorios;
     }
+
+    private boolean compararRecordatorios(Object obj) {
+        Calendario aComparar = (Calendario) obj;
+        if (this.recordatorios.size() != aComparar.recordatorios.size()){
+            return false;
+        }
+        for (int i = 0; i < this.recordatorios.size(); i++){
+            if (! recordatorios.get(i).equals(aComparar.recordatorios.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean equals(Object obj){
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return compararRecordatorios(obj);
+    }
+
 }

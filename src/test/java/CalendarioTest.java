@@ -417,16 +417,24 @@ public class CalendarioTest {
     }
 
     @Test
-    public void pruebasCalendarioVacio() throws IOException{
+    public void pruebasPersistenciaCalendarioEvento() throws IOException{
         var calendario = new Calendario();
         var persistor = new PersistorJSON();
+        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
+        var idEventoUno = calendario.crearEvento(fecha, 2, 0);
 
-        //calendario.guardar(persistor);
+        var nombre = "Prueba nombre nuevo";
+        var descripcion = "Prueba descripcion nueva";
+
+        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idEventoUno));
+        calendario.modificarNombre(calendario.obtenerRecordatorio(idEventoUno), nombre);
+        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idEventoUno), descripcion);
+        calendario.guardar(persistor);
+
         var nuevoCalendario = new Calendario();
         nuevoCalendario.cargar(persistor);
 
-        assertEquals(nuevoCalendario, calendario);
-
+        assertTrue(calendario.equals(nuevoCalendario));
     }
 
 }

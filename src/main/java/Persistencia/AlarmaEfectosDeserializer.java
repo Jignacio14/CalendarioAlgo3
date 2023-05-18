@@ -2,11 +2,12 @@ package Persistencia;
 
 import calendar.AlarmaEfectos;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 
-public class AlarmaEfectosDeserializer extends Deserealizador {
+public class AlarmaEfectosDeserializer extends Deserealizador implements JsonDeserializer<AlarmaEfectos> {
 
     @Override
     public Enum<?>[] listar(){
