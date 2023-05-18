@@ -7,7 +7,6 @@ public class Tarea extends Recordatorio {
 
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
-        this.tipo = "Tarea";
     }
 
     public void cambiarCompletada() { this.completada = !completada; }

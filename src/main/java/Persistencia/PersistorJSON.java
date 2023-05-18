@@ -17,8 +17,10 @@ import java.util.List;
 
 public class PersistorJSON implements Persistor {
 
-    final String FILELOCATION = "./src/main/CalendarioPersistido.json";
-    public PersistorJSON(){}
+    private final String fileLocation;
+    public PersistorJSON(String fileLocation){
+        this.fileLocation = fileLocation;
+    }
 
     public void serializar(List<Recordatorio> recordatorios) throws IOException {
         persistirArchivo(crearSerializado(recordatorios));
@@ -32,14 +34,14 @@ public class PersistorJSON implements Persistor {
     }
 
     private void persistirArchivo(String json) throws IOException {
-        FileWriter archivo = new FileWriter(FILELOCATION);
+        FileWriter archivo = new FileWriter(fileLocation);
         PrintWriter out = new PrintWriter(archivo);
         out.write(json);
         archivo.close();
     }
 
     public List<Recordatorio> deserealizar() throws IOException {
-        Path archivo = Path.of(FILELOCATION);
+        Path archivo = Path.of(fileLocation);
         Reader lector = Files.newBufferedReader(archivo);
         Gson gson = new Gson();
         JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
@@ -63,17 +65,13 @@ public class PersistorJSON implements Persistor {
             Integer horas = recordatorio.get("horas").getAsInt();
             Integer minutos = recordatorio.get("minutos").getAsInt();
             int id = recordatorio.get("id").getAsInt();
-            String tipoRecordatorio = recordatorio.get("tipo").getAsString();
             JsonArray alarmas = recordatorio.get("alarmas").getAsJsonArray();
             String alarmasJson = alarmas.toString();
 
             Recordatorio recordatorioAct;
-            if (tipoRecordatorio.equals("Evento")){
+            if (!recordatorio.has("completada")){
                 String repetidorJson = recordatorio.get("repetidor") != null ? recordatorio.get("repetidor").getAsJsonObject().toString() : null;
-                Repetidor repetidor = null;
-                if (repetidorJson != null) {
-                    repetidor = crearRepetidor(repetidorJson);
-                }
+                Repetidor repetidor = crearRepetidor(repetidorJson);
                 LocalDateTime ultRepeticion = LocalDateTime.parse(recordatorio.get("ultRepeticion").getAsString());
                 recordatorioAct = crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson, repetidor, ultRepeticion);
             }else {
@@ -85,9 +83,6 @@ public class PersistorJSON implements Persistor {
     }
 
     private Repetidor crearRepetidor(String repetidorJson){
-        if (repetidorJson == null){
-            return null;
-        }
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Limite.class, new LimiteDeserializer());
         gsonBuilder.registerTypeAdapter(Frecuencia.class, new FrecuenciaDeserializer());

@@ -1,18 +1,8 @@
 
 import calendar.*;
 import Persistencia.*;
-
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -299,91 +289,6 @@ public class CalendarioTest {
         }
     }
 
-    @Test
-    public void TestCalendarioSerializacion() throws IOException {
-        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
-        var calendario = new Calendario();
-        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
-        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
-        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
-        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
-
-        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
-        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
-        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
-        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
-
-        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
-        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
-        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
-
-        ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
-
-        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
-        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
-        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
-
-        var calendarioEsperado = new ArrayList<Recordatorio>();
-        calendarioEsperado.add(recordatorioCreado);
-        calendarioEsperado.add(recordatorioCreado2);
-        calendarioEsperado.add(recordatorioCreado3);
-        calendarioEsperado.add(recordatorioCreado4);
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
-        Gson gson = gsonBuilder.setPrettyPrinting().create();
-        String calendarioEsperadoJson = gson.toJson(calendarioEsperado);
-
-        calendario.guardar();
-
-        Path archivo = Path.of("./src/main/calendario.json");
-        Reader lector = Files.newBufferedReader(archivo);
-        JsonArray calendarioSerializado = (new Gson().fromJson(lector, JsonArray.class));
-        String calendarioSerializadoJson = gson.toJson(calendarioSerializado);
-
-        lector.close();
-        assertEquals(calendarioEsperadoJson, calendarioSerializadoJson);
-    }
-
-    @Test
-    public void TestCalendarioDeserializacion() throws IOException {
-        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
-        var calendario = new Calendario();
-        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
-        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
-        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
-        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
-
-        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
-        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
-        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
-        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
-
-        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
-        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
-        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
-
-        ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
-
-        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
-        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
-        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
-
-        calendario.guardar();
-
-        List<Recordatorio> calendarioEsperado = new ArrayList<>();
-        calendarioEsperado.add(recordatorioCreado);
-        calendarioEsperado.add(recordatorioCreado2);
-        calendarioEsperado.add(recordatorioCreado3);
-        calendarioEsperado.add(recordatorioCreado4);
-
-        var calendarioDeserializado = calendario.cargar();
-        assertEquals(calendarioEsperado, calendarioDeserializado);
-    }
 
     @Test
     public void pruebasNuevoSerializador() throws IOException {
@@ -411,18 +316,43 @@ public class CalendarioTest {
         recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
         recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
 
-        var persistor = new PersistorJSON();
+        var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
 
         calendario.guardar(persistor);
+
+        var nuevoCalendario = new Calendario();
+
+        nuevoCalendario.cargar(persistor);
+        assertEquals(calendario, nuevoCalendario);
     }
 
     @Test
     public void pruebasPersistenciaCalendarioEvento() throws IOException{
         var calendario = new Calendario();
-        var persistor = new PersistorJSON();
+        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaEvento.json");
         var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
         var idEventoUno = calendario.crearEvento(fecha, 2, 0);
+        var nombre = "Prueba nombre nuevo";
+        var descripcion = "Prueba descripcion nueva";
 
+        calendario.establecerDiaCompleto(calendario.obtenerRecordatorio(idEventoUno));
+        calendario.modificarNombre(calendario.obtenerRecordatorio(idEventoUno), nombre);
+        calendario.modificarDescripcion(calendario.obtenerRecordatorio(idEventoUno), descripcion);
+
+        calendario.guardar(persistor);
+
+        var nuevoCalendario = new Calendario();
+        nuevoCalendario.cargar(persistor);
+
+        assertEquals(calendario, nuevoCalendario);
+    }
+
+    @Test
+    public void pruebasPersistenciaCalendarioTarea() throws IOException{
+        var calendario = new Calendario();
+        var persistor = new PersistorJSON("./src/main/pruebasPersistenciaTarea.json");
+        var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
+        var idEventoUno = calendario.crearTarea(fecha, 2, 0);
         var nombre = "Prueba nombre nuevo";
         var descripcion = "Prueba descripcion nueva";
 
@@ -434,7 +364,7 @@ public class CalendarioTest {
         var nuevoCalendario = new Calendario();
         nuevoCalendario.cargar(persistor);
 
-        assertTrue(calendario.equals(nuevoCalendario));
+        assertEquals(calendario, nuevoCalendario);
     }
 
 }

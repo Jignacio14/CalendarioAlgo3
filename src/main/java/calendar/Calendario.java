@@ -8,7 +8,6 @@ import java.util.*;
 public class Calendario implements Persistible{
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
-    private final Persistencia persistencia = new Persistencia();
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
@@ -81,7 +80,7 @@ public class Calendario implements Persistible{
         persistor.serializar(recordatorios);
         }
         catch (IOException e ){
-        // manejar lo que pueda ocurrir
+            ///Mostrar error
         }
     }
 
@@ -90,18 +89,10 @@ public class Calendario implements Persistible{
         recordatorios = persistor.deserealizar();
         }
         catch (IOException e ){
-            System.out.println("Todo salio mal");
+            ///Mostrar Error
         }
     }
 
-    public void guardar() throws IOException {
-        persistencia.serializacion(recordatorios);
-    }
-
-    public List<Recordatorio> cargar() throws IOException {
-       this.recordatorios = persistencia.deserializacion();
-       return this.recordatorios;
-    }
 
     private boolean compararRecordatorios(Object obj) {
         Calendario aComparar = (Calendario) obj;
