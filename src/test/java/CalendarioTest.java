@@ -336,20 +336,18 @@ public class CalendarioTest {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
-        int idTarea2 = calendario.crearTarea(fecha.plusDays(5), 2, 0);
         int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
         int idTarea4 = calendario.crearTarea(fecha, 1, 30);
 
         Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
-        Recordatorio recordatorioCreado2 = calendario.obtenerRecordatorio(idTarea2);
         Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
         Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
 
         int idAlarma = calendario.agregarAlarma(recordatorioCreado);
         int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
-        calendario.agregarAlarma(recordatorioCreado);
         int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
+        calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
 
         ((Evento)recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
 

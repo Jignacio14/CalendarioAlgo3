@@ -45,44 +45,64 @@ public class PersistorJSON implements Persistor {
         Reader lector = Files.newBufferedReader(archivo);
         Gson gson = new Gson();
         JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
-
         List<Recordatorio> recordatorios = new ArrayList<>();
-
         cargarCalendario(recordatoriosJson, recordatorios);
-
         lector.close();
         return recordatorios;
     }
 
     private void cargarCalendario(JsonArray recordatoriosJson, List<Recordatorio> recordatorios){
         for (JsonElement recordatorioJson : recordatoriosJson) {
-
-            JsonObject recordatorio = recordatorioJson.getAsJsonObject();
-
-            String nombre = recordatorio.get("nombre").getAsString();
-            String descripcion = recordatorio.get("descripcion").getAsString();
-            LocalDateTime inicio = LocalDateTime.parse(recordatorio.get("inicio").getAsString());
-            Integer horas = recordatorio.get("horas").getAsInt();
-            Integer minutos = recordatorio.get("minutos").getAsInt();
-            int id = recordatorio.get("id").getAsInt();
-            JsonArray alarmas = recordatorio.get("alarmas").getAsJsonArray();
-            String alarmasJson = alarmas.toString();
-
-            Recordatorio recordatorioAct;
-            if (!recordatorio.has("completada")){
-                String repetidorJson = recordatorio.get("repetidor") != null ? recordatorio.get("repetidor").getAsJsonObject().toString() : null;
-                Repetidor repetidor = crearRepetidor(repetidorJson);
-                LocalDateTime ultRepeticion = LocalDateTime.parse(recordatorio.get("ultRepeticion").getAsString());
-                recordatorioAct = crearEvento(nombre, descripcion, horas, minutos, inicio, id, alarmasJson, repetidor, ultRepeticion);
+            JsonObject recorjson = recordatorioJson.getAsJsonObject();
+            Recordatorio recordatorio;
+            if (!recorjson.has("completada")){
+                recordatorio = agregarElementosEvento(recorjson);
             }else {
-                recordatorioAct = crearTarea(nombre, descripcion, horas, minutos, inicio, id, alarmasJson);
-                if (recordatorio.get("completada").getAsBoolean()) {
-                    recordatorioAct.cambiarCompletada();
-                };
+                recordatorio = agregarElementosTarea( recorjson);
             }
-
-            recordatorios.add(recordatorioAct);
+            recordatorios.add(recordatorio);
         }
+    }
+
+    private Tarea agregarElementosTarea( JsonObject json ){
+        JsonArray alarmas = json.get("alarmas").getAsJsonArray();
+        String alarmasJson = alarmas.toString();
+        var valoresString = obtenerValoresString(json);
+        var valoresInt = obtenerValoresNumericos(json);
+        var tarea = crearTarea(valoresString[0], valoresString[1], valoresInt[0], valoresInt[1], LocalDateTime.parse(valoresString[2]), valoresInt[2], alarmasJson);
+        if (json.get("completada").getAsBoolean()) {
+            tarea.cambiarCompletada();
+        }
+        return tarea;
+    }
+
+
+    private Evento agregarElementosEvento(JsonObject json){
+        JsonArray alarmas = json.get("alarmas").getAsJsonArray();
+        var valoresString = obtenerValoresString(json);
+        var valoresNumericos = obtenerValoresNumericos(json);
+        String alarmasJson = alarmas.toString();
+        String repetidorJson = json.get("repetidor") != null ? json.get("repetidor").getAsJsonObject().toString() : null;
+        Repetidor repetidor = crearRepetidor(repetidorJson);
+        LocalDateTime ultRepeticion = LocalDateTime.parse(json.get("ultRepeticion").getAsString());
+        return crearEvento(valoresString[0], valoresString[1], valoresNumericos[0], valoresNumericos[1], LocalDateTime.parse(valoresString[2]), valoresNumericos[2], alarmasJson, repetidor, ultRepeticion);
+
+    }
+
+    private String[] obtenerValoresString(JsonObject json) {
+        String[] valores = new String[3];
+        valores[0] = json.get("nombre").getAsString();
+        valores[1] = json.get("descripcion").getAsString();
+        valores[2] = json.get("inicio").getAsString();
+        return valores;
+    }
+
+    private Integer[] obtenerValoresNumericos(JsonObject json){
+        Integer[] valores = new Integer[3];
+        valores[0] = json.get("horas").getAsInt();
+        valores[1] = json.get("minutos").getAsInt();
+        valores[2] = json.get("id").getAsInt();
+        return valores;
     }
 
     private Repetidor crearRepetidor(String repetidorJson){

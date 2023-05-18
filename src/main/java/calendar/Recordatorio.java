@@ -103,7 +103,7 @@ public abstract class Recordatorio {
 
     public void cambiarCompletada(){}
 
-    public boolean verificarCompletado(){return false;}
+    public boolean verificarCompletada(){return false;}
 
     /* _________ GETTERS _________ */
 
@@ -117,7 +117,6 @@ public abstract class Recordatorio {
 
     public int obtenerId() { return this.id; }
 
-    public abstract boolean verificarCompletada();
 
     @Override
     public boolean equals(Object obj) {

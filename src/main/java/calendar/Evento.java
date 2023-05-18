@@ -17,8 +17,6 @@ public class Evento extends Recordatorio {
     @Override
     public boolean verificarRepeticion() { return repetidor != null; }
 
-    @Override
-    public boolean verificarCompletada(){return false;}
     public boolean verificarHayProximaRepeticion() { return repetidor.verificarHayRepeticiones(); }
 
     public void configurarRepeticion(Frecuencia frecuencia, Limite limite) {
