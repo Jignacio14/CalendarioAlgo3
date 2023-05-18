@@ -2,7 +2,6 @@ package Persistencia;
 
 import calendar.*;
 import com.google.gson.*;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +16,9 @@ import java.util.List;
 
 public class PersistorJSON implements Persistor {
 
+    ///TODO quitar numeros magicos y usar constantes
+    ///TODO obtener el aprobado de @Lucia
+    ///TODO revisar posible dry, el codigo quedo bastante limpio
     private final String fileLocation;
     public PersistorJSON(String fileLocation){
         this.fileLocation = fileLocation;
