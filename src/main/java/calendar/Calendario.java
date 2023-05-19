@@ -1,13 +1,13 @@
 package calendar;
+import Persistencia.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Calendario {
+public class Calendario implements Persistible{
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
-    private final Persistencia persistencia = new Persistencia();
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
@@ -55,6 +55,7 @@ public class Calendario {
 
     public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
 
+    public void modificarCompletada(Recordatorio recordatorio){ recordatorio.cambiarCompletada();}
     public int agregarAlarma(Recordatorio recordatorio) {
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
         return recordatorio.agregarAlarma(alarma);
@@ -74,12 +75,45 @@ public class Calendario {
 
     public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
-    public void guardar() throws IOException {
-        persistencia.serializacion(recordatorios);
+
+    public void guardar(Persistor persistor) throws IOException{
+        try{
+        persistor.serializar(recordatorios);
+        }
+        catch (IOException e ){
+            ///Mostrar error
+        }
     }
 
-    public List<Recordatorio> cargar() throws IOException {
-       this.recordatorios = persistencia.deserializacion();
-       return this.recordatorios;
+    public void cargar(Persistor persistor) throws IOException{
+        try{
+        recordatorios = persistor.deserealizar();
+        }
+        catch (IOException e ){
+            ///Mostrar Error
+        }
     }
+
+
+    private boolean compararRecordatorios(Object obj) {
+        Calendario aComparar = (Calendario) obj;
+        if (this.recordatorios.size() != aComparar.recordatorios.size()){
+            return false;
+        }
+        for (int i = 0; i < this.recordatorios.size(); i++){
+            if (! recordatorios.get(i).equals(aComparar.recordatorios.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean equals(Object obj){
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return compararRecordatorios(obj);
+    }
+
 }
