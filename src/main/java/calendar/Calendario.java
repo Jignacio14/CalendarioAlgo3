@@ -77,12 +77,7 @@ public class Calendario implements Persistible{
 
 
     public void guardar(Persistor persistor) throws IOException{
-        try{
         persistor.serializar(recordatorios);
-        }
-        catch (IOException e ){
-            ///Mostrar error
-        }
     }
 
     public void cargar(Persistor persistor) throws IOException{
