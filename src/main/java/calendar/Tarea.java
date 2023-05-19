@@ -7,14 +7,15 @@ public class Tarea extends Recordatorio {
 
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
-        this.tipo = "Tarea";
     }
 
+    @Override
     public void cambiarCompletada() { this.completada = !completada; }
 
     public boolean verificarEstarVencida(LocalDateTime fecha) { return super.inicio.isAfter(fecha); }
 
-    public boolean verCompletada() { return completada; }
+    @Override
+    public boolean verificarCompletada() { return completada; }
 
     @Override
     public boolean equals(Object obj) {

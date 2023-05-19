@@ -6,7 +6,6 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
-    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
@@ -102,6 +101,10 @@ public abstract class Recordatorio {
         this.alarmas.set(idAlarma, null);
     }
 
+    public void cambiarCompletada(){}
+
+    public boolean verificarCompletada(){return false;}
+
     /* _________ GETTERS _________ */
 
     public String obtenerNombre() { return nombre; }
@@ -113,6 +116,7 @@ public abstract class Recordatorio {
     public Alarma obtenerAlarma(int idAlarma) { return alarmas.get(idAlarma); }
 
     public int obtenerId() { return this.id; }
+
 
     @Override
     public boolean equals(Object obj) {
