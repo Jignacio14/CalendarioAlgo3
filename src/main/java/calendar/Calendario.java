@@ -24,7 +24,7 @@ public class Calendario implements Persistible{
         var evento = new Evento(inicio, horas, minutos);
         agregarRecordatorio(evento);
         int idEvento = this.recordatorios.lastIndexOf(evento);
-        this.recordatorios.get(idEvento).establecerId(idEvento); //se viola polk
+        this.recordatorios.get(idEvento).establecerId(idEvento);
         return idEvento;
     }
 
@@ -32,7 +32,7 @@ public class Calendario implements Persistible{
         var tarea = new Tarea(inicio, horas, minutos);
         agregarRecordatorio(tarea);
         int idTarea = this.recordatorios.lastIndexOf(tarea);
-        this.recordatorios.get(idTarea).establecerId(idTarea);//se viola polk
+        this.recordatorios.get(idTarea).establecerId(idTarea);
         return idTarea;
     }
 
@@ -77,21 +77,11 @@ public class Calendario implements Persistible{
 
 
     public void guardar(Persistor persistor) throws IOException{
-        try{
         persistor.serializar(recordatorios);
-        }
-        catch (IOException e ){
-            ///Mostrar error
-        }
     }
 
     public void cargar(Persistor persistor) throws IOException{
-        try{
         recordatorios = persistor.deserealizar();
-        }
-        catch (IOException e ){
-            ///Mostrar Error
-        }
     }
 
 
