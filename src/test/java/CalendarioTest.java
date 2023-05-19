@@ -1,9 +1,12 @@
 
 import calendar.*;
 import Persistencia.*;
+
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import static org.junit.Assert.*;
 
@@ -290,7 +293,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void pruebasPersistenciaCalendarioEvento() throws IOException{
+    public void TestCalendarioPersistenciaCalendarioEvento() throws IOException{
         var calendario = new Calendario();
         var persistor = new PersistorJSON("./src/main/pruebasPersistenciaEvento.json");
         var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
@@ -311,7 +314,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void pruebasPersistenciaCalendarioTarea() throws IOException{
+    public void TestCalendarioPersistenciaCalendarioTarea() throws IOException{
         var calendario = new Calendario();
         var persistor = new PersistorJSON("./src/main/pruebasPersistenciaTarea.json");
         var fecha = LocalDateTime.of(2023, 5, 17, 23, 0);
@@ -332,7 +335,7 @@ public class CalendarioTest {
     }
 
     @Test
-    public void pruebasNuevoSerializador() throws IOException {
+    public void TestCalendarioNuevoSerializador() throws IOException {
         LocalDateTime fecha = LocalDateTime.of(2023, 5, 1 , 19, 40);
         var calendario = new Calendario();
         int idEvento1 = calendario.crearEvento(fecha, 1, 30);
@@ -363,5 +366,43 @@ public class CalendarioTest {
 
         nuevoCalendario.cargar(persistor);
         assertEquals(calendario, nuevoCalendario);
+    }
+
+    @Test
+    public void TestCalendarioDeserealizarArchivoInexistente() {
+        LocalDateTime fecha = LocalDateTime.of(2023, 5, 1, 19, 40);
+        var calendario = new Calendario();
+        int idEvento1 = calendario.crearEvento(fecha, 1, 30);
+        int idEvento3 = calendario.crearEvento(fecha.plusDays(2), 1, 30);
+        int idTarea4 = calendario.crearTarea(fecha, 1, 30);
+
+        Recordatorio recordatorioCreado = calendario.obtenerRecordatorio(idEvento1);
+        Recordatorio recordatorioCreado3 = calendario.obtenerRecordatorio(idEvento3);
+        Recordatorio recordatorioCreado4 = calendario.obtenerRecordatorio(idTarea4);
+
+        int idAlarma = calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma2 = calendario.agregarAlarma(recordatorioCreado);
+        int idAlarma3 = calendario.agregarAlarma(recordatorioCreado4);
+        calendario.agregarAlarma(recordatorioCreado);
+        calendario.agregarAlarma(recordatorioCreado);
+
+        ((Evento) recordatorioCreado3).configurarRepeticion(Frecuencia.Diaria, Limite.SinLimite);
+
+        recordatorioCreado.obtenerAlarma(idAlarma).establecerEfecto(AlarmaEfectos.SONIDO);
+        recordatorioCreado.obtenerAlarma(idAlarma2).establecerEfecto(AlarmaEfectos.NOTIFICACION);
+        recordatorioCreado4.obtenerAlarma(idAlarma3).establecerEfecto(AlarmaEfectos.EMAIL);
+
+        var excepcionActual = new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                var persistor = new PersistorJSON("./src/main/pruebaExcepcion.json");
+                var nuevoCalendario = new Calendario();
+                nuevoCalendario.cargar(persistor);
+            }
+        };
+
+        var excepcionEsperada = NoSuchFileException.class;
+
+        assertThrows(excepcionEsperada, excepcionActual);
     }
 }

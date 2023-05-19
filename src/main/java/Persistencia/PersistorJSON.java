@@ -16,10 +16,17 @@ import java.util.List;
 
 public class PersistorJSON implements Persistor {
 
-    ///TODO quitar numeros magicos y usar constantes
-    ///TODO obtener el aprobado de @Lucia
-    ///TODO revisar posible dry, el codigo quedo bastante limpio
     private final String fileLocation;
+    final Integer cantValoresString = 3;
+    final Integer posNombre = 0;
+    final Integer posDescripcion = 1;
+    final Integer posInicio = 2;
+    final Integer cantValoresNumericos = 3;
+    final Integer posHoras = 0;
+    final Integer posMinutos = 1;
+    final Integer posId = 2;
+
+
     public PersistorJSON(String fileLocation){
         this.fileLocation = fileLocation;
     }
@@ -92,18 +99,18 @@ public class PersistorJSON implements Persistor {
     }
 
     private String[] obtenerValoresString(JsonObject json) {
-        String[] valores = new String[3];
-        valores[0] = json.get("nombre").getAsString();
-        valores[1] = json.get("descripcion").getAsString();
-        valores[2] = json.get("inicio").getAsString();
+        String[] valores = new String[cantValoresString];
+        valores[posNombre] = json.get("nombre").getAsString();
+        valores[posDescripcion] = json.get("descripcion").getAsString();
+        valores[posInicio] = json.get("inicio").getAsString();
         return valores;
     }
 
     private Integer[] obtenerValoresNumericos(JsonObject json){
-        Integer[] valores = new Integer[3];
-        valores[0] = json.get("horas").getAsInt();
-        valores[1] = json.get("minutos").getAsInt();
-        valores[2] = json.get("id").getAsInt();
+        Integer[] valores = new Integer[cantValoresNumericos];
+        valores[posHoras] = json.get("horas").getAsInt();
+        valores[posMinutos] = json.get("minutos").getAsInt();
+        valores[posId] = json.get("id").getAsInt();
         return valores;
     }
 
