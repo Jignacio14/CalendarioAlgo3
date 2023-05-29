@@ -6,6 +6,7 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;

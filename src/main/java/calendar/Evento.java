@@ -11,6 +11,7 @@ public class Evento extends Recordatorio {
 
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
+        this.tipo = "Evento";
         this.ultRepeticion = super.inicio;
     }
 
