@@ -1,11 +1,12 @@
-package calendar;
-import Persistencia.*;
+package Modelo.calendar;
+import Modelo.calendar.Persistencia.Persistible;
+import Modelo.calendar.Persistencia.Persistor;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Calendario implements Persistible{
+public class Calendario implements Persistible {
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
 

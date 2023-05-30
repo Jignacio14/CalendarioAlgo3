@@ -1,6 +1,4 @@
-import calendar.Evento;
-import calendar.Frecuencia;
-import calendar.Limite;
+import Modelo.calendar.*;
 import org.junit.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;

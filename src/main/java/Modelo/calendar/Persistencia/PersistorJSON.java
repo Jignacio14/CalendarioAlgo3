@@ -1,6 +1,6 @@
-package Persistencia;
+package Modelo.calendar.Persistencia;
 
-import calendar.*;
+import Modelo.calendar.*;
 import com.google.gson.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class PersistorJSON implements Persistor {
         }
     }
 
-    private Tarea agregarElementosTarea( JsonObject json ){
+    private Tarea agregarElementosTarea(JsonObject json ){
         JsonArray alarmas = json.get("alarmas").getAsJsonArray();
         String alarmasJson = alarmas.toString();
         var valoresString = obtenerValoresString(json);
