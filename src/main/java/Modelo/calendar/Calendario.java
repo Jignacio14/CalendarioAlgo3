@@ -91,6 +91,9 @@ public class Calendario implements Persistible {
         recordatorios = persistor.deserealizar();
     }
 
+    public List<Recordatorio> obtenerRecordatorios(){
+        return this.recordatorios;
+    }
 
     private boolean compararRecordatorios(Object obj) {
         Calendario aComparar = (Calendario) obj;
