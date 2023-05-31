@@ -2,6 +2,7 @@ package Modelo.calendar;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -115,5 +116,11 @@ public class Alarma {
             return this.repetidor == repetidorAcomparar;
         }
         return this.repetidor.equals(repetidorAcomparar);
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
+        return " - " + formato.format(this.fechaHora) + " ___ Efecto: " + (this.efecto == null ? "Sin efecto" : this.efecto) + " - \n";
     }
 }

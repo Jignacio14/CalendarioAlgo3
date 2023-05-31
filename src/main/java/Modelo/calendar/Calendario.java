@@ -12,6 +12,8 @@ public class Calendario implements Persistible {
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
+    public Boolean calendarioVacio(){ return recordatorios.isEmpty(); }
+
     private void agregarRecordatorio(Recordatorio recordatorio) {
         int posicionVacia = this.recordatorios.indexOf(null);
         if (this.recordatorios.isEmpty() || posicionVacia < 0) {
@@ -57,6 +59,7 @@ public class Calendario implements Persistible {
     public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
 
     public void modificarCompletada(Recordatorio recordatorio){ recordatorio.cambiarCompletada();}
+
     public int agregarAlarma(Recordatorio recordatorio) {
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
         return recordatorio.agregarAlarma(alarma);
@@ -76,6 +79,9 @@ public class Calendario implements Persistible {
 
     public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
+    public Alarma obtenerAlarma(Recordatorio recordatorio, int idAlarma){
+        return recordatorio.obtenerAlarma(idAlarma);
+    }
 
     public void guardar(Persistor persistor) throws IOException{
         persistor.serializar(recordatorios);
