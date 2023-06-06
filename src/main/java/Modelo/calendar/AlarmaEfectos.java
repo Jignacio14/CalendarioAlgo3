@@ -1,4 +1,4 @@
-package calendar;
+package Modelo.calendar;
 
 public enum AlarmaEfectos {
     EMAIL("Email"),

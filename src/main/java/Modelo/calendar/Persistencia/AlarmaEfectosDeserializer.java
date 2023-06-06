@@ -1,6 +1,6 @@
-package Persistencia;
+package Modelo.calendar.Persistencia;
 
-import calendar.AlarmaEfectos;
+import Modelo.calendar.AlarmaEfectos;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

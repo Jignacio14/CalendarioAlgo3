@@ -1,6 +1,6 @@
-package Persistencia;
+package Modelo.calendar.Persistencia;
 
-import calendar.Recordatorio;
+import Modelo.calendar.Recordatorio;
 
 import java.io.IOException;
 import java.util.List;

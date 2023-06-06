@@ -1,6 +1,6 @@
-package Persistencia;
+package Modelo.calendar.Persistencia;
 
-import calendar.*;
+import Modelo.calendar.*;
 import com.google.gson.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,28 +43,28 @@ public class PersistorJSON implements Persistor {
     }
 
     private void persistirArchivo(String json) throws IOException {
-        FileWriter archivo = new FileWriter(fileLocation);
-        PrintWriter out = new PrintWriter(archivo);
-        out.write(json);
-        archivo.close();
+        try ( FileWriter archivo = new FileWriter(fileLocation);
+              PrintWriter out = new PrintWriter(archivo) ) {
+            out.write(json);
+        }
     }
 
     public List<Recordatorio> deserealizar() throws IOException {
-        Path archivo = Path.of(fileLocation);
-        Reader lector = Files.newBufferedReader(archivo);
-        Gson gson = new Gson();
-        JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
-        List<Recordatorio> recordatorios = new ArrayList<>();
-        cargarCalendario(recordatoriosJson, recordatorios);
-        lector.close();
-        return recordatorios;
+        try ( Reader lector = Files.newBufferedReader(Path.of(fileLocation)) ) {
+            Gson gson = new Gson();
+            JsonArray recordatoriosJson = gson.fromJson(lector, JsonArray.class);
+            List<Recordatorio> recordatorios = new ArrayList<>();
+            cargarCalendario(recordatoriosJson, recordatorios);
+            return recordatorios;
+        }
     }
 
     private void cargarCalendario(JsonArray recordatoriosJson, List<Recordatorio> recordatorios){
         for (JsonElement recordatorioJson : recordatoriosJson) {
             JsonObject recorjson = recordatorioJson.getAsJsonObject();
+            String tipoRecordatorio = recorjson.get("tipo").getAsString();
             Recordatorio recordatorio;
-            if (!recorjson.has("completada")){
+            if (tipoRecordatorio.equals("Evento")){
                 recordatorio = agregarElementosEvento(recorjson);
             }else {
                 recordatorio = agregarElementosTarea( recorjson);
@@ -73,12 +73,12 @@ public class PersistorJSON implements Persistor {
         }
     }
 
-    private Tarea agregarElementosTarea( JsonObject json ){
+    private Tarea agregarElementosTarea(JsonObject json ){
         JsonArray alarmas = json.get("alarmas").getAsJsonArray();
         String alarmasJson = alarmas.toString();
         var valoresString = obtenerValoresString(json);
         var valoresInt = obtenerValoresNumericos(json);
-        var tarea = crearTarea(valoresString[0], valoresString[1], valoresInt[0], valoresInt[1], LocalDateTime.parse(valoresString[2]), valoresInt[2], alarmasJson);
+        var tarea = crearTarea(valoresString[posNombre], valoresString[posDescripcion], valoresInt[posHoras], valoresInt[posMinutos], LocalDateTime.parse(valoresString[posInicio]), valoresInt[posId], alarmasJson);
         if (json.get("completada").getAsBoolean()) {
             tarea.cambiarCompletada();
         }
@@ -94,8 +94,7 @@ public class PersistorJSON implements Persistor {
         String repetidorJson = json.get("repetidor") != null ? json.get("repetidor").getAsJsonObject().toString() : null;
         Repetidor repetidor = crearRepetidor(repetidorJson);
         LocalDateTime ultRepeticion = LocalDateTime.parse(json.get("ultRepeticion").getAsString());
-        return crearEvento(valoresString[0], valoresString[1], valoresNumericos[0], valoresNumericos[1], LocalDateTime.parse(valoresString[2]), valoresNumericos[2], alarmasJson, repetidor, ultRepeticion);
-
+        return crearEvento(valoresString[posNombre], valoresString[posDescripcion], valoresNumericos[posHoras], valoresNumericos[posMinutos], LocalDateTime.parse(valoresString[posInicio]), valoresNumericos[posId], alarmasJson, repetidor, ultRepeticion);
     }
 
     private String[] obtenerValoresString(JsonObject json) {
@@ -152,7 +151,6 @@ public class PersistorJSON implements Persistor {
         recordatorio.establecerId(id);
         if(!(alarmasJson.isEmpty())) { cargarAlarmas(alarmasJson, recordatorio); }
     }
-
 }
 
 

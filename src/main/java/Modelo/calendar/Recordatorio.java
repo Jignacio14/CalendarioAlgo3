@@ -1,4 +1,4 @@
-package calendar;
+package Modelo.calendar;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
@@ -117,6 +118,9 @@ public abstract class Recordatorio {
 
     public int obtenerId() { return this.id; }
 
+    public String obtenerTipo() { return this.tipo; }
+
+    public List obtenerAlarmas() { return this.alarmas; }
 
     @Override
     public boolean equals(Object obj) {

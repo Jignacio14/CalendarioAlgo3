@@ -1,4 +1,4 @@
-package calendar;
+package Modelo.calendar;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -11,6 +11,7 @@ public class Evento extends Recordatorio {
 
     public Evento(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
+        this.tipo = "Evento";
         this.ultRepeticion = super.inicio;
     }
 

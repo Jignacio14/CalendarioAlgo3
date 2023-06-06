@@ -1,4 +1,4 @@
-package calendar;
+package Modelo.calendar;
 
 import java.time.LocalDateTime;
 
@@ -7,6 +7,7 @@ public class Tarea extends Recordatorio {
 
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
+        this.tipo = "Tarea";
     }
 
     @Override

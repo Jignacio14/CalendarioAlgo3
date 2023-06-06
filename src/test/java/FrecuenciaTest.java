@@ -1,5 +1,4 @@
-import calendar.Frecuencia;
-import calendar.Limite;
+import Modelo.calendar.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-import calendar.Tarea;
+import Modelo.calendar.Tarea;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
