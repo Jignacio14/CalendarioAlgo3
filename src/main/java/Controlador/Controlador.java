@@ -26,8 +26,11 @@ public class Controlador extends Application {
     public void start(Stage stage) throws IOException {
         this.calendario = new Calendario();
         cargarCalendario();
-        this.vista = new Vista(stage, calendario);
-        registrarEscuchaEnVista();
+        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista());
+
+        stage.setOnCloseRequest(windowEvent -> {
+            guardarCalendario();
+        });
     }
 
     private void cargarCalendario() {
@@ -38,8 +41,18 @@ public class Controlador extends Application {
         }
     }
 
-    public void registrarEscuchaEnVista(){
-        this.vista.registrarEscucha(new EventHandler<ActionEvent>() {
+    private void guardarCalendario() {
+        try {
+            if ( !this.calendario.calendarioVacio() ){
+                var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
+                this.calendario.guardar(persistor);
+            }
+        }catch (IOException ignore){
+        }
+    }
+
+    public EventHandler<ActionEvent> registrarEscuchaEnVista(){
+        return (new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
 
@@ -79,6 +92,48 @@ public class Controlador extends Application {
             }
         });
     }
+
+    /*public void registrarEscuchaEnVista(){
+        this.vista.registrarEscucha(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
+                Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
+
+                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
+
+                if (opcionUsuario.equals("Titulo")){
+                    String datoNuevo = vista.vistaModificarDato("Modificar titulo");
+                    if (datoNuevo != null && !datoNuevo.isEmpty()){
+                        recordatorioAct.modificarNombre(datoNuevo);
+                    }
+
+                } else if (opcionUsuario.equals("Descripcion")) {
+                    String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
+                    if (datoNuevo != null && !datoNuevo.isEmpty()){
+                        recordatorioAct.modificarDescripcion(datoNuevo);
+                    }
+
+                } else if (opcionUsuario.equals("Agregar alarma")){
+                    agregarAlarma(recordatorioAct);
+
+                } else if (opcionUsuario.equals("Tarea Completada")) {
+                    if (!recordatorioAct.verificarCompletada()){
+                        recordatorioAct.cambiarCompletada();
+                    }
+
+                } else if (opcionUsuario.equals("Agregar repeticion")) {
+                    //algo
+
+                } else if (opcionUsuario.equals("Todo el dia")) {
+                    recordatorioAct.establecerDiaCompleto();
+                }
+
+                vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
+            }
+        });
+    }*/
 
     public void agregarAlarma(Recordatorio recordatorio){
         int id = this.calendario.agregarAlarma(recordatorio);

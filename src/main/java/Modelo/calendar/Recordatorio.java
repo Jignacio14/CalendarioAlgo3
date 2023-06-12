@@ -76,7 +76,9 @@ public abstract class Recordatorio {
         return idAlarma;
     }
 
-    public void establecerAlarmas(List<Alarma> alarmas){ this.alarmas = alarmas; }
+    public void establecerAlarmas(List<Alarma> alarmas){
+        this.alarmas.addAll(alarmas);
+    }
 
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 
 public class Vista {
     @FXML
@@ -30,7 +31,7 @@ public class Vista {
     private String datoNuevo;
     private EventHandler<ActionEvent> escuchaEvento;
 
-    public Vista(Stage stage, Calendario calendario) throws IOException {
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha) throws IOException {
         stage.setTitle("Calendario");
 
         FXMLLoader loader = new FXMLLoader(getClass().
@@ -38,11 +39,11 @@ public class Vista {
         loader.setController(this);
         VBox contenedorCalendario = loader.load();
 
-
+        this.escuchaEvento = escucha;
         this.calendario = calendario;
-       /* if (!this.calendario.calendarioVacio()) {
+       if (!this.calendario.calendarioVacio()) {
             cargarInterfaz();
-        }*/
+        }
 
         agregarEvento.setOnAction(evento -> {
             int id = crearRecordatorio("Evento");
@@ -105,7 +106,6 @@ public class Vista {
         }
     }*/
 
-    /*
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
         for (Recordatorio recordatorio : recordatorios) {
@@ -114,13 +114,6 @@ public class Vista {
             }else {
                 crearVistaTarea(recordatorio.obtenerId());
             }
-        }
-    }*/
-
-    private void guardarCalendario() throws IOException {
-        if ( !this.calendario.calendarioVacio() ){
-            var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
-            this.calendario.guardar(persistor);
         }
     }
 
@@ -191,6 +184,7 @@ public class Vista {
         personalizarRec.setHeaderText(datosCompletosRecordatorio(recordatorioAct));
         personalizarRec.setContentText("Modificar");
         personalizarRec.showAndWait();
+
         return personalizarRec.getSelectedItem();
     }
 
@@ -203,7 +197,7 @@ public class Vista {
         var modificar = new TextInputDialog();
         modificar.setHeaderText(datoAModificar);
         modificar.showAndWait();
-        this.datoNuevo = modificar.getResult();
+        //this.datoNuevo = modificar.getResult();
 
         return modificar.getResult();
     }
@@ -218,10 +212,12 @@ public class Vista {
 
     public String datosRecordatorios(Recordatorio recordatorio){
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
+        Label l = new Label("-- Dia completo --");
+        l.setStyle("-fx-background-color:green;");
         return recordatorio.obtenerTipo() + "\n" +
                 recordatorio.obtenerNombre() + "\n" +
                 "Inicio: " + formato.format(recordatorio.obtenerInicio()) + "\n" +
-                "Fin: " + formato.format(recordatorio.verFinal()) + " " + ((recordatorio.verficarDiaCompleto()) ? " -- Dia completo --" : "") + "\n" +
+                "Fin: " + formato.format(recordatorio.verFinal()) + " " + ((recordatorio.verficarDiaCompleto()) ? l.getText() : "") + "\n" +
                 (recordatorio.obtenerTipo().equals("Tarea") ? verificarCompletada(recordatorio.verificarCompletada()) : "");
     }
 
