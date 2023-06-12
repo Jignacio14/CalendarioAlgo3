@@ -16,6 +16,9 @@ public enum Frecuencia {
             var guia = inicio;
             var lista = new ArrayList<LocalDateTime>();
             do {
+                if (!verificarGuiaValida(limite, guia)){
+                    break;
+                }
                 if (diasSemana.contains(guia.getDayOfWeek())) {
                     lista.add(guia);
                     limite.ajustarIteracion();
@@ -50,9 +53,10 @@ public enum Frecuencia {
         var guia = inicio;
         do {
             guia = incrementarFecha(guia);
+            if (!verificarGuiaValida(limite, guia)){ break;}
             repeticiones.add(guia);
-            limite.ajustarIteracion();
-        } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope));
+            //limite.ajustarIteracion();
+        } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope) & limite.validarCantidadRepeticiones(repeticiones.size()));
         return repeticiones;
     }
 
@@ -61,6 +65,9 @@ public enum Frecuencia {
     }
     public void setDiasSemana(Set<DayOfWeek> dias) { diasSemana = dias; }
 
+    public boolean verificarGuiaValida(Limite limite, LocalDateTime guia){
+        return limite.verificarProximasIteraciones(guia);
+    }
     final Integer intervaloDefecto = 1;
     final Set<DayOfWeek> diaDefecto = Set.of(DayOfWeek.MONDAY);
 }

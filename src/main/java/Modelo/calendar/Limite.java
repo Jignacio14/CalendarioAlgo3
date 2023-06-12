@@ -17,7 +17,7 @@ public enum Limite {
         @Override
         public void ajustarIteracion() { iteraciones -= 1; }
     },
-    FechaMax(LocalDateTime.now().plusDays(10), 5) {
+    FechaMax(LocalDateTime.now().plusDays(10), Integer.MAX_VALUE) {
         @Override
         public void setFechaLimite(LocalDateTime fecha) { this.fechaLimite = fecha; }
 
@@ -26,13 +26,14 @@ public enum Limite {
         }
 
         @Override
-        public boolean verificarProximasIteraciones(LocalDateTime fecha) { return fecha.isBefore(fechaLimite); }
+        public boolean verificarProximasIteraciones(LocalDateTime fecha) {
+            return fecha.isBefore(fechaLimite); }
 
         @Override
         public void ajustarIteracion() {
         }
     },
-    SinLimite(LocalDateTime.MAX, 5) {
+    SinLimite(LocalDateTime.MAX, Integer.MAX_VALUE) {
         @Override
         public void setFechaLimite(LocalDateTime fecha) { this.fechaLimite = LocalDateTime.MAX; }
 
@@ -64,6 +65,10 @@ public enum Limite {
     public abstract boolean verificarProximasIteraciones(LocalDateTime fecha);
 
     public abstract void ajustarIteracion();
+
+    public boolean validarCantidadRepeticiones(Integer cantidad){
+        return cantidad < iteraciones;
+    }
 
 
 }

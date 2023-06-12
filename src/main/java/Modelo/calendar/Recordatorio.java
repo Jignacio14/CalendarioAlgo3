@@ -123,8 +123,11 @@ public abstract class Recordatorio {
 
     public String obtenerTipo() { return this.tipo; }
 
-    public List obtenerAlarmas() { return this.alarmas; }
+    public List<Alarma> obtenerAlarmas() { return this.alarmas; }
 
+    public List<LocalDateTime> verRepeticiones(LocalDateTime desde, LocalDateTime hasta){
+        return null;
+    }
     @Override
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass()) {

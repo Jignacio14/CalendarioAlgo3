@@ -3,6 +3,7 @@ import Modelo.calendar.Persistencia.Persistible;
 import Modelo.calendar.Persistencia.Persistor;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -114,6 +115,35 @@ public class Calendario implements Persistible {
         organizador.actualizarRepeticiones(evento);
     }
 
+    public void modificarRepeticionesFechaLimite(Evento evento, LocalDateTime hasta){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarFechaLimite(hasta);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){;
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarIteracion(iteraciones);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void modificarRepeticionesIntervalo(Evento evento, Integer intervalo){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarIntervalo(intervalo);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void mofificarRepeticionesDias(Evento evento, Set<DayOfWeek> dias){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarDias(dias);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+
+    public void organizarRecordatorios(LocalDateTime desde, LocalDateTime hasta){
+        // si el mapa en la consulta no incluye el hasta, por eso la extiendo 1 dia
+        organizador.organizarRecordatorios(desde, hasta.plusDays(1), recordatorios);
+    }
 
     // metodos para hacer pruebas
     private boolean compararRecordatorios(Object obj) {

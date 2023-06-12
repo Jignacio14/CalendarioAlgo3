@@ -190,4 +190,26 @@ public class EventoTest {
     }
 
 
+
+    @Test
+    public void testEventoComprobarTodoOk(){
+        var fecha = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fecha1 = fecha.plusDays(1);
+
+        var evento = new Evento(fecha1, 1, 0);
+        evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
+
+        var repes = evento.verRepeticiones(evento.obtenerInicio(), fecha.plusYears(1));
+        System.out.println(repes);
+
+        evento.configurarIteracion(4);
+        repes = evento.verRepeticiones(evento.obtenerInicio(), fecha.plusYears(1));
+        System.out.println(repes);
+
+        evento.configurarIntervalo(3);
+        repes = evento.verRepeticiones(evento.obtenerInicio(), fecha.plusYears(1));
+        System.out.println(repes);
+    }
+
+
 }
