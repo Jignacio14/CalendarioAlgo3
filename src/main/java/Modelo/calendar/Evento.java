@@ -1,5 +1,8 @@
 package Modelo.calendar;
 
+import Vista.Actividad;
+import Vista.RecordatorioVisitor;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +16,10 @@ public class Evento extends Recordatorio {
         super(inicio, horas, minutos);
         this.tipo = "Evento";
         this.ultRepeticion = super.inicio;
+    }
+
+    public void aceptar(RecordatorioVisitor visitor) {
+        visitor.visitarEvento(this);
     }
 
     @Override
