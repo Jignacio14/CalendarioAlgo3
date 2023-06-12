@@ -4,6 +4,9 @@ import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
+
+import com.sun.source.tree.AssertTree;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
@@ -403,5 +406,52 @@ public class CalendarioTest {
         var excepcionEsperada = NoSuchFileException.class;
 
         assertThrows(excepcionEsperada, excepcionActual);
+    }
+
+    @Test
+    public void TestVerRecordatoriosOrdenadosVacio(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        System.out.printf(result.toString());
+    }
+
+    @Test
+    public void TestAgregandoEvento(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var id = calendario.crearEvento(inicio, 1, 30);
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.get(inicio).contains(id));
+    }
+
+    @Test
+    public void TestAgregandoTarea(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var id = calendario.crearTarea(inicio, 1, 30);
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.get(inicio).contains(id));
+    }
+
+    @Test
+    public void TestAgregandoEventosyTareas(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var inicio2 = inicio.plusYears(1);
+        var fin = inicio2.plusDays(1);
+        var calendario = new Calendario();
+        var id1 = calendario.crearTarea(inicio, 1, 30);
+        var id2 = calendario.crearTarea(inicio2, 0, 0);
+
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.containsKey(inicio2));
+        assertTrue(result.get(inicio).contains(id1));
+        assertTrue(result.get(inicio2).contains(id2));
     }
 }

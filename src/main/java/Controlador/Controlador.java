@@ -4,11 +4,11 @@ import Modelo.calendar.Calendario;
 import Modelo.calendar.Persistencia.PersistorJSON;
 
 import java.io.IOException;
-import java.util.List;
-
-import Modelo.calendar.Recordatorio;
 import Vista.*;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
@@ -21,9 +21,8 @@ public class Controlador extends Application {
     // SABE QUE EXISTE MODELO Y VISTA
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
-        cargarCalendario();
         this.vista = new Vista(stage, calendario);
     }
 

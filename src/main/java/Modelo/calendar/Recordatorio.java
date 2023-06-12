@@ -102,6 +102,9 @@ public abstract class Recordatorio {
         this.alarmas.set(idAlarma, null);
     }
 
+    public List<LocalDateTime> verRepeticiones(LocalDateTime hasta){
+        return null;
+    }
     public void cambiarCompletada(){}
 
     public boolean verificarCompletada(){return false;}

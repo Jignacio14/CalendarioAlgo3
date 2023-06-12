@@ -90,7 +90,7 @@ public class Vista {
         botonRecNuevo.setId(Integer.toString(recordatorio.obtenerId()));
         EventHandler<ActionEvent> event = e -> {
             String[] opcionesRec = opcionesModificarRec(recordatorio);
-            var personalizarRec = new ChoiceDialog("selecciona", opcionesRec);
+            ChoiceDialog<String> personalizarRec = new ChoiceDialog<>("selecciona", opcionesRec);
 
             personalizarRec.setTitle("Personalizar Recordatorio");
             personalizarRec.setHeaderText(datosCompletosRecordatorio(recordatorio));
@@ -143,7 +143,7 @@ public class Vista {
 
     void agregarIntervalo(Recordatorio recordatorio, int id){
         String[] opcionesRec = {"Min", "Horas", "Dias", "Semanas"};
-        var personalizarRec = new ChoiceDialog("selecciona", opcionesRec);
+        ChoiceDialog<String> personalizarRec = new ChoiceDialog<>("selecciona", opcionesRec);
 
         personalizarRec.setTitle("Agregar intervalo");
         personalizarRec.setHeaderText("Elegi el intervalo deseado");
