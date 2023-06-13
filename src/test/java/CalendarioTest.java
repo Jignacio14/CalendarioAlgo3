@@ -482,5 +482,7 @@ public class CalendarioTest {
         assertTrue(result.get(fechaTerceraRepe).contains(idEvento));
         assertTrue(result.containsKey(fechaCuartaRepe));
         assertTrue(result.get(fechaCuartaRepe).contains(idEvento));
+
+        System.out.println(result.toString());
     }
 }
