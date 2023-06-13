@@ -259,11 +259,11 @@ public class Vista {
     }
 
     public void crearVistaEvento(int id) {
-        crearVista("-fx-background-color:violet;", id);
+        crearVista("-fx-background-color:pink;", id);
     }
 
     public void crearVistaTarea(int id) {
-        crearVista("-fx-background-color:orange;", id);
+        crearVista("-fx-background-color:skyBlue;", id);
     }
 
     public TextFlow datosRecordatorios(Recordatorio recordatorio){
