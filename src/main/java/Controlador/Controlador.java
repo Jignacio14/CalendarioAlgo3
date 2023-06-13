@@ -84,9 +84,6 @@ public class Controlador extends Application {
                         recordatorioAct.cambiarCompletada();
                     }
 
-                } else if (opcionUsuario.equals("Agregar repeticion")) {
-                    //algo
-
                 } else if (opcionUsuario.equals("Todo el dia")) {
                     recordatorioAct.establecerDiaCompleto();
                 }
