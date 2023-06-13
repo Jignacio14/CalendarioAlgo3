@@ -3,10 +3,10 @@ package Controlador;
 import Modelo.calendar.AlarmaEfectos;
 import Modelo.calendar.Calendario;
 import Modelo.calendar.Persistencia.PersistorJSON;
-
 import java.io.IOException;
-
-
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import Modelo.calendar.Recordatorio;
 import Vista.*;
 import javafx.application.Application;
@@ -29,7 +29,7 @@ public class Controlador extends Application {
         this.calendario = new Calendario();
 
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista());
+        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista(), eventito());
 
         stage.setOnCloseRequest(windowEvent -> {
             guardarCalendario();
@@ -96,6 +96,57 @@ public class Controlador extends Application {
         });
     }
 
+    public EventHandler<ActionEvent> eventito(){
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                LocalDateTime fechaActual = LocalDateTime.now();
+                String origen = vista.obtenerOrigenVerRango(actionEvent.getSource());
+                gestionarConsulta(origen, fechaActual);
+            }
+        };
+    }
+
+    private void gestionarConsulta(String origen, LocalDateTime fecha){
+        LocalDateTime[] inicioFin;
+        switch (origen) {
+            case "rangoDia" -> {
+                inicioFin = descomponerFechaRangoDia(fecha);
+                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+            }
+            case "rangoSemana" -> {
+                inicioFin = descomponerFechaRangoSemana(fecha);
+                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+            }
+            case "rangoMes" -> {
+                inicioFin = descomponerFechaRangoMes(fecha);
+                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+            }
+            default -> System.out.println("Que ha ocurrido chaval?");
+        }
+    }
+
+    public LocalDateTime[] descomponerFechaRangoDia(LocalDateTime fecha){
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0]= fecha.truncatedTo(ChronoUnit.DAYS);
+        inicioFin[1]  = inicioFin[0].plusHours(23).plusMinutes(59);
+        return inicioFin;
+    }
+
+    private LocalDateTime[] descomponerFechaRangoSemana(LocalDateTime fecha){
+        int diaResultado = fecha.getDayOfMonth() + DayOfWeek.MONDAY.getValue() - fecha.getDayOfWeek().getValue();
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), diaResultado, 0, 0);
+        inicioFin[1] = inicioFin[0].plusDays(6).plusMinutes(59).plusHours(23);
+        return inicioFin;
+    }
+    private LocalDateTime[] descomponerFechaRangoMes(LocalDateTime fecha){
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), 1, 0, 0);
+        inicioFin[1] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), fecha.toLocalDate().lengthOfMonth(), 23, 59);
+        return inicioFin;
+    }
+
     /*public void registrarEscuchaEnVista(){
         this.vista.registrarEscucha(new EventHandler<ActionEvent>() {
             @Override
@@ -154,7 +205,6 @@ public class Controlador extends Application {
     public void agregarIntervalo(Recordatorio recordatorio, int id){
         Object opcionUsuario = vista.vistaAgregarIntervalo();
         Integer intervalo;
-
         if (opcionUsuario != null ){
             intervalo = vista.vistaCantIntervalo();
             establecerIntervaloAlarma(intervalo, opcionUsuario, recordatorio, id);
@@ -172,6 +222,8 @@ public class Controlador extends Application {
             this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,0,intervalo);
         }
     }
+
+
 
     /*private void actualizarDatoCalendario(Consumer<String> modificar, ){
     }*/

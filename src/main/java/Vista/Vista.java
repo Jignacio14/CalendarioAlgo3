@@ -1,9 +1,7 @@
 package Vista;
 
 import Modelo.calendar.*;
-import Modelo.calendar.Persistencia.PersistorJSON;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +43,9 @@ public class Vista {
     private EventHandler<ActionEvent> escuchaEvento;
     private String rangoAct;
 
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha) throws IOException {
+    private EventHandler<ActionEvent> eventito;
+
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> eventito) throws IOException {
         stage.setTitle("Calendario");
 
         FXMLLoader loader = new FXMLLoader(getClass().
@@ -55,6 +54,7 @@ public class Vista {
         VBox contenedorCalendario = loader.load();
 
         this.escuchaEvento = escucha;
+        this.eventito = eventito;
         this.calendario = calendario;
 
         if (!this.calendario.calendarioVacio()) {
@@ -99,21 +99,16 @@ public class Vista {
     }
 
     private void verCalendarioPorRango() {
-
-        rangoDia.setOnAction(evento->{
-            System.out.println("ver por dia");
-            this.rangoAct = "dia";
-        });
-        rangoSemana.setOnAction(evento->{
-            System.out.println("ver por semana");
-            this.rangoAct = "semana";
-        });
-        rangoMes.setOnAction(evento->{
-            System.out.println("ver por mes");
-            this.rangoAct = "mes";
-        });
-
+        LocalDateTime actual = LocalDateTime.now();
+        rangoDia.setOnAction(eventito);
+        rangoSemana.setOnAction(eventito);
+        rangoMes.setOnAction(eventito);
         verRangoAntSig();
+    }
+
+    public String obtenerOrigenVerRango(Object menuItem){
+        MenuItem menu = (MenuItem) menuItem;
+        return menu.getId();
     }
 
     private void verRangoAntSig() {
@@ -127,6 +122,8 @@ public class Vista {
             System.out.println(this.rangoAct);
         });
     }
+
+
 
     public void registrarEscucha(EventHandler<ActionEvent> escucha) {
         this.escuchaEvento = escucha;
@@ -238,7 +235,10 @@ public class Vista {
         personalizarRec.setHeaderText(null);
         personalizarRec.getDialogPane().setHeader(label);
         personalizarRec.getDialogPane().setPrefWidth(300);
-        ChoiceDialog<String> personalizarRec = new ChoiceDialog<>("selecciona", opcionesRec);
+
+        personalizarRec.showAndWait();
+
+        return personalizarRec.getSelectedItem();
     }
 
     private String[] opcionesModificarRec(Recordatorio recordatorio) {
