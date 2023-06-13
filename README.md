@@ -34,3 +34,12 @@ José Ignacio Castro Martinez - Padrón: 106957
         1. Mostrar una notificación.
         2. Reproducir un sonido.
         3. Enviar un email.
+
+
+
+  
+  ----
+  ## Persistencia 
+  
+  Se añaden funcionalidades que le permiten al modelo persistir mediante un archivo JSON 
+ 

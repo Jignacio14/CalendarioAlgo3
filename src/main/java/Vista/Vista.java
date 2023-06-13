@@ -180,7 +180,6 @@ public class Vista {
         botonRecordatorio.setStyle(color);
         botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
         botonRecordatorio.setOnAction(this.escuchaEvento);
-
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
@@ -239,10 +238,7 @@ public class Vista {
         personalizarRec.setHeaderText(null);
         personalizarRec.getDialogPane().setHeader(label);
         personalizarRec.getDialogPane().setPrefWidth(300);
-
-        personalizarRec.showAndWait();
-
-        return personalizarRec.getSelectedItem();
+        ChoiceDialog<String> personalizarRec = new ChoiceDialog<>("selecciona", opcionesRec);
     }
 
     private String[] opcionesModificarRec(Recordatorio recordatorio) {

@@ -108,6 +108,9 @@ public abstract class Recordatorio {
         this.alarmas.set(idAlarma, null);
     }
 
+    public List<LocalDateTime> verRepeticiones(LocalDateTime hasta){
+        return null;
+    }
     public void cambiarCompletada(){}
 
     public boolean verificarCompletada(){return false;}
@@ -128,6 +131,9 @@ public abstract class Recordatorio {
 
     public List<Alarma> obtenerAlarmas() { return this.alarmas; }
 
+    public List<LocalDateTime> verRepeticiones(LocalDateTime desde, LocalDateTime hasta){
+        return null;
+    }
     @Override
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass()) {

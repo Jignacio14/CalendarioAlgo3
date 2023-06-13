@@ -44,6 +44,9 @@ public class Evento extends Recordatorio {
         ultRepeticion = consultaFechas.get(consultaFechas.size() - 1);
         return consultaFechas;
     }
+    public List<LocalDateTime> verRepeticiones(LocalDateTime desde, LocalDateTime hasta){
+        return repetidor.verFuturasRepeticiones(desde, hasta);
+    }
 
     public void establecerRepetidor(Repetidor repetidor){ this.repetidor = repetidor; }
 

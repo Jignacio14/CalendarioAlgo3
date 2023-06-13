@@ -3,12 +3,14 @@ import Modelo.calendar.Persistencia.Persistible;
 import Modelo.calendar.Persistencia.Persistor;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Calendario implements Persistible {
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
+    private final Organizador organizador = new Organizador();
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
 
@@ -28,6 +30,8 @@ public class Calendario implements Persistible {
         agregarRecordatorio(evento);
         int idEvento = this.recordatorios.lastIndexOf(evento);
         this.recordatorios.get(idEvento).establecerId(idEvento);
+        // TO DO -> agregar al ordenador
+        organizador.actualizarRepeticiones(evento);
         return idEvento;
     }
 
@@ -36,11 +40,14 @@ public class Calendario implements Persistible {
         agregarRecordatorio(tarea);
         int idTarea = this.recordatorios.lastIndexOf(tarea);
         this.recordatorios.get(idTarea).establecerId(idTarea);
+        // TO DO -> agregar al ordenador
+        organizador.actualizarRepeticiones(tarea);
         return idTarea;
     }
 
     public void eliminarRecordatorio(Recordatorio recordatorio) {
         var idRecordatorio = recordatorio.obtenerId();
+        // TO DO -> agregar la eliminacion
         this.recordatorios.set(idRecordatorio, null);
     }
 
@@ -83,6 +90,7 @@ public class Calendario implements Persistible {
         return recordatorio.obtenerAlarma(idAlarma);
     }
 
+    //--- metodos para persistir
     public void guardar(Persistor persistor) throws IOException{
         persistor.serializar(recordatorios);
     }
@@ -95,6 +103,49 @@ public class Calendario implements Persistible {
         return this.recordatorios;
     }
 
+
+    // metodos para hacer consultas de fechas
+
+    public Map<LocalDateTime, HashSet<Integer>> verRecordatoriosOrdenados(LocalDateTime desde, LocalDateTime hasta){
+        return organizador.verCalendarioOrdenado(desde, hasta);
+    }
+    public void agregarRepeticiones(Evento evento, Frecuencia frecuencia, Limite limite){
+        Integer id = evento.obtenerId();
+        evento.configurarRepeticion(frecuencia, limite);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void modificarRepeticionesFechaLimite(Evento evento, LocalDateTime hasta){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarFechaLimite(hasta);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){;
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarIteracion(iteraciones);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void modificarRepeticionesIntervalo(Evento evento, Integer intervalo){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarIntervalo(intervalo);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+    public void mofificarRepeticionesDias(Evento evento, Set<DayOfWeek> dias){
+        organizador.eliminarRepeticiones(evento);
+        evento.configurarDias(dias);
+        organizador.actualizarRepeticiones(evento);
+    }
+
+
+    public void organizarRecordatorios(LocalDateTime desde, LocalDateTime hasta){
+        // si el mapa en la consulta no incluye el hasta, por eso la extiendo 1 dia
+        organizador.organizarRecordatorios(desde, hasta.plusDays(1), recordatorios);
+    }
+
+    // metodos para hacer pruebas
     private boolean compararRecordatorios(Object obj) {
         Calendario aComparar = (Calendario) obj;
         if (this.recordatorios.size() != aComparar.recordatorios.size()){

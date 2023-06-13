@@ -4,6 +4,7 @@ import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
+
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
@@ -403,5 +404,85 @@ public class CalendarioTest {
         var excepcionEsperada = NoSuchFileException.class;
 
         assertThrows(excepcionEsperada, excepcionActual);
+    }
+
+    @Test
+    public void TestVerRecordatoriosOrdenadosVacio(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        System.out.printf(result.toString());
+    }
+
+    @Test
+    public void TestAgregandoEvento(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var id = calendario.crearEvento(inicio, 1, 30);
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.get(inicio).contains(id));
+    }
+
+    @Test
+    public void TestAgregandoTarea(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+        var calendario = new Calendario();
+        var id = calendario.crearTarea(inicio, 1, 30);
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.get(inicio).contains(id));
+    }
+
+    @Test
+    public void TestAgregandoEventosyTareas(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var inicio2 = inicio.plusYears(1);
+        var fin = inicio2.plusDays(1);
+        var calendario = new Calendario();
+        var id1 = calendario.crearTarea(inicio, 1, 30);
+        var id2 = calendario.crearTarea(inicio2, 0, 0);
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+        assertTrue(result.containsKey(inicio));
+        assertTrue(result.containsKey(inicio2));
+        assertTrue(result.get(inicio).contains(id1));
+        assertTrue(result.get(inicio2).contains(id2));
+    }
+
+    @Test
+    public void TestEventoConIteraciones(){
+        var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var fin = inicio.plusYears(1);
+
+        /// seteo fecha de inicio del evento y sus futuras repeticiones
+        var fechaInicio = LocalDateTime.of(2023, 1, 2, 0, 0);
+        var fechaSegundaRepe = LocalDateTime.of(2023, 1, 5, 0, 0);
+        var fechaTerceraRepe = LocalDateTime.of(2023, 1, 8, 0, 0);
+        var fechaCuartaRepe = LocalDateTime.of(2023, 1, 11, 0, 0);
+
+        /// genero el evento
+        var calendario = new Calendario();
+        var idEvento = calendario.crearEvento(fechaInicio, 1, 50);
+        var evento = (Evento) calendario.obtenerRecordatorio(idEvento);
+        calendario.agregarRepeticiones(evento, Frecuencia.Diaria, Limite.Iteraciones);
+        calendario.modificarRepeticionesIteraciones(evento, 4);
+        calendario.modificarRepeticionesIntervalo(evento, 3);
+        calendario.organizarRecordatorios(inicio, fin);
+
+        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
+
+        assertTrue(result.containsKey(fechaInicio));
+        assertTrue(result.get(fechaInicio).contains(idEvento));
+        assertTrue(result.containsKey(fechaSegundaRepe));
+        assertTrue(result.get(fechaSegundaRepe).contains(idEvento));
+        assertTrue(result.containsKey(fechaTerceraRepe));
+        assertTrue(result.get(fechaTerceraRepe).contains(idEvento));
+        assertTrue(result.containsKey(fechaCuartaRepe));
+        assertTrue(result.get(fechaCuartaRepe).contains(idEvento));
+
+        System.out.println(result.toString());
     }
 }
