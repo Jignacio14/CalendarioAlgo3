@@ -1,4 +1,6 @@
-package calendar;
+package Modelo.calendar;
+
+import Vista.RecordatorioVisitor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,6 +8,7 @@ import java.util.List;
 
 public abstract class Recordatorio {
 
+    protected String tipo;
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
@@ -19,6 +22,8 @@ public abstract class Recordatorio {
         this.horas = horas;
         this.minutos = minutos;
     }
+
+    public abstract void aceptar(RecordatorioVisitor visitor);
 
     public void modificarNombre(String nuevoNombre) {
         this.nombre = nuevoNombre;
@@ -71,7 +76,9 @@ public abstract class Recordatorio {
         return idAlarma;
     }
 
-    public void establecerAlarmas(List<Alarma> alarmas){ this.alarmas = alarmas; }
+    public void establecerAlarmas(List<Alarma> alarmas){
+        this.alarmas.addAll(alarmas);
+    }
 
     private void modificarDatosDeAlarmas(String nombre, String descripcion) {
         for (Alarma alarma : alarmas) {
@@ -117,6 +124,9 @@ public abstract class Recordatorio {
 
     public int obtenerId() { return this.id; }
 
+    public String obtenerTipo() { return this.tipo; }
+
+    public List<Alarma> obtenerAlarmas() { return this.alarmas; }
 
     @Override
     public boolean equals(Object obj) {

@@ -1,15 +1,18 @@
-package calendar;
-import Persistencia.*;
+package Modelo.calendar;
+import Modelo.calendar.Persistencia.Persistible;
+import Modelo.calendar.Persistencia.Persistor;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Calendario implements Persistible{
+public class Calendario implements Persistible {
 
     private List<Recordatorio> recordatorios = new ArrayList<>();
 
     public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
+
+    public Boolean calendarioVacio(){ return recordatorios.isEmpty(); }
 
     private void agregarRecordatorio(Recordatorio recordatorio) {
         int posicionVacia = this.recordatorios.indexOf(null);
@@ -56,6 +59,7 @@ public class Calendario implements Persistible{
     public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
 
     public void modificarCompletada(Recordatorio recordatorio){ recordatorio.cambiarCompletada();}
+
     public int agregarAlarma(Recordatorio recordatorio) {
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
         return recordatorio.agregarAlarma(alarma);
@@ -75,6 +79,9 @@ public class Calendario implements Persistible{
 
     public void eliminarAlarma(Recordatorio recordatorio, Alarma alarma){ recordatorio.eliminarAlarma(alarma); }
 
+    public Alarma obtenerAlarma(Recordatorio recordatorio, int idAlarma){
+        return recordatorio.obtenerAlarma(idAlarma);
+    }
 
     public void guardar(Persistor persistor) throws IOException{
         persistor.serializar(recordatorios);
@@ -84,6 +91,9 @@ public class Calendario implements Persistible{
         recordatorios = persistor.deserealizar();
     }
 
+    public List<Recordatorio> obtenerRecordatorios(){
+        return this.recordatorios;
+    }
 
     private boolean compararRecordatorios(Object obj) {
         Calendario aComparar = (Calendario) obj;

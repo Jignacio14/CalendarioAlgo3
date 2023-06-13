@@ -1,5 +1,5 @@
-package Persistencia;
-import calendar.Frecuencia;
+package Modelo.calendar.Persistencia;
+import Modelo.calendar.Frecuencia;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

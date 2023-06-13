@@ -1,6 +1,5 @@
-
-import calendar.*;
-import Persistencia.*;
+import Modelo.calendar.*;
+import Modelo.calendar.Persistencia.PersistorJSON;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
