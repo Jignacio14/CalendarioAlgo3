@@ -108,29 +108,24 @@ public class Controlador extends Application {
     }
 
     private void gestionarConsulta(String origen, LocalDateTime fecha){
-        LocalDateTime[] inicioFin;
+        LocalDateTime[] inicioFin = null;
         switch (origen) {
             case "rangoDia" -> {
                 inicioFin = descomponerFechaRangoDia(fecha);
-                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
-                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
-                System.out.println(x.toString());
+                break;
             }
             case "rangoSemana" -> {
                 inicioFin = descomponerFechaRangoSemana(fecha);
-                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
-                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
-                System.out.println(x.toString());
-                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+                break;
             }
             case "rangoMes" -> {
                 inicioFin = descomponerFechaRangoMes(fecha);
-                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
-                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
-                System.out.println(x.toString());
             }
-            default -> System.out.println("Que ha ocurrido chaval?");
+            default -> {
+                return;            }
         }
+        calendario.organizarRecordatorios(inicioFin[0], inicioFin[1]);
+        System.out.println(calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]));
     }
 
     public LocalDateTime[] descomponerFechaRangoDia(LocalDateTime fecha){
