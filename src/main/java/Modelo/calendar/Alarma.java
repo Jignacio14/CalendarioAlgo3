@@ -18,6 +18,8 @@ public class Alarma {
     private LocalDateTime ultRepeticion;
     private int id;
 
+    private boolean sono = false;
+
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -32,6 +34,14 @@ public class Alarma {
     public void modificarDescripcion(String nuevaDescripcion) { this.descripcion = nuevaDescripcion; }
 
     public void establecerId(int id){ this.id = id; }
+
+    public boolean yaSono(){
+        return this.sono;
+    }
+
+    public void actualizarSono(){
+        this.sono = true;
+    }
 
     /* ____ SETTERS ____ */
 

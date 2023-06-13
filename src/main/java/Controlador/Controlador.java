@@ -21,9 +21,6 @@ public class Controlador extends Application {
     private Vista vista;
     private Calendario calendario;
 
-    //  VA A RECIBIR LOS EVENTOS Y VA A REACCIONAR A ESOS EVENTOS
-    // SABE QUE EXISTE MODELO Y VISTA
-
     @Override
     public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
@@ -59,6 +56,7 @@ public class Controlador extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
 
+                //vista.resetearTiempoTranscurrido();
                 int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
                 Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
 
@@ -89,54 +87,14 @@ public class Controlador extends Application {
 
                 } else if (opcionUsuario.equals("Todo el dia")) {
                     recordatorioAct.establecerDiaCompleto();
+                } else if (opcionUsuario.equals("Fecha de inicio")) {
+                    recordatorioAct.modificarInicio(vista.vistaModificarInicio());
                 }
 
                 vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
             }
         });
     }
-
-    /*public void registrarEscuchaEnVista(){
-        this.vista.registrarEscucha(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-                int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
-                Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
-
-                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
-
-                if (opcionUsuario.equals("Titulo")){
-                    String datoNuevo = vista.vistaModificarDato("Modificar titulo");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarNombre(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Descripcion")) {
-                    String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarDescripcion(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Agregar alarma")){
-                    agregarAlarma(recordatorioAct);
-
-                } else if (opcionUsuario.equals("Tarea Completada")) {
-                    if (!recordatorioAct.verificarCompletada()){
-                        recordatorioAct.cambiarCompletada();
-                    }
-
-                } else if (opcionUsuario.equals("Agregar repeticion")) {
-                    //algo
-
-                } else if (opcionUsuario.equals("Todo el dia")) {
-                    recordatorioAct.establecerDiaCompleto();
-                }
-
-                vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
-            }
-        });
-    }*/
 
     public void agregarAlarma(Recordatorio recordatorio){
         int id = this.calendario.agregarAlarma(recordatorio);
@@ -173,6 +131,4 @@ public class Controlador extends Application {
         }
     }
 
-    /*private void actualizarDatoCalendario(Consumer<String> modificar, ){
-    }*/
 }

@@ -1,9 +1,7 @@
 package Vista;
 
 import Modelo.calendar.*;
-import Modelo.calendar.Persistencia.PersistorJSON;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,8 +16,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import javafx.application.Platform;
+
+import javafx.animation.AnimationTimer;
+
 
 public class Vista {
     @FXML
@@ -41,8 +44,6 @@ public class Vista {
     private Button sigRango;
 
     private final Calendario calendario;
-    //private Button botonRecordatorio;
-    private String datoNuevo;
     private EventHandler<ActionEvent> escuchaEvento;
     private String rangoAct;
 
@@ -64,26 +65,40 @@ public class Vista {
         agregarRecordatorios();
         verCalendarioPorRango();
 
-       /* seria algo como el metodo por demanda de los recordatorios pero con las alarmas
-       a ese metodo en vez de mandarle ver los recordatorios de "x" dia/semana/mes
-       se le manda ver las alarmas de dia y hora actual
-
-        Label label = new Label();
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                LocalDateTime tiempo = LocalDateTime.now();
-                Instant startTime = Instant.now();
-                label.setText("Tiempo: " + startTime );
+                verificarProximasAlarmas();
             }
         };
         timer.start();
-        contenedorCalendario.getChildren().add(label);*/
-
 
         Scene scene = new Scene(contenedorCalendario, 800, 600);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void verificarProximasAlarmas() {
+        LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        this.calendario.obtenerRecordatorios().stream()
+                .flatMap(recordatorio -> recordatorio.obtenerAlarmas().stream())
+                .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
+                .forEach(this::lanzarAlarma);
+    }
+
+    private void lanzarAlarma(Alarma alarma) {
+        Platform.runLater(() -> {
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alarma");
+            alert.setHeaderText("Titulo: " + alarma.obtenerNombre());
+            alert.setContentText("Descripcion: " + alarma.obtenerDescripcion() + "\n" +
+                    "Fecha y Hora: " + formato.format(alarma.obtenerfechaHora()));
+
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK);
+        });
+        alarma.actualizarSono();
     }
 
     private void agregarRecordatorios() {
@@ -128,10 +143,6 @@ public class Vista {
         });
     }
 
-    public void registrarEscucha(EventHandler<ActionEvent> escucha) {
-        this.escuchaEvento = escucha;
-    }
-
     /*
     public void Vista(List<Recordatorio> recordatorios) {
         for (var recordatorio : recordatorios) {
@@ -145,16 +156,6 @@ public class Vista {
             });
         }
     } */
-
-    /*
-    //esto va en calendario
-    private List<Alarma> pedirAlarmas(LocalDateTime tiempoActual) {
-        List<Alarma> alarmasASonar = new ArrayList<>();
-
-        for (Recordatorio recordatorio: recordatorios) {
-            if (recordatorio)
-        }
-    }*/
 
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
@@ -182,9 +183,6 @@ public class Vista {
         botonRecordatorio.setOnAction(this.escuchaEvento);
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
-
-    /*public void personalizarRec(Object opcionUsuario){
-    }*/
 
     public String vistaAgregarEfecto() {
         TextInputDialog td = new TextInputDialog();
@@ -214,11 +212,6 @@ public class Vista {
         return Integer.parseInt(modificarCant.getResult());
     }
 
-    /*public void establecerRecSeleccionado(ActionEvent recSeleccionado){
-        this.idRecordatorioAct =  ((Button) recSeleccionado.getSource()).getId();
-        this.recordatorioAct = (Button) recSeleccionado.getSource();
-    }*/
-
     public Button obtenerRecSeleccionado(ActionEvent recSeleccionado) {
         return (Button) recSeleccionado.getSource();
     }
@@ -238,12 +231,15 @@ public class Vista {
         personalizarRec.setHeaderText(null);
         personalizarRec.getDialogPane().setHeader(label);
         personalizarRec.getDialogPane().setPrefWidth(300);
-        ChoiceDialog<String> personalizarRec = new ChoiceDialog<>("selecciona", opcionesRec);
+        personalizarRec.showAndWait();
+
+        return personalizarRec.getSelectedItem();
     }
 
     private String[] opcionesModificarRec(Recordatorio recordatorio) {
-        return recordatorio.obtenerTipo().equals("Evento") ? new String[]{"Titulo", "Descripcion", "Agregar alarma", "Todo el dia" , "Agregar repeticion"}
-                : new String[]{"Titulo", "Descripcion", "Agregar alarma", "Todo el dia", "Tarea Completada"};
+        String opcionesRec = "Fecha de inicio,Fecha de fin,Titulo,Descripcion,Agregar alarma,Todo el dia";
+        return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat(",Agregar repeticion").split(",")
+                : opcionesRec.concat(",Tarea Completada").split(",");
     }
 
     public String vistaModificarDato(String datoAModificar){
@@ -312,6 +308,20 @@ public class Vista {
         infoCom.setText( "\nSin completar\n");
         infoCom.setFill(Color.RED);
         return infoCom;
+    }
+
+    public LocalDateTime vistaModificarInicio() {
+        String opcionesInicio = "año,mes,dia,hora,minutos";
+        String[] opcionesModInic = Arrays.stream(opcionesInicio.split(","))
+                .map(s -> "Ingrese el/la nuevo/a " + s)
+                .toArray(String[]::new);;
+
+        int[] opcionesUsuario = new int[5];
+        for (int i = 0; i < 5; i++) {
+            opcionesUsuario[i] = Integer.parseInt(vistaModificarDato(opcionesModInic[i])) ;
+        }
+
+        return LocalDateTime.of(opcionesUsuario[0], opcionesUsuario[1], opcionesUsuario[2], opcionesUsuario[3], opcionesUsuario[4]);
     }
 }
 
