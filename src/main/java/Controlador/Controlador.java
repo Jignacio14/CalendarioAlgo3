@@ -112,15 +112,22 @@ public class Controlador extends Application {
         switch (origen) {
             case "rangoDia" -> {
                 inicioFin = descomponerFechaRangoDia(fecha);
+                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
                 System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+                System.out.println(x.toString());
             }
             case "rangoSemana" -> {
                 inicioFin = descomponerFechaRangoSemana(fecha);
+                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
+                System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+                System.out.println(x.toString());
                 System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
             }
             case "rangoMes" -> {
                 inicioFin = descomponerFechaRangoMes(fecha);
+                var x = calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]);
                 System.out.println("Inicio: " +  inicioFin[0].toString() + " -> " + inicioFin[1].toString());
+                System.out.println(x.toString());
             }
             default -> System.out.println("Que ha ocurrido chaval?");
         }
