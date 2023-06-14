@@ -61,4 +61,9 @@ public class Organizador {
         return organizador.subMap(desde, hasta);
     }
 
+    public boolean organizarEstaVacio(){
+        return organizador.isEmpty();
+    }
+
+
 }

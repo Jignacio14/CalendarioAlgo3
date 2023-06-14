@@ -20,6 +20,9 @@ public class Controlador extends Application {
 
     private Vista vista;
     private Calendario calendario;
+    private Avanzador guia;
+    private LocalDateTime desde;
+    private LocalDateTime hasta;
 
     //  VA A RECIBIR LOS EVENTOS Y VA A REACCIONAR A ESOS EVENTOS
     // SABE QUE EXISTE MODELO Y VISTA
@@ -27,10 +30,12 @@ public class Controlador extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
-
+        this.guia = Avanzador.Diario; // Vista por defecto es un dia
         cargarCalendario();
         this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista(), eventoVerPorRango(), eventoAvanzarAtrasar());
-
+        var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
+        desde = fechasDefecto[0];
+        hasta = fechasDefecto[1];
         stage.setOnCloseRequest(windowEvent -> guardarCalendario());
     }
 
@@ -104,17 +109,48 @@ public class Controlador extends Application {
     }
 
     private void gestionarAntSig(String origen){
-        System.out.println(origen);
+        LocalDateTime[] nuevoLimites = new LocalDateTime[2];
+        switch (origen) {
+            case "sigRango" -> {
+                nuevoLimites = avanzarIteraciones();
+            }
+            case "antRango" -> {
+                nuevoLimites = retrocederIteraciones();
+            }
+            default -> {
+            }
+        }
+        desde = nuevoLimites[0];
+        hasta = nuevoLimites[1];
+        calendario.organizarRecordatorios(desde, hasta);
+    }
+
+    private LocalDateTime[] avanzarIteraciones(){
+        return guia.avanzar(desde, hasta);
+    }
+    private LocalDateTime[] retrocederIteraciones(){
+        return guia.regresar(desde, hasta);
     }
 
     private void gestionarConsulta(String origen, LocalDateTime fecha){
         LocalDateTime[] inicioFin;
         switch (origen) {
-            case "rangoDia" -> inicioFin = descomponerFechaRangoDia(fecha);
-            case "rangoSemana" -> inicioFin = descomponerFechaRangoSemana(fecha);
-            case "rangoMes" -> inicioFin = descomponerFechaRangoMes(fecha);
+            case "rangoDia" -> {
+                inicioFin = descomponerFechaRangoDia(fecha);
+                this.guia = Avanzador.Diario;
+            }
+            case "rangoSemana" -> {
+                inicioFin = descomponerFechaRangoSemana(fecha);
+                this.guia = Avanzador.Semanal;
+            }
+            case "rangoMes" -> {
+                inicioFin = descomponerFechaRangoMes(fecha);
+                this.guia = Avanzador.Mensual;
+            }
             default -> {return;}
         }
+        desde = inicioFin[0];
+        hasta = inicioFin[1];
         calendario.organizarRecordatorios(inicioFin[0], inicioFin[1]);
         System.out.println(calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]));
     }
