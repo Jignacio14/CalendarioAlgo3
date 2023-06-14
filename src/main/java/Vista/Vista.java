@@ -41,11 +41,13 @@ public class Vista {
     //private Button botonRecordatorio;
     private String datoNuevo;
     private EventHandler<ActionEvent> escuchaEvento;
+
+    private EventHandler<ActionEvent> antSig;
     private String rangoAct;
 
-    private EventHandler<ActionEvent> eventito;
+    private EventHandler<ActionEvent> verPorRango;
 
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> eventito) throws IOException {
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> generarAntSig) throws IOException {
         stage.setTitle("Calendario");
 
         FXMLLoader loader = new FXMLLoader(getClass().
@@ -54,7 +56,8 @@ public class Vista {
         VBox contenedorCalendario = loader.load();
 
         this.escuchaEvento = escucha;
-        this.eventito = eventito;
+        this.verPorRango = verPorRango;
+        this.antSig = generarAntSig;
         this.calendario = calendario;
 
         if (!this.calendario.calendarioVacio()) {
@@ -99,10 +102,9 @@ public class Vista {
     }
 
     private void verCalendarioPorRango() {
-        LocalDateTime actual = LocalDateTime.now();
-        rangoDia.setOnAction(eventito);
-        rangoSemana.setOnAction(eventito);
-        rangoMes.setOnAction(eventito);
+        rangoDia.setOnAction(verPorRango);
+        rangoSemana.setOnAction(verPorRango);
+        rangoMes.setOnAction(verPorRango);
         verRangoAntSig();
     }
 
@@ -112,46 +114,19 @@ public class Vista {
     }
 
     private void verRangoAntSig() {
-        antRango.setOnAction(event -> {
-            System.out.println("Ant");
-            System.out.println(this.rangoAct);
-        });
-
-        sigRango.setOnAction(event -> {
-            System.out.println("Sig");
-            System.out.println(this.rangoAct);
-        });
+        antRango.setOnAction(antSig);
+        sigRango.setOnAction(antSig);
     }
 
-
+    public String obtenerOrigenAntSig(Object button){
+        Button botonAntSig = (Button) button;
+        return botonAntSig.getId();
+    }
 
     public void registrarEscucha(EventHandler<ActionEvent> escucha) {
         this.escuchaEvento = escucha;
     }
 
-    /*
-    public void Vista(List<Recordatorio> recordatorios) {
-        for (var recordatorio : recordatorios) {
-            recordatorio.aceptar( new RecordatorioVisitor() {
-                @Override void visitarEvento(Evento e) {
-                    this.children().add(new VistaDeEvento(e));
-                }
-                @Override void visitarTarea(Tarea t) {
-                    this.children().add(new VistaDeTarea(t));
-                }
-            });
-        }
-    } */
-
-    /*
-    //esto va en calendario
-    private List<Alarma> pedirAlarmas(LocalDateTime tiempoActual) {
-        List<Alarma> alarmasASonar = new ArrayList<>();
-
-        for (Recordatorio recordatorio: recordatorios) {
-            if (recordatorio)
-        }
-    }*/
 
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();

@@ -29,11 +29,9 @@ public class Controlador extends Application {
         this.calendario = new Calendario();
 
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista(), eventito());
+        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista(), eventoVerPorRango(), eventoAvanzarAtrasar());
 
-        stage.setOnCloseRequest(windowEvent -> {
-            guardarCalendario();
-        });
+        stage.setOnCloseRequest(windowEvent -> guardarCalendario());
     }
 
     private void cargarCalendario() {
@@ -55,71 +53,67 @@ public class Controlador extends Application {
     }
 
     public EventHandler<ActionEvent> registrarEscuchaEnVista(){
-        return (new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
+        return (actionEvent -> {
 
-                int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
-                Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
+            int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
+            Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
 
-                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
+            Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
 
-                if (opcionUsuario.equals("Titulo")){
-                    String datoNuevo = vista.vistaModificarDato("Modificar titulo");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarNombre(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Descripcion")) {
-                    String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarDescripcion(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Agregar alarma")){
-                    agregarAlarma(recordatorioAct);
-
-                } else if (opcionUsuario.equals("Tarea Completada")) {
-                    if (!recordatorioAct.verificarCompletada()){
-                        recordatorioAct.cambiarCompletada();
-                    }
-
-                } else if (opcionUsuario.equals("Todo el dia")) {
-                    recordatorioAct.establecerDiaCompleto();
+            if (opcionUsuario.equals("Titulo")){
+                String datoNuevo = vista.vistaModificarDato("Modificar titulo");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
+                    recordatorioAct.modificarNombre(datoNuevo);
                 }
 
-                vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
+            } else if (opcionUsuario.equals("Descripcion")) {
+                String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
+                    recordatorioAct.modificarDescripcion(datoNuevo);
+                }
+
+            } else if (opcionUsuario.equals("Agregar alarma")){
+                agregarAlarma(recordatorioAct);
+
+            } else if (opcionUsuario.equals("Tarea Completada")) {
+                if (!recordatorioAct.verificarCompletada()){
+                    recordatorioAct.cambiarCompletada();
+                }
+
+            } else if (opcionUsuario.equals("Todo el dia")) {
+                recordatorioAct.establecerDiaCompleto();
             }
+
+            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
         });
     }
 
-    public EventHandler<ActionEvent> eventito(){
-        return new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                LocalDateTime fechaActual = LocalDateTime.now();
-                String origen = vista.obtenerOrigenVerRango(actionEvent.getSource());
-                gestionarConsulta(origen, fechaActual);
-            }
+    public EventHandler<ActionEvent> eventoVerPorRango(){
+        return actionEvent -> {
+            LocalDateTime fechaActual = LocalDateTime.now();
+            String origen = vista.obtenerOrigenVerRango(actionEvent.getSource());
+            gestionarConsulta(origen, fechaActual);
         };
     }
 
+    public EventHandler<ActionEvent> eventoAvanzarAtrasar(){
+        return actionEvent -> {
+            String origen = vista.obtenerOrigenAntSig(actionEvent.getSource());
+            gestionarAntSig(origen);
+        };
+    }
+
+    private void gestionarAntSig(String origen){
+        System.out.println(origen);
+    }
+
     private void gestionarConsulta(String origen, LocalDateTime fecha){
-        LocalDateTime[] inicioFin = null;
+        LocalDateTime[] inicioFin;
         switch (origen) {
-            case "rangoDia" -> {
-                inicioFin = descomponerFechaRangoDia(fecha);
-                break;
-            }
-            case "rangoSemana" -> {
-                inicioFin = descomponerFechaRangoSemana(fecha);
-                break;
-            }
-            case "rangoMes" -> {
-                inicioFin = descomponerFechaRangoMes(fecha);
-            }
-            default -> {
-                return;            }
+            case "rangoDia" -> inicioFin = descomponerFechaRangoDia(fecha);
+            case "rangoSemana" -> inicioFin = descomponerFechaRangoSemana(fecha);
+            case "rangoMes" -> inicioFin = descomponerFechaRangoMes(fecha);
+            default -> {return;}
         }
         calendario.organizarRecordatorios(inicioFin[0], inicioFin[1]);
         System.out.println(calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]));
@@ -145,48 +139,6 @@ public class Controlador extends Application {
         inicioFin[1] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), fecha.toLocalDate().lengthOfMonth(), 23, 59);
         return inicioFin;
     }
-
-    /*public void registrarEscuchaEnVista(){
-        this.vista.registrarEscucha(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-                int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
-                Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
-
-                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
-
-                if (opcionUsuario.equals("Titulo")){
-                    String datoNuevo = vista.vistaModificarDato("Modificar titulo");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarNombre(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Descripcion")) {
-                    String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
-                    if (datoNuevo != null && !datoNuevo.isEmpty()){
-                        recordatorioAct.modificarDescripcion(datoNuevo);
-                    }
-
-                } else if (opcionUsuario.equals("Agregar alarma")){
-                    agregarAlarma(recordatorioAct);
-
-                } else if (opcionUsuario.equals("Tarea Completada")) {
-                    if (!recordatorioAct.verificarCompletada()){
-                        recordatorioAct.cambiarCompletada();
-                    }
-
-                } else if (opcionUsuario.equals("Agregar repeticion")) {
-                    //algo
-
-                } else if (opcionUsuario.equals("Todo el dia")) {
-                    recordatorioAct.establecerDiaCompleto();
-                }
-
-                vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
-            }
-        });
-    }*/
 
     public void agregarAlarma(Recordatorio recordatorio){
         int id = this.calendario.agregarAlarma(recordatorio);
@@ -222,8 +174,4 @@ public class Controlador extends Application {
         }
     }
 
-
-
-    /*private void actualizarDatoCalendario(Consumer<String> modificar, ){
-    }*/
 }
