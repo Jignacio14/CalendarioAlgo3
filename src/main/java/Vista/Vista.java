@@ -7,21 +7,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.*;
-import javafx.stage.Stage;
 
+import javafx.scene.text.*;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-
 import javafx.application.Platform;
-
 import javafx.animation.AnimationTimer;
 
 
@@ -45,10 +47,14 @@ public class Vista {
     private Button sigRango;
 
     private final Calendario calendario;
-    private EventHandler<ActionEvent> escuchaEvento;
+    private final EventHandler<ActionEvent> escuchaPersonalizarRec;
+    private final EventHandler<ActionEvent> escuchaAgregarRec;
     private String rangoAct;
+    final String colorEvento = "-fx-background-color:pink;";
+    final String colorTarea = "-fx-background-color:skyBlue;";
 
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha) throws IOException {
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec,
+                 EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
 
         FXMLLoader loader = new FXMLLoader(getClass().
@@ -56,8 +62,9 @@ public class Vista {
         loader.setController(this);
         VBox contenedorCalendario = loader.load();
 
-        this.escuchaEvento = escucha;
         this.calendario = calendario;
+        this.escuchaPersonalizarRec = escuchaPersonalizarRec;
+        this.escuchaAgregarRec = escuchaAgregarRec;
 
         if (!this.calendario.calendarioVacio()) {
             cargarInterfaz();
@@ -102,15 +109,8 @@ public class Vista {
     }
 
     private void agregarRecordatorios() {
-        agregarEvento.setOnAction(evento -> {
-            int id = crearRecordatorio("Evento");
-            crearVistaEvento(id);
-        });
-
-        agregarTarea.setOnAction(evento -> {
-            int id = crearRecordatorio("Tarea");
-            crearVistaTarea(id);
-        });
+        agregarEvento.setOnAction(this.escuchaAgregarRec);
+        agregarTarea.setOnAction(this.escuchaAgregarRec);
     }
 
     private void verCalendarioPorRango() {
@@ -161,34 +161,29 @@ public class Vista {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
         for (Recordatorio recordatorio : recordatorios) {
             if (recordatorio.obtenerTipo().equals("Evento")){
-                crearVistaEvento(recordatorio.obtenerId());
+                crearVista(recordatorio);
             }else {
-                crearVistaTarea(recordatorio.obtenerId());
+                crearVista(recordatorio);
             }
         }
     }
 
-    private int crearRecordatorio(String tipo) {
-        LocalDateTime fechaHoraDefault = LocalDateTime.now();
-        return tipo.equals("Evento") ? this.calendario.crearEvento(fechaHoraDefault, 0, 0) : this.calendario.crearTarea(fechaHoraDefault, 0, 0);
-    }
-
-    private void crearVista(String color, int id) {
-        Recordatorio recordatorioAct = this.calendario.obtenerRecordatorio(id);
+    public void crearVista(Recordatorio recordatorioAct) {
+        String color = recordatorioAct.obtenerTipo().equals("Evento") ? this.colorEvento : this.colorTarea;
         Button botonRecordatorio = new Button();
         botonRecordatorio.setText("");
         botonRecordatorio.setGraphic(datosRecordatorios(recordatorioAct));
         botonRecordatorio.setStyle(color);
         botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
-        botonRecordatorio.setOnAction(this.escuchaEvento);
+        botonRecordatorio.setOnAction(this.escuchaPersonalizarRec);
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
     public Object vistaAgregarEfecto() {
         String[] opcionesRec = {"Notificacion", "Sonido", "Email"};
-        var personalizarAlarmaEfecto = new ChoiceDialog("selecciona", opcionesRec);
+        var personalizarAlarmaEfecto = new ChoiceDialog("seleccionar", opcionesRec);
 
-        personalizarAlarmaEfecto.setTitle("Agregar efecto");
+        personalizarAlarmaEfecto.setTitle("Crear Alarma");
         personalizarAlarmaEfecto.setHeaderText("Elegi el efecto deseado");
         personalizarAlarmaEfecto.setContentText("Efectos");
 
@@ -202,9 +197,9 @@ public class Vista {
 
     public Object vistaAgregarIntervalo() {
         String[] opcionesRec = {"Min", "Horas", "Dias", "Semanas"};
-        var personalizarAlarmaIntervalo = new ChoiceDialog("selecciona", opcionesRec);
+        var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", opcionesRec);
 
-        personalizarAlarmaIntervalo.setTitle("Agregar intervalo");
+        personalizarAlarmaIntervalo.setTitle("Crear Alarma");
         personalizarAlarmaIntervalo.setHeaderText("Elegi el intervalo deseado");
         personalizarAlarmaIntervalo.setContentText("Intervalos");
         personalizarAlarmaIntervalo.showAndWait();
@@ -220,11 +215,17 @@ public class Vista {
         modificarCant.setHeaderText("Coloca la cantidad de intervalo a aplicar: ");
         modificarCant.showAndWait();
 
-        return Integer.parseInt(modificarCant.getResult());
+        var cantIntervalo = modificarCant.getResult();
+
+        return cantIntervalo==null ? null : Integer.parseInt(cantIntervalo);
     }
 
     public Button obtenerRecSeleccionado(ActionEvent recSeleccionado) {
         return (Button) recSeleccionado.getSource();
+    }
+
+    public MenuItem obtenerRecAgregado(ActionEvent recSeleccionado) {
+        return (MenuItem) recSeleccionado.getSource();
     }
 
     public void actualizarVistaRec(Button recordatorioAct, Recordatorio recordatorio){
@@ -244,29 +245,24 @@ public class Vista {
         personalizarRec.getDialogPane().setPrefWidth(300);
         personalizarRec.showAndWait();
 
-        return personalizarRec.getSelectedItem();
+        Object eleccionUsuario = personalizarRec.getResult();
+
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
+                ? null : eleccionUsuario;
     }
 
-    private String[] opcionesModificarRec(Recordatorio recordatorio) {
+    public String[] opcionesModificarRec(Recordatorio recordatorio) {
         String opcionesRec = "Fecha de inicio,Fecha de fin,Titulo,Descripcion,Agregar alarma,Todo el dia";
         return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat(",Agregar repeticion").split(",")
-                : opcionesRec.concat(",Tarea Completada").split(",");
+                : opcionesRec.concat(",Cambiar estado").split(",");
     }
 
-    public String vistaModificarDato(String datoAModificar){
+    public static String vistaModificarDato(String datoAModificar){
         var modificar = new TextInputDialog();
         modificar.setHeaderText(datoAModificar);
         modificar.showAndWait();
 
         return modificar.getResult();
-    }
-
-    public void crearVistaEvento(int id) {
-        crearVista("-fx-background-color:pink;", id);
-    }
-
-    public void crearVistaTarea(int id) {
-        crearVista("-fx-background-color:skyBlue;", id);
     }
 
     public TextFlow datosRecordatorios(Recordatorio recordatorio){
@@ -321,18 +317,32 @@ public class Vista {
         return infoCom;
     }
 
-    public LocalDateTime vistaModificarInicio() {
+    public static LocalDateTime vistaModificarInicio() {
         String opcionesInicio = "año,mes,dia,hora,minutos";
         String[] opcionesModInic = Arrays.stream(opcionesInicio.split(","))
-                .map(s -> "Ingrese el/la nuevo/a " + s)
-                .toArray(String[]::new);;
+                .map(s -> "Ingrese el/la " + s.toUpperCase() + " de inicio")
+                .toArray(String[]::new);
 
         int[] opcionesUsuario = new int[5];
         for (int i = 0; i < 5; i++) {
-            opcionesUsuario[i] = Integer.parseInt(vistaModificarDato(opcionesModInic[i])) ;
+            var opcionUsuario = vistaModificarDato(opcionesModInic[i]);
+            if (opcionUsuario==null) {return null;}
+            opcionesUsuario[i] = Integer.parseInt(opcionUsuario);
         }
 
         return LocalDateTime.of(opcionesUsuario[0], opcionesUsuario[1], opcionesUsuario[2], opcionesUsuario[3], opcionesUsuario[4]);
+    }
+
+    public void mensajeError() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Dato ingresado incorrecto");
+            alert.setContentText("Por favor ingrese el dato correcto segun lo solicitado");
+
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK);
+        });
     }
 }
 

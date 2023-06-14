@@ -6,7 +6,7 @@ import Vista.RecordatorioVisitor;
 import java.time.LocalDateTime;
 
 public class Tarea extends Recordatorio {
-    private boolean completada = false;
+    private boolean completada = true;
 
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
