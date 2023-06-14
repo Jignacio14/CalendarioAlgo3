@@ -111,25 +111,14 @@ public class Controlador extends Application {
     private void gestionarAntSig(String origen){
         LocalDateTime[] nuevoLimites = new LocalDateTime[2];
         switch (origen) {
-            case "sigRango" -> {
-                nuevoLimites = avanzarIteraciones();
-            }
-            case "antRango" -> {
-                nuevoLimites = retrocederIteraciones();
-            }
+            case "sigRango" -> nuevoLimites = guia.avanzar(desde, hasta);
+            case "antRango" -> nuevoLimites = guia.regresar(desde, hasta);
             default -> {
             }
         }
         desde = nuevoLimites[0];
         hasta = nuevoLimites[1];
         calendario.organizarRecordatorios(desde, hasta);
-    }
-
-    private LocalDateTime[] avanzarIteraciones(){
-        return guia.avanzar(desde, hasta);
-    }
-    private LocalDateTime[] retrocederIteraciones(){
-        return guia.regresar(desde, hasta);
     }
 
     private void gestionarConsulta(String origen, LocalDateTime fecha){
