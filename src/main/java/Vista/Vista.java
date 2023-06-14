@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+
 import javafx.application.Platform;
 
 import javafx.animation.AnimationTimer;
@@ -64,14 +65,7 @@ public class Vista {
 
         agregarRecordatorios();
         verCalendarioPorRango();
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                verificarProximasAlarmas();
-            }
-        };
-        timer.start();
+        verificarProximasAlarmas();
 
         Scene scene = new Scene(contenedorCalendario, 800, 600);
         stage.setScene(scene);
@@ -79,18 +73,24 @@ public class Vista {
     }
 
     private void verificarProximasAlarmas() {
-        LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        this.calendario.obtenerRecordatorios().stream()
-                .flatMap(recordatorio -> recordatorio.obtenerAlarmas().stream())
-                .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
-                .forEach(this::lanzarAlarma);
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+                calendario.obtenerRecordatorios().stream()
+                        .flatMap(recordatorio -> recordatorio.obtenerAlarmas().stream())
+                        .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
+                        .forEach(Vista::lanzarAlarma);
+            }
+        };
+        timer.start();
     }
 
-    private void lanzarAlarma(Alarma alarma) {
+    private static void lanzarAlarma(Alarma alarma) {
         Platform.runLater(() -> {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Alarma");
+            alert.setTitle("Alarma " + alarma.obtenerTipoRec());
             alert.setHeaderText("Titulo: " + alarma.obtenerNombre());
             alert.setContentText("Descripcion: " + alarma.obtenerDescripcion() + "\n" +
                     "Fecha y Hora: " + formato.format(alarma.obtenerfechaHora()));
@@ -184,27 +184,38 @@ public class Vista {
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
-    public String vistaAgregarEfecto() {
-        TextInputDialog td = new TextInputDialog();
-        td.setHeaderText("Elige un efecto entre los que se ven en pantalla - 'Notificacion', 'Sonido', 'Email' ");
-        td.showAndWait();
+    public Object vistaAgregarEfecto() {
+        String[] opcionesRec = {"Notificacion", "Sonido", "Email"};
+        var personalizarAlarmaEfecto = new ChoiceDialog("selecciona", opcionesRec);
 
-        return td.getResult();
+        personalizarAlarmaEfecto.setTitle("Agregar efecto");
+        personalizarAlarmaEfecto.setHeaderText("Elegi el efecto deseado");
+        personalizarAlarmaEfecto.setContentText("Efectos");
+
+        personalizarAlarmaEfecto.showAndWait();
+
+        Object eleccionUsuario = personalizarAlarmaEfecto.getResult();
+
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
+                ? null : eleccionUsuario;
     }
 
     public Object vistaAgregarIntervalo() {
         String[] opcionesRec = {"Min", "Horas", "Dias", "Semanas"};
-        var personalizarRecIntervalo = new ChoiceDialog("selecciona", opcionesRec);
+        var personalizarAlarmaIntervalo = new ChoiceDialog("selecciona", opcionesRec);
 
-        personalizarRecIntervalo.setTitle("Agregar intervalo");
-        personalizarRecIntervalo.setHeaderText("Elegi el intervalo deseado");
-        personalizarRecIntervalo.setContentText("Intervalos");
-        personalizarRecIntervalo.showAndWait();
+        personalizarAlarmaIntervalo.setTitle("Agregar intervalo");
+        personalizarAlarmaIntervalo.setHeaderText("Elegi el intervalo deseado");
+        personalizarAlarmaIntervalo.setContentText("Intervalos");
+        personalizarAlarmaIntervalo.showAndWait();
 
-        return personalizarRecIntervalo.getSelectedItem();
+        Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
+
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
+                ? null : eleccionUsuario;
     }
 
-    public Integer vistaCantIntervalo() {
+    public static Integer vistaCantIntervalo() {
         var modificarCant = new TextInputDialog();
         modificarCant.setHeaderText("Coloca la cantidad de intervalo a aplicar: ");
         modificarCant.showAndWait();
