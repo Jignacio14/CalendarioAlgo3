@@ -3,14 +3,14 @@ package Controlador;
 import Modelo.calendar.AlarmaEfectos;
 import Modelo.calendar.Calendario;
 import Modelo.calendar.Persistencia.PersistorJSON;
-
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import Modelo.calendar.Recordatorio;
 import Vista.*;
 import javafx.application.Application;
@@ -24,14 +24,19 @@ public class Controlador extends Application {
 
     private Vista vista;
     private Calendario calendario;
+    private Avanzador guia;
+    private LocalDateTime desde;
+    private LocalDateTime hasta;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
-
+        this.guia = Avanzador.Diario; // Vista por defecto es un dia
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), escuchaAgregarRec());
-
+        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), escuchaAgregarRec, eventoVerPorRango(), eventoAvanzarAtrasar());
+        var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
+        desde = fechasDefecto[0];
+        hasta = fechasDefecto[1];
         stage.setOnCloseRequest(windowEvent -> guardarCalendario());
     }
 
@@ -52,7 +57,7 @@ public class Controlador extends Application {
         }catch (IOException ignore){
         }
     }
-
+  
     public EventHandler<ActionEvent> escuchaPersonalizarRec(){
         return (actionEvent -> {
             int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
@@ -72,6 +77,8 @@ public class Controlador extends Application {
             }else {
                 agregarRecordatorio("Tarea");
             }
+
+            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
         });
     }
 
@@ -159,6 +166,78 @@ public class Controlador extends Application {
 
     private String verificarDatoNuevo(String datoNuevo, String datoAnt) {
         return (datoNuevo!=null && !datoNuevo.isEmpty()) ? datoNuevo : datoAnt;
+
+    public EventHandler<ActionEvent> eventoVerPorRango(){
+        return actionEvent -> {
+            LocalDateTime fechaActual = LocalDateTime.now();
+            String origen = vista.obtenerOrigenVerRango(actionEvent.getSource());
+            gestionarConsulta(origen, fechaActual);
+        };
+    }
+
+    public EventHandler<ActionEvent> eventoAvanzarAtrasar(){
+        return actionEvent -> {
+            String origen = vista.obtenerOrigenAntSig(actionEvent.getSource());
+            gestionarAntSig(origen);
+        };
+    }
+
+    private void gestionarAntSig(String origen){
+        LocalDateTime[] nuevoLimites = new LocalDateTime[2];
+        switch (origen) {
+            case "sigRango" -> nuevoLimites = guia.avanzar(desde, hasta);
+            case "antRango" -> nuevoLimites = guia.regresar(desde, hasta);
+            default -> {
+            }
+        }
+        desde = nuevoLimites[0];
+        hasta = nuevoLimites[1];
+        calendario.organizarRecordatorios(desde, hasta);
+    }
+
+    private void gestionarConsulta(String origen, LocalDateTime fecha){
+        LocalDateTime[] inicioFin;
+        switch (origen) {
+            case "rangoDia" -> {
+                inicioFin = descomponerFechaRangoDia(fecha);
+                this.guia = Avanzador.Diario;
+            }
+            case "rangoSemana" -> {
+                inicioFin = descomponerFechaRangoSemana(fecha);
+                this.guia = Avanzador.Semanal;
+            }
+            case "rangoMes" -> {
+                inicioFin = descomponerFechaRangoMes(fecha);
+                this.guia = Avanzador.Mensual;
+            }
+            default -> {return;}
+        }
+        desde = inicioFin[0];
+        hasta = inicioFin[1];
+        calendario.organizarRecordatorios(inicioFin[0], inicioFin[1]);
+        System.out.println(calendario.verRecordatoriosOrdenados(inicioFin[0], inicioFin[1]));
+    }
+
+    public LocalDateTime[] descomponerFechaRangoDia(LocalDateTime fecha){
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0]= fecha.truncatedTo(ChronoUnit.DAYS);
+        inicioFin[1]  = inicioFin[0].plusHours(23).plusMinutes(59);
+        return inicioFin;
+    }
+
+    private LocalDateTime[] descomponerFechaRangoSemana(LocalDateTime fecha){
+        int diaResultado = fecha.getDayOfMonth() + DayOfWeek.MONDAY.getValue() - fecha.getDayOfWeek().getValue();
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), diaResultado, 0, 0);
+        inicioFin[1] = inicioFin[0].plusDays(6).plusMinutes(59).plusHours(23);
+        return inicioFin;
+    }
+    private LocalDateTime[] descomponerFechaRangoMes(LocalDateTime fecha){
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), 1, 0, 0);
+        inicioFin[1] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), fecha.toLocalDate().lengthOfMonth(), 23, 59);
+        return inicioFin;
+
     }
 
     public void crearAlarma(Recordatorio recordatorio){
@@ -195,6 +274,7 @@ public class Controlador extends Application {
             case "Notificacion" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
             case "Sonido" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.SONIDO);
             case "Email" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.EMAIL);
+
         }
     }
 

@@ -49,20 +49,29 @@ public class Vista {
     private final Calendario calendario;
     private final EventHandler<ActionEvent> escuchaPersonalizarRec;
     private final EventHandler<ActionEvent> escuchaAgregarRec;
+    private EventHandler<ActionEvent> antSig;
     private String rangoAct;
     final String colorEvento = "-fx-background-color:pink;";
     final String colorTarea = "-fx-background-color:skyBlue;";
 
     private static String fechaAMod;
 
+
     public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec,
                  EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
+    private EventHandler<ActionEvent> verPorRango;
 
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> generarAntSig) throws IOException {
+        stage.setTitle("Calendario");
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("../estructura.fxml"));
         loader.setController(this);
         VBox contenedorCalendario = loader.load();
+
+        this.escuchaEvento = escucha;
+        this.verPorRango = verPorRango;
+        this.antSig = generarAntSig;
 
         this.calendario = calendario;
         this.escuchaPersonalizarRec = escuchaPersonalizarRec;
@@ -114,50 +123,32 @@ public class Vista {
         agregarEvento.setOnAction(this.escuchaAgregarRec);
         agregarTarea.setOnAction(this.escuchaAgregarRec);
     }
-
     private void verCalendarioPorRango() {
-
-        rangoDia.setOnAction(evento->{
-            System.out.println("ver por dia");
-            this.rangoAct = "dia";
-        });
-        rangoSemana.setOnAction(evento->{
-            System.out.println("ver por semana");
-            this.rangoAct = "semana";
-        });
-        rangoMes.setOnAction(evento->{
-            System.out.println("ver por mes");
-            this.rangoAct = "mes";
-        });
-
+        rangoDia.setOnAction(verPorRango);
+        rangoSemana.setOnAction(verPorRango);
+        rangoMes.setOnAction(verPorRango);
         verRangoAntSig();
     }
 
-    private void verRangoAntSig() {
-        antRango.setOnAction(event -> {
-            System.out.println("Ant");
-            System.out.println(this.rangoAct);
-        });
-
-        sigRango.setOnAction(event -> {
-            System.out.println("Sig");
-            System.out.println(this.rangoAct);
-        });
+    public String obtenerOrigenVerRango(Object menuItem){
+        MenuItem menu = (MenuItem) menuItem;
+        return menu.getId();
     }
 
-    /*
-    public void Vista(List<Recordatorio> recordatorios) {
-        for (var recordatorio : recordatorios) {
-            recordatorio.aceptar( new RecordatorioVisitor() {
-                @Override void visitarEvento(Evento e) {
-                    this.children().add(new VistaDeEvento(e));
-                }
-                @Override void visitarTarea(Tarea t) {
-                    this.children().add(new VistaDeTarea(t));
-                }
-            });
-        }
-    } */
+    private void verRangoAntSig() {
+        antRango.setOnAction(antSig);
+        sigRango.setOnAction(antSig);
+    }
+
+    public String obtenerOrigenAntSig(Object button){
+        Button botonAntSig = (Button) button;
+        return botonAntSig.getId();
+    }
+
+
+    public void registrarEscucha(EventHandler<ActionEvent> escucha) {
+        this.escuchaEvento = escucha;
+    }
 
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
@@ -177,6 +168,7 @@ public class Vista {
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
+
     public Object vistaAgregarEfecto() {
         String[] opcionesRec = {"Notificacion", "Sonido", "Email"};
         var personalizarAlarmaEfecto = new ChoiceDialog("seleccionar", opcionesRec);
@@ -184,6 +176,7 @@ public class Vista {
         personalizarAlarmaEfecto.setTitle("Crear Alarma");
         personalizarAlarmaEfecto.setHeaderText("Elegi el efecto deseado");
         personalizarAlarmaEfecto.setContentText("Efectos");
+
 
         personalizarAlarmaEfecto.showAndWait();
 
@@ -235,6 +228,7 @@ public class Vista {
         return cantIntervalo==null ? null : Integer.parseInt(cantIntervalo);
     }
 
+
     public Button obtenerRecSeleccionado(ActionEvent recSeleccionado) {
         return (Button) recSeleccionado.getSource();
     }
@@ -258,12 +252,14 @@ public class Vista {
         personalizarRec.setHeaderText(null);
         personalizarRec.getDialogPane().setHeader(label);
         personalizarRec.getDialogPane().setPrefWidth(300);
+
         personalizarRec.showAndWait();
 
         Object eleccionUsuario = personalizarRec.getResult();
 
         return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
                 ? null : eleccionUsuario;
+
     }
 
     public String[] opcionesModificarRec(Recordatorio recordatorio) {

@@ -146,6 +146,10 @@ public class Calendario implements Persistible {
         organizador.organizarRecordatorios(desde, hasta.plusDays(1), recordatorios);
     }
 
+    public boolean verificarHayRepeticionesGeneradas(){
+        return organizador.organizarEstaVacio();
+    }
+
     // metodos para hacer pruebas
     private boolean compararRecordatorios(Object obj) {
         Calendario aComparar = (Calendario) obj;
