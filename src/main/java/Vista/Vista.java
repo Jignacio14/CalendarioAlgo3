@@ -7,16 +7,28 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
+import javafx.application.Platform;
+import javafx.animation.AnimationTimer;
+
 
 public class Vista {
     @FXML
@@ -38,12 +50,16 @@ public class Vista {
     private Button sigRango;
 
     private final Calendario calendario;
-
     private final EventHandler<ActionEvent> escuchaPersonalizarRec;
     private final EventHandler<ActionEvent> escuchaAgregarRec;
+
     private final EventHandler<ActionEvent> verPorRango;
     private EventHandler<ActionEvent> antSig;
     private String rangoAct;
+    final String colorEvento = "-fx-background-color:pink;";
+    final String colorTarea = "-fx-background-color:skyBlue;";
+
+    private static String fechaAMod;
 
 
 
@@ -56,7 +72,10 @@ public class Vista {
 
         this.verPorRango = verPorRango;
         this.antSig = generarAntSig;
+
         this.calendario = calendario;
+        this.escuchaPersonalizarRec = escuchaPersonalizarRec;
+        this.escuchaAgregarRec = escuchaAgregarRec;
 
         if (!this.calendario.calendarioVacio()) {
             cargarInterfaz();
@@ -64,23 +83,7 @@ public class Vista {
 
         agregarRecordatorios();
         verCalendarioPorRango();
-
-       /* seria algo como el metodo por demanda de los recordatorios pero con las alarmas
-       a ese metodo en vez de mandarle ver los recordatorios de "x" dia/semana/mes
-       se le manda ver las alarmas de dia y hora actual
-
-        Label label = new Label();
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                LocalDateTime tiempo = LocalDateTime.now();
-                Instant startTime = Instant.now();
-                label.setText("Tiempo: " + startTime );
-            }
-        };
-        timer.start();
-        contenedorCalendario.getChildren().add(label);*/
-
+        verificarProximasAlarmas();
 
         Scene scene = new Scene(contenedorCalendario, 800, 600);
         stage.setScene(scene);
@@ -88,15 +91,8 @@ public class Vista {
     }
 
     private void agregarRecordatorios() {
-        agregarEvento.setOnAction(evento -> {
-            int id = crearRecordatorio("Evento");
-            crearVistaEvento(id);
-        });
-
-        agregarTarea.setOnAction(evento -> {
-            int id = crearRecordatorio("Tarea");
-            crearVistaTarea(id);
-        });
+        agregarEvento.setOnAction(this.escuchaAgregarRec);
+        agregarTarea.setOnAction(this.escuchaAgregarRec);
     }
 
     private void verCalendarioPorRango() {
@@ -106,7 +102,7 @@ public class Vista {
         verRangoAntSig();
     }
 
-    public String obtenerOrigenVerRango(Object menuItem){
+    public String obtenerOrigenVerRango(Object menuItem) {
         MenuItem menu = (MenuItem) menuItem;
         return menu.getId();
     }
@@ -116,7 +112,7 @@ public class Vista {
         sigRango.setOnAction(antSig);
     }
 
-    public String obtenerOrigenAntSig(Object button){
+    public String obtenerOrigenAntSig(Object button) {
         Button botonAntSig = (Button) button;
         return botonAntSig.getId();
     }
@@ -124,12 +120,23 @@ public class Vista {
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
         for (Recordatorio recordatorio : recordatorios) {
-            if (recordatorio.obtenerTipo().equals("Evento")){
+            if (recordatorio.obtenerTipo().equals("Evento")) {
                 crearVistaEvento(recordatorio.obtenerId());
-            }else {
+            } else {
                 crearVistaTarea(recordatorio.obtenerId());
             }
         }
+    }
+
+    public void crearVista(Recordatorio recordatorioAct) {
+        String color = recordatorioAct.obtenerTipo().equals("Evento") ? this.colorEvento : this.colorTarea;
+        Button botonRecordatorio = new Button();
+        botonRecordatorio.setText("");
+        botonRecordatorio.setGraphic(datosRecordatorios(recordatorioAct));
+        botonRecordatorio.setStyle(color);
+        botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
+        botonRecordatorio.setOnAction(this.escuchaPersonalizarRec);
+        contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
     private int crearRecordatorio(String tipo) {
@@ -144,7 +151,7 @@ public class Vista {
         botonRecordatorio.setGraphic(datosRecordatorios(recordatorioAct));
         botonRecordatorio.setStyle(color);
         botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
-        botonRecordatorio.setOnAction(this.escuchaEvento);
+        botonRecordatorio.setOnAction(this.escuchaPersonalizarRec);
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
@@ -168,11 +175,14 @@ public class Vista {
         return personalizarRecIntervalo.getSelectedItem();
     }
 
-    public Integer vistaCantIntervalo() {
+    public MenuItem obtenerRecAgregado(ActionEvent recSeleccionado) {
+        return (MenuItem) recSeleccionado.getSource();
+    }
+
+    public static Integer vistaCantIntervalo() {
         var modificarCant = new TextInputDialog();
         modificarCant.setHeaderText("Coloca la cantidad de intervalo a aplicar: ");
         modificarCant.showAndWait();
-
         return Integer.parseInt(modificarCant.getResult());
     }
 
@@ -180,14 +190,13 @@ public class Vista {
         return (Button) recSeleccionado.getSource();
     }
 
-    public void actualizarVistaRec(Button recordatorioAct, Recordatorio recordatorio){
+    public void actualizarVistaRec(Button recordatorioAct, Recordatorio recordatorio) {
         recordatorioAct.setGraphic(datosRecordatorios(recordatorio));
     }
 
     public Object vistaPersonalizarRec(Recordatorio recordatorioAct) {
         String[] opcionesRec = opcionesModificarRec(recordatorioAct);
         var personalizarRec = new ChoiceDialog("seleccionar", opcionesRec);
-
         personalizarRec.setTitle("Personalizar Recordatorio");
         personalizarRec.setContentText("Modificar");
         Label label = new Label();
@@ -195,23 +204,16 @@ public class Vista {
         personalizarRec.setHeaderText(null);
         personalizarRec.getDialogPane().setHeader(label);
         personalizarRec.getDialogPane().setPrefWidth(300);
-
         personalizarRec.showAndWait();
         Object eleccionUsuario = personalizarRec.getResult();
 
-        return eleccionUsuario==null || eleccionUsuario.equals("selecciona") ? null : eleccionUsuario;
+        return eleccionUsuario == null || eleccionUsuario.equals("selecciona") ? null : eleccionUsuario;
     }
 
-    private String[] opcionesModificarRec(Recordatorio recordatorio) {
-        return recordatorio.obtenerTipo().equals("Evento") ? new String[]{"Titulo", "Descripcion", "Agregar alarma", "Todo el dia" , "Agregar repeticion"}
-                : new String[]{"Titulo", "Descripcion", "Agregar alarma", "Todo el dia", "Tarea Completada"};
-    }
-
-    public String vistaModificarDato(String datoAModificar){
-        var modificar = new TextInputDialog();
-        modificar.setHeaderText(datoAModificar);
-        modificar.showAndWait();
-        return modificar.getResult();
+    public String[] opcionesModificarRec(Recordatorio recordatorio) {
+        String opcionesRec = "Titulo,Descripcion,Todo el dia,Fecha de inicio o fin,Agregar alarma,";
+        return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar repeticion").split(",")
+                : opcionesRec.concat("Cambiar estado").split(",");
     }
 
     public void crearVistaEvento(int id) {
@@ -222,7 +224,7 @@ public class Vista {
         crearVista("-fx-background-color:skyBlue;", id);
     }
 
-    public TextFlow datosRecordatorios(Recordatorio recordatorio){
+    public TextFlow datosRecordatorios(Recordatorio recordatorio) {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
         Text infoRec = new Text();
         infoRec.setText(recordatorio.obtenerTipo() + "\n" +
@@ -236,15 +238,14 @@ public class Vista {
         Text infoDiaCom = new Text(((recordatorio.verficarDiaCompleto()) ? "\n-- Dia completo --\n" : ""));
         infoDiaCom.setFill(Color.BLUEVIOLET);
         infoDiaCom.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-
-        var info =  new TextFlow();
+        var info = new TextFlow();
         info.setTextAlignment(TextAlignment.CENTER);
         info.getChildren().addAll(infoRec, infoDiaCom, infoTarCom);
         info.setPrefHeight(100);
         return info;
     }
 
-    private TextFlow datosCompletosRecordatorio(Recordatorio recordatorio){
+    private TextFlow datosCompletosRecordatorio(Recordatorio recordatorio) {
         var info = datosRecordatorios(recordatorio);
         info.setPrefHeight(300);
         info.setPrefWidth(300);
@@ -254,7 +255,7 @@ public class Vista {
         return info;
     }
 
-    private String[] mostrarAlarmas(List<Alarma> alarmas){
+    private String[] mostrarAlarmas(List<Alarma> alarmas) {
         String[] alarmasAMostrar = new String[alarmas.size()];
         for (int i = 0; i < alarmas.size(); i++) {
             alarmasAMostrar[i] = alarmas.get(i).toString();
@@ -262,17 +263,24 @@ public class Vista {
         return alarmasAMostrar;
     }
 
-    private Text verificarCompletada(Boolean tareaCompletada){
+    private Text verificarCompletada(Boolean tareaCompletada) {
         Text infoCom = new Text();
-        if (tareaCompletada){
-            infoCom.setText( "\nCompletada\n");
+        if (tareaCompletada) {
+            infoCom.setText("\nCompletada\n");
             infoCom.setFill(Color.GREEN);
 
         } else {
-            infoCom.setText( "\nSin completar\n");
+            infoCom.setText("\nSin completar\n");
             infoCom.setFill(Color.RED);
         }
         return infoCom;
+    }
+
+    public static String vistaModificarDato(String datoAModificar){
+        var modificar = new TextInputDialog();
+        modificar.setHeaderText(datoAModificar);
+        modificar.showAndWait();
+        return modificar.getResult();
     }
 
     public static LocalDateTime vistaModificarFecha() {
@@ -284,12 +292,16 @@ public class Vista {
         int[] opcionesUsuario = new int[5];
         for (int i = 0; i < 5; i++) {
             var opcionUsuario = vistaModificarDato(opcionesModInic[i]);
-            if (opcionUsuario==null) {return null;}
+            if (opcionUsuario == null) {
+                return null;
+            }
             opcionesUsuario[i] = Integer.parseInt(opcionUsuario);
         }
 
         return LocalDateTime.of(opcionesUsuario[0], opcionesUsuario[1], opcionesUsuario[2], opcionesUsuario[3], opcionesUsuario[4]);
     }
+
+
 
     public void establecerFechaAMod(String fechaAMod) {
         Vista.fechaAMod = fechaAMod;
@@ -312,7 +324,63 @@ public class Vista {
         alert.setTitle("Confirmar operacion");
         alert.setHeaderText(msjConfirmacion);
         alert.showAndWait();
-        return alert.getResult()==ButtonType.OK;
+        return alert.getResult() == ButtonType.OK;
     }
-}
 
+
+    private void verificarProximasAlarmas() {
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+                calendario.obtenerRecordatorios().stream()
+                        .flatMap(recordatorio -> recordatorio.obtenerAlarmas().stream())
+                        .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
+                        .forEach(Vista::lanzarAlarma);
+            }
+        };
+        timer.start();
+    }
+
+    public Object vistaAgregarFechaIniYFin(Recordatorio recordatorio) {
+        String opcionesRec = "Fecha de inicio,";
+
+        var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar duracion").split(",")
+                : opcionesRec.concat("Fecha de inicio").split(","));
+
+        personalizarAlarmaIntervalo.setTitle("Modificar fecha de inicio y fin/duracion");
+        personalizarAlarmaIntervalo.setHeaderText("Elegi la fecha a modificar");
+        personalizarAlarmaIntervalo.setContentText("Opciones");
+        personalizarAlarmaIntervalo.showAndWait();
+
+        Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
+
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
+                ? null : eleccionUsuario;
+    }
+
+    public void verEventosPorRangoFechas(Map<LocalDateTime, HashSet<Integer>> codigosOrdenados){
+        for (Map.Entry<LocalDateTime, HashSet<Integer>> entry : codigosOrdenados.entrySet()) {
+            LocalDateTime dateTime = entry.getKey();
+            HashSet<Integer> codigos = entry.getValue();
+            System.out.println("Fecha y hora: " + dateTime);
+            System.out.println("Códigos: " + codigos);
+        }
+    }
+
+    private static void lanzarAlarma(Alarma alarma) {
+        Platform.runLater(() -> {
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alarma " + alarma.obtenerTipoRec());
+            alert.setHeaderText("Titulo: " + alarma.obtenerNombre());
+            alert.setContentText("Descripcion: " + alarma.obtenerDescripcion() + "\n" +
+                    "Fecha y Hora: " + formato.format(alarma.obtenerfechaHora()));
+
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK);
+        });
+        alarma.actualizarSono();
+    }
+
+}

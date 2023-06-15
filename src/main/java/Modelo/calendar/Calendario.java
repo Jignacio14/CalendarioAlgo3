@@ -60,7 +60,9 @@ public class Calendario implements Persistible {
     }
 
     public void modificarInicio(Recordatorio recordatorio, LocalDateTime inicioNuevo) {
+        organizador.eliminarRepeticiones(recordatorio);
         recordatorio.modificarInicio(inicioNuevo);
+        organizador.actualizarRepeticiones(recordatorio);
     }
 
     public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
