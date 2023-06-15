@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import Modelo.calendar.Recordatorio;
 import Vista.*;
@@ -33,7 +32,7 @@ public class Controlador extends Application {
         this.calendario = new Calendario();
         this.guia = Avanzador.Diario; // Vista por defecto es un dia
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), escuchaAgregarRec, eventoVerPorRango(), eventoAvanzarAtrasar());
+        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), eventoAvanzarAtrasar(), eventoVerPorRango(), escuchaAgregarRec());
         var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
         desde = fechasDefecto[0];
         hasta = fechasDefecto[1];
@@ -77,8 +76,6 @@ public class Controlador extends Application {
             }else {
                 agregarRecordatorio("Tarea");
             }
-
-            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
         });
     }
 
@@ -166,6 +163,7 @@ public class Controlador extends Application {
 
     private String verificarDatoNuevo(String datoNuevo, String datoAnt) {
         return (datoNuevo!=null && !datoNuevo.isEmpty()) ? datoNuevo : datoAnt;
+    }
 
     public EventHandler<ActionEvent> eventoVerPorRango(){
         return actionEvent -> {
@@ -175,11 +173,11 @@ public class Controlador extends Application {
         };
     }
 
-    public EventHandler<ActionEvent> eventoAvanzarAtrasar(){
-        return actionEvent -> {
-            String origen = vista.obtenerOrigenAntSig(actionEvent.getSource());
-            gestionarAntSig(origen);
-        };
+    public EventHandler<ActionEvent> eventoAvanzarAtrasar() {
+            return actionEvent -> {
+                String origen = vista.obtenerOrigenAntSig(actionEvent.getSource());
+                gestionarAntSig(origen);
+            };
     }
 
     private void gestionarAntSig(String origen){

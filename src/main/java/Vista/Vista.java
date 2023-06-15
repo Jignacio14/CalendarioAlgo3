@@ -49,6 +49,8 @@ public class Vista {
     private final Calendario calendario;
     private final EventHandler<ActionEvent> escuchaPersonalizarRec;
     private final EventHandler<ActionEvent> escuchaAgregarRec;
+
+    private final EventHandler<ActionEvent> verPorRango;
     private EventHandler<ActionEvent> antSig;
     private String rangoAct;
     final String colorEvento = "-fx-background-color:pink;";
@@ -57,19 +59,13 @@ public class Vista {
     private static String fechaAMod;
 
 
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec,
-                 EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
-        stage.setTitle("Calendario");
-    private EventHandler<ActionEvent> verPorRango;
-
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> generarAntSig) throws IOException {
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec, EventHandler<ActionEvent> generarAntSig, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("../estructura.fxml"));
         loader.setController(this);
         VBox contenedorCalendario = loader.load();
 
-        this.escuchaEvento = escucha;
         this.verPorRango = verPorRango;
         this.antSig = generarAntSig;
 
@@ -123,6 +119,7 @@ public class Vista {
         agregarEvento.setOnAction(this.escuchaAgregarRec);
         agregarTarea.setOnAction(this.escuchaAgregarRec);
     }
+
     private void verCalendarioPorRango() {
         rangoDia.setOnAction(verPorRango);
         rangoSemana.setOnAction(verPorRango);
@@ -143,11 +140,6 @@ public class Vista {
     public String obtenerOrigenAntSig(Object button){
         Button botonAntSig = (Button) button;
         return botonAntSig.getId();
-    }
-
-
-    public void registrarEscucha(EventHandler<ActionEvent> escucha) {
-        this.escuchaEvento = escucha;
     }
 
     private void cargarInterfaz() {
