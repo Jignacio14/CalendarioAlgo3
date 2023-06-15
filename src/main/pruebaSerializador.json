@@ -1,0 +1,14 @@
+[
+  {
+    "ultRepeticion": "2023-08-19T19:43:45.066006060",
+    "tipo": "Evento",
+    "nombre": "Prueba",
+    "descripcion": "AAAA",
+    "inicio": "2023-06-15T18:00",
+    "fin": "2023-06-15T18:00",
+    "horas": 0,
+    "minutos": 0,
+    "id": 0,
+    "alarmas": []
+  }
+]

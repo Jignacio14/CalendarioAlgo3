@@ -33,6 +33,7 @@ public class Evento extends Recordatorio {
 
     public void eliminarRepeticiones() {
         this.repetidor = null;
+
     }
 
     public void configurarFechaLimite(LocalDateTime fechaLimite) { this.repetidor.configurarFechaLimite(fechaLimite); }

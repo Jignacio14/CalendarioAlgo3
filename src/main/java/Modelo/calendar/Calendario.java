@@ -140,6 +140,11 @@ public class Calendario implements Persistible {
         organizador.actualizarRepeticiones(evento);
     }
 
+    public void eliminarRepeticiones(Evento evento){
+        organizador.eliminarRepeticiones(evento);
+        evento.eliminarRepeticiones();
+        organizador.actualizarRepeticiones(evento);
+    }
 
     public void organizarRecordatorios(LocalDateTime desde, LocalDateTime hasta){
         // si el mapa en la consulta no incluye el hasta, por eso la extiendo 1 dia

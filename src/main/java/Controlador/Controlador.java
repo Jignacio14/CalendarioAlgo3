@@ -283,10 +283,9 @@ public class Controlador extends Application {
             return;
         }
 
-
         switch ((String) opcionUsuario) {
             case "Sin repeticion" -> {
-                return;
+                calendario.eliminarRepeticiones(recordatorioAct);
             }
             case "Repeticion diaria" -> {
                 Supplier<Object> intervaloRepUsuario = () -> (Integer.parseInt(verificarDatoNuevo((pedirDatoUsuario
