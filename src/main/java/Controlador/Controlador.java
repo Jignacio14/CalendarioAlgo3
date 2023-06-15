@@ -1,7 +1,6 @@
 package Controlador;
 
-import Modelo.calendar.AlarmaEfectos;
-import Modelo.calendar.Calendario;
+import Modelo.calendar.*;
 import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
 import java.time.DateTimeException;
@@ -12,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
-import Modelo.calendar.Recordatorio;
+
 import Vista.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -251,32 +250,82 @@ public class Controlador extends Application {
             return;
         }
         switch ((String) opcionUsuario) {
-            case "Titulo":
+            case "Titulo" -> {
                 datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar titulo"), recordatorioAct.obtenerNombre());
                 recordatorioAct.modificarNombre(datoNuevo);
-                break;
-            case "Descripcion":
+            }
+            case "Descripcion" -> {
                 datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar descripcion"), recordatorioAct.obtenerDescripcion());
                 recordatorioAct.modificarDescripcion(datoNuevo);
-                break;
-            case "Agregar alarma":
-                crearAlarma(recordatorioAct);
-                break;
-            case "Cambiar estado":
-                recordatorioAct.cambiarCompletada();
-                break;
-            case "Agregar repeticion":
-                //algo
-                break;
-            case "Todo el dia":
-                if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")){recordatorioAct.establecerDiaCompleto();}
-                break;
-            case "Fecha de inicio o fin":
-                if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")){
+            }
+            case "Agregar alarma" -> crearAlarma(recordatorioAct);
+            case "Cambiar estado" -> recordatorioAct.cambiarCompletada();
+            case "Agregar repeticion" -> agregarRepeticion(recordatorioAct, pedirDatoUsuario);
+            case "Todo el dia" -> {
+                if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")) {
+                    recordatorioAct.establecerDiaCompleto();
+                }
+            }
+            case "Fecha de inicio o fin" -> {
+                if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")) {
                     establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
                 }
-                break;
+            }
         }
+    }
+
+    private void agregarRepeticion(Recordatorio recordatorioAct, Function<String,String> pedirDatoUsuario) {
+        var opcionUsuario = vista.vistaAgregarRepeticion(recordatorioAct);
+        if (opcionUsuario == null){
+            return;
+        }
+        switch ((String) opcionUsuario) {
+            case "Sin repeticion" -> {
+                //if (((Evento) recordatorioAct).verificarRepeticion()) {
+                    ((Evento) recordatorioAct).eliminarRepeticiones();
+                //}
+                return;
+            }
+            case "Repeticion diaria" -> {
+                Supplier<Object> intervaloRepUsuario = () -> (Integer.parseInt(verificarDatoNuevo((pedirDatoUsuario
+                        .apply("Intervalo - despues de cuantos dias queres que se repita el evento -")), "0")));
+                var intervaloRep = verificarDatoUsuarioInt(intervaloRepUsuario);
+                agregarLimiteRepDiaria(recordatorioAct, (Integer) intervaloRep, pedirDatoUsuario);
+            }
+        }
+        /*
+        evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
+        evento.configurarRepeticion(Frecuencia.Diaria, Limite.FechaMax);
+        evento.configurarIntervalo(4);
+        evento.configurarIteracion(4);
+        evento.configurarFechaLimite("local date time");
+         */
+    }
+
+    private void agregarLimiteRepDiaria(Recordatorio recordatorioAct, Integer intervaloRep, Function<String,String> pedirDatoUsuario) {
+        var opcionUsuario = vista.vistaConsultarTipoLimiteRepDiaria(recordatorioAct);
+        if (opcionUsuario == null){
+            return;
+        }
+        var evento = (Evento)recordatorioAct;
+        switch ((String) opcionUsuario) {
+
+            case "Una fecha limite" -> {
+                vista.establecerFechaAMod("limite de la repeticion");
+                var fechaLimite = verificarDatoUsuarioInt(Vista::vistaModificarFecha);
+                calendario.agregarRepeticiones(evento, Frecuencia.Diaria, Limite.FechaMax);
+                calendario.modificarRepeticionesFechaLimite(evento, (LocalDateTime)fechaLimite);
+            }
+
+            case "despues de cierta cantidad de repeticiones" -> {
+                Supplier<Object> iteracionesUsuario = () -> (Integer.parseInt(verificarDatoNuevo((pedirDatoUsuario
+                        .apply("Coloca la cantidad de repeticiones deseadas")), "0")));
+                var iteracionesRep = verificarDatoUsuarioInt(iteracionesUsuario);
+                calendario.agregarRepeticiones(evento, Frecuencia.Diaria, Limite.Iteraciones);
+                calendario.modificarRepeticionesIteraciones(evento, (Integer)iteracionesRep);
+            }
+        }
+        calendario.modificarRepeticionesIntervalo(evento, intervaloRep);
     }
 
     private void establecerInicioyFinRec(Recordatorio recordatorioAct, Function<String,String> pedirDatoUsuario) {
@@ -287,6 +336,7 @@ public class Controlador extends Application {
             }
             switch ((String) opcionUsuario) {
                 case "Fecha de inicio" -> modificarFecha("inicio", recordatorioAct);
+
                 case "Agregar duracion" -> {
                         Supplier<Object> duracionHorasUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese las horas que quiere que dure el evento"), "0")));
                         var duracionHs = verificarDatoUsuarioInt(duracionHorasUsuario);
@@ -294,6 +344,7 @@ public class Controlador extends Application {
                         var duracionMin = verificarDatoUsuarioInt(duracionMinUsuario);
                         recordatorioAct.modificarFin(recordatorioAct.obtenerInicio().plusHours((Integer) duracionHs).plusMinutes((Integer) duracionMin));
                 }
+
                 case "Fecha de fin" -> modificarFecha("fin", recordatorioAct);
                 }
         } while(vista.msjConfirmacion("¿Quiere modificar algo mas?"));
