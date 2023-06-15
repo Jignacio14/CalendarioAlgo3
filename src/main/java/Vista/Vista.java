@@ -38,23 +38,22 @@ public class Vista {
     private Button sigRango;
 
     private final Calendario calendario;
-    //private Button botonRecordatorio;
-    private String datoNuevo;
-    private EventHandler<ActionEvent> escuchaEvento;
 
+    private final EventHandler<ActionEvent> escuchaPersonalizarRec;
+    private final EventHandler<ActionEvent> escuchaAgregarRec;
+    private final EventHandler<ActionEvent> verPorRango;
     private EventHandler<ActionEvent> antSig;
     private String rangoAct;
 
-    private EventHandler<ActionEvent> verPorRango;
 
-    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> generarAntSig) throws IOException {
+
+    public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec, EventHandler<ActionEvent> generarAntSig, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("../estructura.fxml"));
         loader.setController(this);
         VBox contenedorCalendario = loader.load();
 
-        this.escuchaEvento = escucha;
         this.verPorRango = verPorRango;
         this.antSig = generarAntSig;
         this.calendario = calendario;
@@ -99,6 +98,7 @@ public class Vista {
             crearVistaTarea(id);
         });
     }
+
     private void verCalendarioPorRango() {
         rangoDia.setOnAction(verPorRango);
         rangoSemana.setOnAction(verPorRango);
@@ -120,11 +120,6 @@ public class Vista {
         Button botonAntSig = (Button) button;
         return botonAntSig.getId();
     }
-
-    public void registrarEscucha(EventHandler<ActionEvent> escucha) {
-        this.escuchaEvento = escucha;
-    }
-
 
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
@@ -202,8 +197,9 @@ public class Vista {
         personalizarRec.getDialogPane().setPrefWidth(300);
 
         personalizarRec.showAndWait();
+        Object eleccionUsuario = personalizarRec.getResult();
 
-        return personalizarRec.getSelectedItem();
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona") ? null : eleccionUsuario;
     }
 
     private String[] opcionesModificarRec(Recordatorio recordatorio) {
@@ -215,7 +211,6 @@ public class Vista {
         var modificar = new TextInputDialog();
         modificar.setHeaderText(datoAModificar);
         modificar.showAndWait();
-
         return modificar.getResult();
     }
 
@@ -272,11 +267,52 @@ public class Vista {
         if (tareaCompletada){
             infoCom.setText( "\nCompletada\n");
             infoCom.setFill(Color.GREEN);
-            return infoCom;
+
+        } else {
+            infoCom.setText( "\nSin completar\n");
+            infoCom.setFill(Color.RED);
         }
-        infoCom.setText( "\nSin completar\n");
-        infoCom.setFill(Color.RED);
         return infoCom;
+    }
+
+    public static LocalDateTime vistaModificarFecha() {
+        String opcionesInicio = "año,mes,dia,hora,minutos";
+        String[] opcionesModInic = Arrays.stream(opcionesInicio.split(","))
+                .map(s -> "Ingrese el/la " + s.toUpperCase() + " de " + fechaAMod.toUpperCase())
+                .toArray(String[]::new);
+
+        int[] opcionesUsuario = new int[5];
+        for (int i = 0; i < 5; i++) {
+            var opcionUsuario = vistaModificarDato(opcionesModInic[i]);
+            if (opcionUsuario==null) {return null;}
+            opcionesUsuario[i] = Integer.parseInt(opcionUsuario);
+        }
+
+        return LocalDateTime.of(opcionesUsuario[0], opcionesUsuario[1], opcionesUsuario[2], opcionesUsuario[3], opcionesUsuario[4]);
+    }
+
+    public void establecerFechaAMod(String fechaAMod) {
+        Vista.fechaAMod = fechaAMod;
+    }
+
+    public void mensajeError() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Dato ingresado incorrecto");
+            alert.setContentText("Por favor ingrese el dato correcto segun lo solicitado");
+
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK);
+        });
+    }
+
+    public boolean msjConfirmacion(String msjConfirmacion) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar operacion");
+        alert.setHeaderText(msjConfirmacion);
+        alert.showAndWait();
+        return alert.getResult()==ButtonType.OK;
     }
 }
 
