@@ -1,7 +1,5 @@
 package Modelo.calendar;
 
-import Vista.RecordatorioVisitor;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +23,6 @@ public abstract class Recordatorio {
         this.fin = inicio;
     }
 
-    public abstract void aceptar(RecordatorioVisitor visitor);
-
     public void modificarNombre(String nuevoNombre) {
         this.nombre = nuevoNombre;
         if (!(alarmas.isEmpty())) {
@@ -48,20 +44,14 @@ public abstract class Recordatorio {
 
     public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
-    public void modificarFin(LocalDateTime nuevoFin){
-        this.fin = nuevoFin;
-    }
-
-    public LocalDateTime obtenerFin(){ return this.fin; }
-
     public boolean verficarDiaCompleto() { return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0); }
 
     public boolean verificarRepeticion() { return false; }
 
     public void establecerDiaCompleto() {
         this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonthValue(), inicio.getDayOfMonth(), 0, 0);
-        this.horas = 24;
-        this.minutos = 0;
+        this.horas = 23;
+        this.minutos = 59;
         this.fin = this.inicio.plusDays(1);
     }
 
@@ -142,6 +132,10 @@ public abstract class Recordatorio {
 
     public List<LocalDateTime> verRepeticiones(LocalDateTime desde, LocalDateTime hasta){
         return null;
+    }
+
+    public void modificarFin(LocalDateTime fin){
+        this.fin = fin;
     }
     @Override
     public boolean equals(Object obj) {

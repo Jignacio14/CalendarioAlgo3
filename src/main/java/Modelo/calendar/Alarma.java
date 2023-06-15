@@ -17,9 +17,7 @@ public class Alarma {
     private Repetidor repetidor;
     private LocalDateTime ultRepeticion;
     private int id;
-
     private String tipoRec;
-
     private boolean sono = false;
 
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
@@ -37,14 +35,12 @@ public class Alarma {
 
     public void establecerId(int id){ this.id = id; }
 
+    public void actualizarSono(){
+        this.sono = true;}
+
     public boolean yaSono(){
         return this.sono;
     }
-
-    public void actualizarSono(){
-        this.sono = true;
-    }
-
     /* ____ SETTERS ____ */
 
     public void establecerIntervalo(Integer min, Integer horas, Integer dias, Integer semanas, boolean esDiaCompleto) {
@@ -61,8 +57,6 @@ public class Alarma {
     }
 
     public void establecerEfecto(AlarmaEfectos efecto) { this.efecto = efecto; }
-
-    public void establecerTipoRec(String tipoRec) { this.tipoRec = tipoRec; }
 
 
     /* ____ GETTERS ____ */
@@ -139,4 +133,6 @@ public class Alarma {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
         return " - " + formato.format(this.fechaHora) + " ___ Efecto: " + (this.efecto == null ? "Sin efecto" : this.efecto) + " - \n";
     }
+
 }
+

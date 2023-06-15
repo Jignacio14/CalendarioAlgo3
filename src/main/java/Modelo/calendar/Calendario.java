@@ -60,7 +60,9 @@ public class Calendario implements Persistible {
     }
 
     public void modificarInicio(Recordatorio recordatorio, LocalDateTime inicioNuevo) {
+        organizador.eliminarRepeticiones(recordatorio);
         recordatorio.modificarInicio(inicioNuevo);
+        organizador.actualizarRepeticiones(recordatorio);
     }
 
     public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
@@ -69,7 +71,6 @@ public class Calendario implements Persistible {
 
     public int agregarAlarma(Recordatorio recordatorio) {
         var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
-        alarma.establecerTipoRec(recordatorio.obtenerTipo());
         return recordatorio.agregarAlarma(alarma);
     }
 
@@ -111,7 +112,6 @@ public class Calendario implements Persistible {
         return organizador.verCalendarioOrdenado(desde, hasta);
     }
     public void agregarRepeticiones(Evento evento, Frecuencia frecuencia, Limite limite){
-        Integer id = evento.obtenerId();
         evento.configurarRepeticion(frecuencia, limite);
         organizador.actualizarRepeticiones(evento);
     }
@@ -122,7 +122,7 @@ public class Calendario implements Persistible {
         organizador.actualizarRepeticiones(evento);
     }
 
-    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){;
+    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){
         organizador.eliminarRepeticiones(evento);
         evento.configurarIteracion(iteraciones);
         organizador.actualizarRepeticiones(evento);

@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox fx:id="contenedorCalendario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar fx:id="menu">
@@ -29,13 +28,13 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Label fx:id="rangoAct" text="Recordatorios de &quot;dia o semana o mes&quot;" />
+      <Label fx:id="rangoAct" text="Panel de recordatorios" />
       <TilePane fx:id="contenedorRecordatorios" prefHeight="200.0" prefWidth="200.0" />
-      <HBox fx:id="contenedorAntSig" prefHeight="100.0" prefWidth="200.0">
+      <HBox fx:id="contenedorAntSig" alignment="TOP_CENTER" centerShape="false" prefHeight="135.0" prefWidth="600.0">
          <children>
-            <Label fx:id="msjAntSig" text="Ver recordatorios de &quot;dia o semana o mes&quot;: " />
-            <Button fx:id="antRango" mnemonicParsing="false" text="Anterior" />
-            <Button fx:id="sigRango" mnemonicParsing="false" text="Siguiente" />
+            <Label fx:id="msjAntSig" prefHeight="16.0" prefWidth="287.0" text="Ver por dia, mes, año" />
+            <Button fx:id="antRango" mnemonicParsing="false" text="Anterior" textAlignment="CENTER" />
+            <Button fx:id="sigRango" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" text="Siguiente" />
          </children>
       </HBox>
    </children>
