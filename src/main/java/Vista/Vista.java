@@ -49,7 +49,6 @@ public class Vista {
 
     public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escucha, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> generarAntSig) throws IOException {
         stage.setTitle("Calendario");
-
         FXMLLoader loader = new FXMLLoader(getClass().
                 getResource("../estructura.fxml"));
         loader.setController(this);
@@ -100,7 +99,6 @@ public class Vista {
             crearVistaTarea(id);
         });
     }
-
     private void verCalendarioPorRango() {
         rangoDia.setOnAction(verPorRango);
         rangoSemana.setOnAction(verPorRango);
@@ -155,9 +153,6 @@ public class Vista {
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
 
-    /*public void personalizarRec(Object opcionUsuario){
-    }*/
-
     public String vistaAgregarEfecto() {
         TextInputDialog td = new TextInputDialog();
         td.setHeaderText("Elige un efecto entre los que se ven en pantalla - 'Notificacion', 'Sonido', 'Email' ");
@@ -185,11 +180,6 @@ public class Vista {
 
         return Integer.parseInt(modificarCant.getResult());
     }
-
-    /*public void establecerRecSeleccionado(ActionEvent recSeleccionado){
-        this.idRecordatorioAct =  ((Button) recSeleccionado.getSource()).getId();
-        this.recordatorioAct = (Button) recSeleccionado.getSource();
-    }*/
 
     public Button obtenerRecSeleccionado(ActionEvent recSeleccionado) {
         return (Button) recSeleccionado.getSource();
