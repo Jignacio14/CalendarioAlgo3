@@ -4,10 +4,6 @@ import Modelo.calendar.AlarmaEfectos;
 import Modelo.calendar.Calendario;
 import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
 import Modelo.calendar.Recordatorio;
@@ -26,6 +22,9 @@ public class Controlador extends Application {
     private Avanzador guia;
     private LocalDateTime desde;
     private LocalDateTime hasta;
+
+    //  VA A RECIBIR LOS EVENTOS Y VA A REACCIONAR A ESOS EVENTOS
+    // SABE QUE EXISTE MODELO Y VISTA
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -56,7 +55,7 @@ public class Controlador extends Application {
         }catch (IOException ignore){
         }
     }
-  
+
     public EventHandler<ActionEvent> escuchaPersonalizarRec(){
         return (actionEvent -> {
             int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
@@ -67,8 +66,10 @@ public class Controlador extends Application {
         });
     }
 
-    public EventHandler<ActionEvent> escuchaAgregarRec(){
+
+    public EventHandler<ActionEvent> registrarEscuchaEnVista(){
         return (actionEvent -> {
+
             String idAgregarRec = (vista.obtenerRecAgregado(actionEvent)).getId();
             if (idAgregarRec.equals("agregarEvento")) {
                 agregarRecordatorio("Evento");
@@ -84,21 +85,23 @@ public class Controlador extends Application {
         recordatorio = calendario.obtenerRecordatorio(crearRecordatorio(recAgregar));
         opcionesModRec = vista.opcionesModificarRec(recordatorio);
 
-        for (String modificar: opcionesModRec) {
-            establecerDatosRec(modificar, recordatorio);
-        }
 
-        vista.crearVista(recordatorio);
-    }
+            Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
 
-    private int crearRecordatorio(String tipo) {
-        LocalDateTime fechaHoraDefault = LocalDateTime.now();
-        return tipo.equals("Evento") ? this.calendario.crearEvento(fechaHoraDefault, 0, 0) : this.calendario.crearTarea(fechaHoraDefault, 0, 0);
-    }
+            if (opcionUsuario.equals("Titulo")){
+                String datoNuevo = vista.vistaModificarDato("Modificar titulo");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
+                    recordatorioAct.modificarNombre(datoNuevo);
+                }
 
-    private void establecerDatosRec(Object opcionUsuario, Recordatorio recordatorioAct) {
-        Function<String, String> pedirDatoUsuario = Vista::vistaModificarDato;
-        String datoNuevo;
+            } else if (opcionUsuario.equals("Descripcion")) {
+                String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
+                    recordatorioAct.modificarDescripcion(datoNuevo);
+                }
+
+            } else if (opcionUsuario.equals("Agregar alarma")){
+                agregarAlarma(recordatorioAct);
 
         if (opcionUsuario == null) {
             return;
@@ -165,6 +168,7 @@ public class Controlador extends Application {
 
     private String verificarDatoNuevo(String datoNuevo, String datoAnt) {
         return (datoNuevo!=null && !datoNuevo.isEmpty()) ? datoNuevo : datoAnt;
+
     }
 
     public EventHandler<ActionEvent> eventoVerPorRango(){
@@ -237,20 +241,19 @@ public class Controlador extends Application {
         inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), 1, 0, 0);
         inicioFin[1] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), fecha.toLocalDate().lengthOfMonth(), 23, 59);
         return inicioFin;
-
     }
 
-    public void crearAlarma(Recordatorio recordatorio){
-        Object efecto = vista.vistaAgregarEfecto();
-        if (efecto != null) {
-            Object tipoIntervalo = vista.vistaAgregarIntervalo();
-            agregarAlarma(recordatorio, efecto, tipoIntervalo);
-        }
+    public void agregarAlarma(Recordatorio recordatorio){
+        int id = this.calendario.agregarAlarma(recordatorio);
+        agregarEfecto(recordatorio, id);
+        agregarIntervalo(recordatorio, id);
     }
+
 
     public void agregarAlarma(Recordatorio recordatorio, Object efecto, Object tipoIntervalo) {
         if (tipoIntervalo == null) {
             return;
+
         }
         var intervalo = verificarDatoUsuarioInt(Vista::vistaCantIntervalo);
         if (null == intervalo) {
@@ -261,6 +264,7 @@ public class Controlador extends Application {
         establecerIntervaloAlarma( (Integer)intervalo, tipoIntervalo, recordatorio, id);
     }
 
+     
     public Object verificarDatoUsuarioInt(Supplier<Object> metodoAVerificar) {
         while (true){
             try {
@@ -276,15 +280,19 @@ public class Controlador extends Application {
             case "Notificacion" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
             case "Sonido" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.SONIDO);
             case "Email" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.EMAIL);
+
         }
     }
 
     private void establecerIntervaloAlarma(Integer intervalo, Object opcionUsuario, Recordatorio recordatorio, int id) {
-        switch ((String) opcionUsuario) {
-            case "Min" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0, 0, 0);
-            case "Horas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo, 0, 0);
-            case "Dias" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, intervalo, 0);
-            case "Semanas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, 0, intervalo);
+        if (opcionUsuario.equals("Min")){
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0,0,0);
+        } else if (opcionUsuario.equals("Horas")) {
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo,0,0);
+        } else if (opcionUsuario.equals("Dias")){
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,intervalo,0);
+        } else if (opcionUsuario.equals("Semanas")) {
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,0,intervalo);
         }
     }
 

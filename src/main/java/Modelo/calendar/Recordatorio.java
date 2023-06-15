@@ -12,7 +12,6 @@ public abstract class Recordatorio {
     protected String nombre = "Sin titulo";
     protected String descripcion = "Sin descripcion";
     protected LocalDateTime inicio;
-    protected LocalDateTime fin;
     protected Integer horas;
     protected Integer minutos;
     protected int id;
@@ -22,7 +21,6 @@ public abstract class Recordatorio {
         this.inicio = inicio;
         this.horas = horas;
         this.minutos = minutos;
-        this.fin = inicio;
     }
 
     public abstract void aceptar(RecordatorioVisitor visitor);
@@ -48,12 +46,6 @@ public abstract class Recordatorio {
 
     public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
-    public void modificarFin(LocalDateTime nuevoFin){
-        this.fin = nuevoFin;
-    }
-
-    public LocalDateTime obtenerFin(){ return this.fin; }
-
     public boolean verficarDiaCompleto() { return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0); }
 
     public boolean verificarRepeticion() { return false; }
@@ -62,7 +54,6 @@ public abstract class Recordatorio {
         this.inicio = LocalDateTime.of(inicio.getYear(), inicio.getMonthValue(), inicio.getDayOfMonth(), 0, 0);
         this.horas = 24;
         this.minutos = 0;
-        this.fin = this.inicio.plusDays(1);
     }
 
     public void establecerId(int id) { this.id = id; }

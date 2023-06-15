@@ -18,10 +18,6 @@ public class Alarma {
     private LocalDateTime ultRepeticion;
     private int id;
 
-    private String tipoRec;
-
-    private boolean sono = false;
-
     public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -36,14 +32,6 @@ public class Alarma {
     public void modificarDescripcion(String nuevaDescripcion) { this.descripcion = nuevaDescripcion; }
 
     public void establecerId(int id){ this.id = id; }
-
-    public boolean yaSono(){
-        return this.sono;
-    }
-
-    public void actualizarSono(){
-        this.sono = true;
-    }
 
     /* ____ SETTERS ____ */
 
@@ -62,8 +50,6 @@ public class Alarma {
 
     public void establecerEfecto(AlarmaEfectos efecto) { this.efecto = efecto; }
 
-    public void establecerTipoRec(String tipoRec) { this.tipoRec = tipoRec; }
-
 
     /* ____ GETTERS ____ */
 
@@ -76,8 +62,6 @@ public class Alarma {
     public String obtenerDescripcion() { return this.descripcion; }
 
     public int obtenerId(){ return this.id; }
-
-    public String obtenerTipoRec() { return this.tipoRec; }
 
     /* ____ ALARMA CON REPETICIONES ____ */
 
