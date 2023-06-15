@@ -249,9 +249,7 @@ public class Vista {
 
         Object eleccionUsuario = personalizarRec.getResult();
 
-        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
-                ? null : eleccionUsuario;
-
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona") ? null : eleccionUsuario;
     }
 
     public String[] opcionesModificarRec(Recordatorio recordatorio) {
@@ -264,7 +262,6 @@ public class Vista {
         var modificar = new TextInputDialog();
         modificar.setHeaderText(datoAModificar);
         modificar.showAndWait();
-
         return modificar.getResult();
     }
 
@@ -313,10 +310,11 @@ public class Vista {
         if (tareaCompletada){
             infoCom.setText( "\nCompletada\n");
             infoCom.setFill(Color.GREEN);
-            return infoCom;
+
+        } else {
+            infoCom.setText( "\nSin completar\n");
+            infoCom.setFill(Color.RED);
         }
-        infoCom.setText( "\nSin completar\n");
-        infoCom.setFill(Color.RED);
         return infoCom;
     }
 
@@ -356,7 +354,6 @@ public class Vista {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar operacion");
         alert.setHeaderText(msjConfirmacion);
-
         alert.showAndWait();
         return alert.getResult()==ButtonType.OK;
     }
