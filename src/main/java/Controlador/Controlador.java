@@ -97,29 +97,62 @@ public class Controlador extends Application {
         Function<String, String> pedirDatoUsuario = Vista::vistaModificarDato;
         String datoNuevo;
 
-        if (opcionUsuario != null && opcionUsuario.equals("Titulo")) {
-            datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar titulo"), recordatorioAct.obtenerNombre());
-            recordatorioAct.modificarNombre(datoNuevo);
+        if (opcionUsuario!=null){
+            switch ((String) opcionUsuario) {
+                case "Titulo":
+                    datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar titulo"), recordatorioAct.obtenerNombre());
+                    recordatorioAct.modificarNombre(datoNuevo);
+                    break;
+                case "Descripcion":
+                    datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar descripcion"), recordatorioAct.obtenerDescripcion());
+                    recordatorioAct.modificarDescripcion(datoNuevo);
+                    break;
+                case "Agregar alarma":
+                    crearAlarma(recordatorioAct);
+                    break;
+                case "Cambiar estado":
+                    recordatorioAct.cambiarCompletada();
+                    break;
+                case "Agregar repeticion":
+                    //algo
+                    break;
+                case "Todo el dia":
+                    if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")){recordatorioAct.establecerDiaCompleto();}
+                    break;
+                case "Fecha de inicio o fin":
+                    if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")){
+                        establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
+                    }
+                    break;
+            }
+        }
+    }
 
-        } else if (opcionUsuario != null && opcionUsuario.equals("Descripcion")) {
-            datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar descripcion"), recordatorioAct.obtenerDescripcion());
-            recordatorioAct.modificarDescripcion(datoNuevo);
+    private void establecerInicioyFinRec(Recordatorio recordatorioAct, Function<String,String> pedirDatoUsuario) {
+        do {
+            var opcionUsuario = vista.vistaAgregarFechaIniYFin(recordatorioAct);
+            if (opcionUsuario!=null){
+                switch ((String) opcionUsuario) {
+                    case "Fecha de inicio" -> modificarFecha("inicio", recordatorioAct);
+                    case "Agregar duracion" -> {
+                        Supplier<Object> duracionHorasUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese las horas que quiere que dure el evento"), "0")));
+                        var duracionHs = verificarDatoUsuarioInt(duracionHorasUsuario);
+                        Supplier<Object> duracionMinUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese los minutos que quiere que dure el evento"), "0")));
+                        var duracionMin = verificarDatoUsuarioInt(duracionMinUsuario);
+                        recordatorioAct.modificarFin(recordatorioAct.obtenerInicio().plusHours((Integer) duracionHs).plusMinutes((Integer) duracionMin));
+                    }
+                    case "Fecha de fin" -> modificarFecha("fin", recordatorioAct);
+                }
+            }
+        } while(vista.msjConfirmacion("¿Quiere modificar algo mas?"));
+    }
 
-        } else if (opcionUsuario != null && opcionUsuario.equals("Agregar alarma")) {
-            crearAlarma(recordatorioAct);
-
-        } else if (opcionUsuario != null && opcionUsuario.equals("Cambiar estado")) {
-            recordatorioAct.cambiarCompletada();
-
-        } else if (opcionUsuario != null && opcionUsuario.equals("Agregar repeticion")) {
-            //algo
-
-        } else if (opcionUsuario != null && opcionUsuario.equals("Todo el dia")) {
-            recordatorioAct.establecerDiaCompleto();
-        } else if (opcionUsuario != null && opcionUsuario.equals("Fecha de inicio")) {
-            var fechaInicioNueva = verificarDatoUsuarioInt(Vista::vistaModificarInicio);
-            if (fechaInicioNueva!=null) {
-                recordatorioAct.modificarInicio((LocalDateTime) fechaInicioNueva);
+    private void modificarFecha(String fechaAMod, Recordatorio recordatorioAct) {
+        vista.establecerFechaAMod(fechaAMod);
+        var fechaNueva = verificarDatoUsuarioInt(Vista::vistaModificarFecha);
+        if (fechaNueva!=null) {
+            if (fechaAMod.equals("inicio")) {recordatorioAct.modificarInicio((LocalDateTime) fechaNueva);}else {
+                recordatorioAct.modificarFin((LocalDateTime) fechaNueva);
             }
         }
     }
@@ -158,24 +191,19 @@ public class Controlador extends Application {
     }
 
     public void establecerEfecto(Object efecto, Recordatorio recordatorio, int id) {
-        if (efecto.equals("Notificacion")){
-            this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
-        } else if (efecto.equals("Sonido")) {
-            this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.SONIDO);
-        } else if (efecto.equals("Email")){
-            this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.EMAIL);
+        switch ((String) efecto) {
+            case "Notificacion" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
+            case "Sonido" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.SONIDO);
+            case "Email" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.EMAIL);
         }
     }
 
     private void establecerIntervaloAlarma(Integer intervalo, Object opcionUsuario, Recordatorio recordatorio, int id) {
-        if (opcionUsuario.equals("Min")){
-            this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0,0,0);
-        } else if (opcionUsuario.equals("Horas")) {
-            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo,0,0);
-        } else if (opcionUsuario.equals("Dias")){
-            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,intervalo,0);
-        } else if (opcionUsuario.equals("Semanas")) {
-            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,0,intervalo);
+        switch ((String) opcionUsuario) {
+            case "Min" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0, 0, 0);
+            case "Horas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo, 0, 0);
+            case "Dias" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, intervalo, 0);
+            case "Semanas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, 0, intervalo);
         }
     }
 

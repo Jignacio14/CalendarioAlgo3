@@ -53,6 +53,8 @@ public class Vista {
     final String colorEvento = "-fx-background-color:pink;";
     final String colorTarea = "-fx-background-color:skyBlue;";
 
+    private static String fechaAMod;
+
     public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec,
                  EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
@@ -160,11 +162,7 @@ public class Vista {
     private void cargarInterfaz() {
         List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
         for (Recordatorio recordatorio : recordatorios) {
-            if (recordatorio.obtenerTipo().equals("Evento")){
-                crearVista(recordatorio);
-            }else {
-                crearVista(recordatorio);
-            }
+            crearVista(recordatorio);
         }
     }
 
@@ -202,6 +200,23 @@ public class Vista {
         personalizarAlarmaIntervalo.setTitle("Crear Alarma");
         personalizarAlarmaIntervalo.setHeaderText("Elegi el intervalo deseado");
         personalizarAlarmaIntervalo.setContentText("Intervalos");
+        personalizarAlarmaIntervalo.showAndWait();
+
+        Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
+
+        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
+                ? null : eleccionUsuario;
+    }
+
+    public Object vistaAgregarFechaIniYFin(Recordatorio recordatorio) {
+    String opcionesRec = "Fecha de inicio,";
+
+        var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar duracion").split(",")
+                : opcionesRec.concat("Fecha de inicio").split(","));
+
+        personalizarAlarmaIntervalo.setTitle("Modificar fecha de inicio y fin/duracion");
+        personalizarAlarmaIntervalo.setHeaderText("Elegi la fecha a modificar");
+        personalizarAlarmaIntervalo.setContentText("Opciones");
         personalizarAlarmaIntervalo.showAndWait();
 
         Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
@@ -252,9 +267,9 @@ public class Vista {
     }
 
     public String[] opcionesModificarRec(Recordatorio recordatorio) {
-        String opcionesRec = "Fecha de inicio,Fecha de fin,Titulo,Descripcion,Agregar alarma,Todo el dia";
-        return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat(",Agregar repeticion").split(",")
-                : opcionesRec.concat(",Cambiar estado").split(",");
+        String opcionesRec = "Titulo,Descripcion,Todo el dia,Fecha de inicio o fin,Agregar alarma,";
+        return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar repeticion").split(",")
+                : opcionesRec.concat("Cambiar estado").split(",");
     }
 
     public static String vistaModificarDato(String datoAModificar){
@@ -271,9 +286,9 @@ public class Vista {
         infoRec.setText(recordatorio.obtenerTipo() + "\n" +
                 recordatorio.obtenerNombre() + "\n" +
                 "Inicio: " + formato.format(recordatorio.obtenerInicio()) + "\n" +
-                "Fin: " + formato.format(recordatorio.verFinal()) + "\n");
+                "Fin: " + formato.format(recordatorio.obtenerFin()) + "\n");
 
-        Text infoTarCom = ((recordatorio.obtenerTipo().equals("Tarea")) ? verificarCompletada(recordatorio.verificarCompletada()) : new Text(""));
+        Text infoTarCom = ((recordatorio.obtenerTipo().equals("Tarea")) ? msjTareaCompletada(recordatorio.verificarCompletada()) : new Text(""));
         infoTarCom.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 
         Text infoDiaCom = new Text(((recordatorio.verficarDiaCompleto()) ? "\n-- Dia completo --\n" : ""));
@@ -305,7 +320,7 @@ public class Vista {
         return alarmasAMostrar;
     }
 
-    private Text verificarCompletada(Boolean tareaCompletada){
+    private Text msjTareaCompletada(Boolean tareaCompletada){
         Text infoCom = new Text();
         if (tareaCompletada){
             infoCom.setText( "\nCompletada\n");
@@ -317,10 +332,10 @@ public class Vista {
         return infoCom;
     }
 
-    public static LocalDateTime vistaModificarInicio() {
+    public static LocalDateTime vistaModificarFecha() {
         String opcionesInicio = "año,mes,dia,hora,minutos";
         String[] opcionesModInic = Arrays.stream(opcionesInicio.split(","))
-                .map(s -> "Ingrese el/la " + s.toUpperCase() + " de inicio")
+                .map(s -> "Ingrese el/la " + s.toUpperCase() + " de " + fechaAMod.toUpperCase())
                 .toArray(String[]::new);
 
         int[] opcionesUsuario = new int[5];
@@ -333,6 +348,10 @@ public class Vista {
         return LocalDateTime.of(opcionesUsuario[0], opcionesUsuario[1], opcionesUsuario[2], opcionesUsuario[3], opcionesUsuario[4]);
     }
 
+    public void establecerFechaAMod(String fechaAMod) {
+        Vista.fechaAMod = fechaAMod;
+    }
+
     public void mensajeError() {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -343,6 +362,15 @@ public class Vista {
             alert.showAndWait()
                     .filter(response -> response == ButtonType.OK);
         });
+    }
+
+    public boolean msjConfirmacion(String msjConfirmacion) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar operacion");
+        alert.setHeaderText(msjConfirmacion);
+
+        alert.showAndWait();
+        return alert.getResult()==ButtonType.OK;
     }
 }
 
