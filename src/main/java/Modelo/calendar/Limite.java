@@ -67,7 +67,7 @@ public enum Limite {
     public abstract void ajustarIteracion();
 
     public boolean validarCantidadRepeticiones(Integer cantidad){
-        return cantidad < iteraciones;
+        return cantidad <= iteraciones;
     }
 
 

@@ -49,7 +49,7 @@ public class Evento extends Recordatorio {
         return consultaFechas;
     }
     public List<LocalDateTime> verRepeticiones(LocalDateTime desde, LocalDateTime hasta){
-        return repetidor.verFuturasRepeticiones(desde, hasta);
+        return repetidor.verFuturasRepeticiones(inicio ,hasta);
     }
 
     public void establecerRepetidor(Repetidor repetidor){ this.repetidor = repetidor; }

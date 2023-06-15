@@ -11,7 +11,7 @@ public class Organizador {
     public void organizarRecordatorios(LocalDateTime desde, LocalDateTime hasta, List<Recordatorio> recordatorios){
         for (var recordatorio: recordatorios){
             if (recordatorio.verificarRepeticion()){
-                agregarRepetidos(recordatorio.verRepeticiones(hasta), recordatorio.obtenerId());
+                agregarRepetidos(recordatorio.verRepeticiones(desde, hasta), recordatorio.obtenerId());
             }else {
                 agregarElemento(recordatorio.obtenerInicio(), recordatorio.obtenerId());
             }

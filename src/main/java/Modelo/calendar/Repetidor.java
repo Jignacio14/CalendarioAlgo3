@@ -27,9 +27,6 @@ public class Repetidor {
     public boolean verificarHayRepeticiones() { return limite.verificarProximasIteraciones(this.ultConsulta); }
 
     public List<LocalDateTime> verFuturasRepeticiones(LocalDateTime desde, LocalDateTime hasta) {
-        if (ultConsulta.isBefore(hasta)) {
-            ultConsulta = hasta;
-        }
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
     }
 

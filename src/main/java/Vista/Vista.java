@@ -184,7 +184,7 @@ public class Vista {
         return personalizarRecIntervalo.getSelectedItem();
     }
 
-    public Object vistaAgregarRepeticion(Recordatorio recordatorio) {
+    public Object vistaAgregarRepeticion(Evento recordatorio) {
         String[] opcionesRepe = new String[]{"Sin repeticion", "Repeticion diaria"};
 
         var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", opcionesRepe);
@@ -217,22 +217,18 @@ public class Vista {
                 ? null : eleccionUsuario;
     }
 
-    public Object vistaAgregarFechaIniYFin(Recordatorio recordatorio) {
-    String opcionesRec = "Fecha de inicio,";
+    //*public Object vistaAgregarFechaIniYFin(Recordatorio recordatorio) {
+    //String opcionesRec = "Fecha de inicio,";
+    //var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar duracion").split(",")
+    //        : opcionesRec.concat("Fecha de inicio").split(","));
+    //    personalizarAlarmaIntervalo.setTitle("Modificar fecha de inicio y fin/duracion");
+    //    personalizarAlarmaIntervalo.setHeaderText("Elegi la fecha a modificar");
+    //    personalizarAlarmaIntervalo.setContentText("Opciones");
+    //    personalizarAlarmaIntervalo.showAndWait();
 
-        var personalizarAlarmaIntervalo = new ChoiceDialog("seleccionar", recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar duracion").split(",")
-                : opcionesRec.concat("Fecha de inicio").split(","));
-
-        personalizarAlarmaIntervalo.setTitle("Modificar fecha de inicio y fin/duracion");
-        personalizarAlarmaIntervalo.setHeaderText("Elegi la fecha a modificar");
-        personalizarAlarmaIntervalo.setContentText("Opciones");
-        personalizarAlarmaIntervalo.showAndWait();
-
-        Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
-
-        return eleccionUsuario==null || eleccionUsuario.equals("selecciona")
-                ? null : eleccionUsuario;
-    }
+//    Object eleccionUsuario = personalizarAlarmaIntervalo.getResult();
+//        return eleccionUsuario==null || eleccionUsuario.equals("selecciona") ? null : eleccionUsuario;
+//}
 
     public static Integer vistaCantIntervalo() {
         var modificarCant = new TextInputDialog();
@@ -247,6 +243,10 @@ public class Vista {
 
     public void actualizarVistaRec(Button recordatorioAct, Recordatorio recordatorio) {
         recordatorioAct.setGraphic(datosRecordatorios(recordatorio));
+    }
+
+    public MenuItem obtenerRecAgregado(ActionEvent recSeleccionado) {
+        return (MenuItem) recSeleccionado.getSource();
     }
 
     public Object vistaPersonalizarRec(Recordatorio recordatorioAct) {
@@ -318,7 +318,6 @@ public class Vista {
         LocalDateTime todasRep = LocalDateTime.now().plusYears(1);
         String textoRep = (hayRepeticiones ?  ("Cantidad total de repeticiones: " + (((Evento)recordatorio).verRepeticiones(todasRep).size())) : "Sin Repeticiones");
         infoRep.setText(textoRep);
-        //System.out.println(recordatorio.verRepeticiones(LocalDateTime.now().plusYears(1)));
         return infoRep;
     }
 

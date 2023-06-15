@@ -260,7 +260,10 @@ public class Controlador extends Application {
             }
             case "Agregar alarma" -> crearAlarma(recordatorioAct);
             case "Cambiar estado" -> recordatorioAct.cambiarCompletada();
-            case "Agregar repeticion" -> agregarRepeticion(recordatorioAct, pedirDatoUsuario);
+            case "Agregar repeticion" -> {
+                Evento repetible = (Evento) recordatorioAct;
+                agregarRepeticion(repetible, pedirDatoUsuario);
+            }
             case "Todo el dia" -> {
                 if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")) {
                     recordatorioAct.establecerDiaCompleto();
@@ -274,16 +277,15 @@ public class Controlador extends Application {
         }
     }
 
-    private void agregarRepeticion(Recordatorio recordatorioAct, Function<String,String> pedirDatoUsuario) {
+    private void agregarRepeticion(Evento recordatorioAct, Function<String,String> pedirDatoUsuario) {
         var opcionUsuario = vista.vistaAgregarRepeticion(recordatorioAct);
         if (opcionUsuario == null){
             return;
         }
+
+
         switch ((String) opcionUsuario) {
             case "Sin repeticion" -> {
-                //if (((Evento) recordatorioAct).verificarRepeticion()) {
-                    ((Evento) recordatorioAct).eliminarRepeticiones();
-                //}
                 return;
             }
             case "Repeticion diaria" -> {
@@ -293,13 +295,8 @@ public class Controlador extends Application {
                 agregarLimiteRepDiaria(recordatorioAct, (Integer) intervaloRep, pedirDatoUsuario);
             }
         }
-        /*
-        evento.configurarRepeticion(Frecuencia.Diaria, Limite.Iteraciones);
-        evento.configurarRepeticion(Frecuencia.Diaria, Limite.FechaMax);
-        evento.configurarIntervalo(4);
-        evento.configurarIteracion(4);
-        evento.configurarFechaLimite("local date time");
-         */
+
+
     }
 
     private void agregarLimiteRepDiaria(Recordatorio recordatorioAct, Integer intervaloRep, Function<String,String> pedirDatoUsuario) {
@@ -309,14 +306,12 @@ public class Controlador extends Application {
         }
         var evento = (Evento)recordatorioAct;
         switch ((String) opcionUsuario) {
-
             case "Una fecha limite" -> {
                 vista.establecerFechaAMod("limite de la repeticion");
                 var fechaLimite = verificarDatoUsuarioInt(Vista::vistaModificarFecha);
                 calendario.agregarRepeticiones(evento, Frecuencia.Diaria, Limite.FechaMax);
                 calendario.modificarRepeticionesFechaLimite(evento, (LocalDateTime)fechaLimite);
             }
-
             case "despues de cierta cantidad de repeticiones" -> {
                 Supplier<Object> iteracionesUsuario = () -> (Integer.parseInt(verificarDatoNuevo((pedirDatoUsuario
                         .apply("Coloca la cantidad de repeticiones deseadas")), "0")));

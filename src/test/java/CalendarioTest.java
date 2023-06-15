@@ -412,7 +412,6 @@ public class CalendarioTest {
         var fin = inicio.plusYears(1);
         var calendario = new Calendario();
         var result = calendario.verRecordatoriosOrdenados(inicio, fin);
-        System.out.printf(result.toString());
     }
 
     @Test
@@ -468,7 +467,7 @@ public class CalendarioTest {
         var idEvento = calendario.crearEvento(fechaInicio, 1, 50);
         var evento = (Evento) calendario.obtenerRecordatorio(idEvento);
         calendario.agregarRepeticiones(evento, Frecuencia.Diaria, Limite.Iteraciones);
-        calendario.modificarRepeticionesIteraciones(evento, 4);
+        calendario.modificarRepeticionesIteraciones(evento, 3);
         calendario.modificarRepeticionesIntervalo(evento, 3);
         calendario.organizarRecordatorios(inicio, fin);
 
@@ -483,6 +482,18 @@ public class CalendarioTest {
         assertTrue(result.containsKey(fechaCuartaRepe));
         assertTrue(result.get(fechaCuartaRepe).contains(idEvento));
 
-        System.out.println(result.toString());
+        calendario.organizarRecordatorios(inicio, fin);
+        result = calendario.verRecordatoriosOrdenados(inicio, fin);
+
+        assertTrue(result.containsKey(fechaInicio));
+        assertTrue(result.get(fechaInicio).contains(idEvento));
+        assertTrue(result.containsKey(fechaSegundaRepe));
+        assertTrue(result.get(fechaSegundaRepe).contains(idEvento));
+        assertTrue(result.containsKey(fechaTerceraRepe));
+        assertTrue(result.get(fechaTerceraRepe).contains(idEvento));
+        assertTrue(result.containsKey(fechaCuartaRepe));
+        assertTrue(result.get(fechaCuartaRepe).contains(idEvento));
+
+
     }
 }
