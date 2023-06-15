@@ -4,10 +4,6 @@ import Modelo.calendar.AlarmaEfectos;
 import Modelo.calendar.Calendario;
 import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -28,12 +24,15 @@ public class Controlador extends Application {
     private LocalDateTime desde;
     private LocalDateTime hasta;
 
+    //  VA A RECIBIR LOS EVENTOS Y VA A REACCIONAR A ESOS EVENTOS
+    // SABE QUE EXISTE MODELO Y VISTA
+
     @Override
     public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
         this.guia = Avanzador.Diario; // Vista por defecto es un dia
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), escuchaAgregarRec, eventoVerPorRango(), eventoAvanzarAtrasar());
+        this.vista = new Vista(stage, this.calendario, registrarEscuchaEnVista(), eventoVerPorRango(), eventoAvanzarAtrasar());
         var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
         desde = fechasDefecto[0];
         hasta = fechasDefecto[1];
@@ -57,115 +56,42 @@ public class Controlador extends Application {
         }catch (IOException ignore){
         }
     }
-  
-    public EventHandler<ActionEvent> escuchaPersonalizarRec(){
+
+    public EventHandler<ActionEvent> registrarEscuchaEnVista(){
         return (actionEvent -> {
+
             int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
             Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
+
             Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
-            establecerDatosRec(opcionUsuario, recordatorioAct);
 
-            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
-        });
-    }
-
-    public EventHandler<ActionEvent> escuchaAgregarRec(){
-        return (actionEvent -> {
-            String idAgregarRec = (vista.obtenerRecAgregado(actionEvent)).getId();
-            if (idAgregarRec.equals("agregarEvento")) {
-                agregarRecordatorio("Evento");
-            }else {
-                agregarRecordatorio("Tarea");
-            }
-
-            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
-        });
-    }
-
-    private void agregarRecordatorio(String recAgregar){
-        String[] opcionesModRec;
-        Recordatorio recordatorio;
-        recordatorio = calendario.obtenerRecordatorio(crearRecordatorio(recAgregar));
-        opcionesModRec = vista.opcionesModificarRec(recordatorio);
-
-        for (String modificar: opcionesModRec) {
-            establecerDatosRec(modificar, recordatorio);
-        }
-
-        vista.crearVista(recordatorio);
-    }
-
-    private int crearRecordatorio(String tipo) {
-        LocalDateTime fechaHoraDefault = LocalDateTime.now();
-        return tipo.equals("Evento") ? this.calendario.crearEvento(fechaHoraDefault, 0, 0) : this.calendario.crearTarea(fechaHoraDefault, 0, 0);
-    }
-
-    private void establecerDatosRec(Object opcionUsuario, Recordatorio recordatorioAct) {
-        Function<String, String> pedirDatoUsuario = Vista::vistaModificarDato;
-        String datoNuevo;
-
-        if (opcionUsuario!=null){
-            switch ((String) opcionUsuario) {
-                case "Titulo":
-                    datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar titulo"), recordatorioAct.obtenerNombre());
+            if (opcionUsuario.equals("Titulo")){
+                String datoNuevo = vista.vistaModificarDato("Modificar titulo");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
                     recordatorioAct.modificarNombre(datoNuevo);
-                    break;
-                case "Descripcion":
-                    datoNuevo = verificarDatoNuevo(pedirDatoUsuario.apply("Modificar descripcion"), recordatorioAct.obtenerDescripcion());
-                    recordatorioAct.modificarDescripcion(datoNuevo);
-                    break;
-                case "Agregar alarma":
-                    crearAlarma(recordatorioAct);
-                    break;
-                case "Cambiar estado":
-                    recordatorioAct.cambiarCompletada();
-                    break;
-                case "Agregar repeticion":
-                    //algo
-                    break;
-                case "Todo el dia":
-                    if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")){recordatorioAct.establecerDiaCompleto();}
-                    break;
-                case "Fecha de inicio o fin":
-                    if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")){
-                        establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void establecerInicioyFinRec(Recordatorio recordatorioAct, Function<String,String> pedirDatoUsuario) {
-        do {
-            var opcionUsuario = vista.vistaAgregarFechaIniYFin(recordatorioAct);
-            if (opcionUsuario!=null){
-                switch ((String) opcionUsuario) {
-                    case "Fecha de inicio" -> modificarFecha("inicio", recordatorioAct);
-                    case "Agregar duracion" -> {
-                        Supplier<Object> duracionHorasUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese las horas que quiere que dure el evento"), "0")));
-                        var duracionHs = verificarDatoUsuarioInt(duracionHorasUsuario);
-                        Supplier<Object> duracionMinUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese los minutos que quiere que dure el evento"), "0")));
-                        var duracionMin = verificarDatoUsuarioInt(duracionMinUsuario);
-                        recordatorioAct.modificarFin(recordatorioAct.obtenerInicio().plusHours((Integer) duracionHs).plusMinutes((Integer) duracionMin));
-                    }
-                    case "Fecha de fin" -> modificarFecha("fin", recordatorioAct);
                 }
-            }
-        } while(vista.msjConfirmacion("¿Quiere modificar algo mas?"));
-    }
 
-    private void modificarFecha(String fechaAMod, Recordatorio recordatorioAct) {
-        vista.establecerFechaAMod(fechaAMod);
-        var fechaNueva = verificarDatoUsuarioInt(Vista::vistaModificarFecha);
-        if (fechaNueva!=null) {
-            if (fechaAMod.equals("inicio")) {recordatorioAct.modificarInicio((LocalDateTime) fechaNueva);}else {
-                recordatorioAct.modificarFin((LocalDateTime) fechaNueva);
-            }
-        }
-    }
+            } else if (opcionUsuario.equals("Descripcion")) {
+                String datoNuevo = vista.vistaModificarDato("Modificar descripcion");
+                if (datoNuevo != null && !datoNuevo.isEmpty()){
+                    recordatorioAct.modificarDescripcion(datoNuevo);
+                }
 
-    private String verificarDatoNuevo(String datoNuevo, String datoAnt) {
-        return (datoNuevo!=null && !datoNuevo.isEmpty()) ? datoNuevo : datoAnt;
+            } else if (opcionUsuario.equals("Agregar alarma")){
+                agregarAlarma(recordatorioAct);
+
+            } else if (opcionUsuario.equals("Tarea Completada")) {
+                if (!recordatorioAct.verificarCompletada()){
+                    recordatorioAct.cambiarCompletada();
+                }
+
+            } else if (opcionUsuario.equals("Todo el dia")) {
+                recordatorioAct.establecerDiaCompleto();
+            }
+
+            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
+        });
+    }
 
     public EventHandler<ActionEvent> eventoVerPorRango(){
         return actionEvent -> {
@@ -237,53 +163,39 @@ public class Controlador extends Application {
         inicioFin[0] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), 1, 0, 0);
         inicioFin[1] = LocalDateTime.of(fecha.getYear(), fecha.getMonthValue(), fecha.toLocalDate().lengthOfMonth(), 23, 59);
         return inicioFin;
-
     }
 
-    public void crearAlarma(Recordatorio recordatorio){
-        Object efecto = vista.vistaAgregarEfecto();
-        if (efecto != null) {
-            Object tipoIntervalo = vista.vistaAgregarIntervalo();
-            agregarAlarma(recordatorio, efecto, tipoIntervalo);
+    public void agregarAlarma(Recordatorio recordatorio){
+        int id = this.calendario.agregarAlarma(recordatorio);
+        agregarEfecto(recordatorio, id);
+        agregarIntervalo(recordatorio, id);
+    }
+
+    public void agregarEfecto(Recordatorio recordatorio, int id){
+        String opcionElegida = vista.vistaAgregarEfecto();
+        if (opcionElegida.equals("Notificacion")){
+            this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
         }
     }
 
-    public void agregarAlarma(Recordatorio recordatorio, Object efecto, Object tipoIntervalo) {
-        if (tipoIntervalo!=null){
-            var intervalo = verificarDatoUsuarioInt(Vista::vistaCantIntervalo);
-            if (intervalo!=null){
-                int id = this.calendario.agregarAlarma(recordatorio);
-                establecerEfecto(efecto, recordatorio, id);
-                establecerIntervaloAlarma( (Integer)intervalo, tipoIntervalo, recordatorio, id);
-            }
-        }
-    }
-
-    public Object verificarDatoUsuarioInt(Supplier<Object> metodoAVerificar) {
-        while (true){
-            try {
-                return metodoAVerificar.get();
-            }catch (NumberFormatException | DateTimeException e){
-                vista.mensajeError();
-            }
-        }
-    }
-
-    public void establecerEfecto(Object efecto, Recordatorio recordatorio, int id) {
-        switch ((String) efecto) {
-            case "Notificacion" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.NOTIFICACION);
-            case "Sonido" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.SONIDO);
-            case "Email" -> this.calendario.modificarAlarmaEfecto(recordatorio, id, AlarmaEfectos.EMAIL);
-
+    public void agregarIntervalo(Recordatorio recordatorio, int id){
+        Object opcionUsuario = vista.vistaAgregarIntervalo();
+        Integer intervalo;
+        if (opcionUsuario != null ){
+            intervalo = vista.vistaCantIntervalo();
+            establecerIntervaloAlarma(intervalo, opcionUsuario, recordatorio, id);
         }
     }
 
     private void establecerIntervaloAlarma(Integer intervalo, Object opcionUsuario, Recordatorio recordatorio, int id) {
-        switch ((String) opcionUsuario) {
-            case "Min" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0, 0, 0);
-            case "Horas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo, 0, 0);
-            case "Dias" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, intervalo, 0);
-            case "Semanas" -> this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0, 0, intervalo);
+        if (opcionUsuario.equals("Min")){
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, intervalo, 0,0,0);
+        } else if (opcionUsuario.equals("Horas")) {
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, intervalo,0,0);
+        } else if (opcionUsuario.equals("Dias")){
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,intervalo,0);
+        } else if (opcionUsuario.equals("Semanas")) {
+            this.calendario.modificarAlarmaIntervalo(recordatorio, id, 0, 0,0,intervalo);
         }
     }
 
