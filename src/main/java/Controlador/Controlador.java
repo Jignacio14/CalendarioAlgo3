@@ -36,8 +36,7 @@ public class Controlador extends Application {
         cargarCalendario();
         this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), eventoAvanzarAtrasar(), eventoVerPorRango(), registrarEscuchaEnVista());
         var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
-        desde = fechasDefecto[0];
-        hasta = fechasDefecto[1];
+        auxiliarGestionConsultas(fechasDefecto);
         stage.setOnCloseRequest(windowEvent -> guardarCalendario());
     }
 
@@ -139,9 +138,7 @@ public class Controlador extends Application {
             case "antRango" -> nuevoLimites = guia.regresar(desde, hasta);
             default -> {}
         }
-        desde = nuevoLimites[0];
-        hasta = nuevoLimites[1];
-        calendario.organizarRecordatorios(desde, hasta);
+        auxiliarGestionConsultas(nuevoLimites);
     }
 
     private void gestionarConsulta(String origen, LocalDateTime fecha){
@@ -161,10 +158,14 @@ public class Controlador extends Application {
             }
             default -> {return;}
         }
-        desde = inicioFin[0];
-        hasta = inicioFin[1];
-       calendario.organizarRecordatorios(desde, hasta);
-       Map<LocalDateTime, HashSet<Integer>> codigos = calendario.verRecordatoriosOrdenados(desde, hasta);
+        auxiliarGestionConsultas(inicioFin);
+    }
+
+    private void auxiliarGestionConsultas(LocalDateTime[] fechas){
+        desde = fechas[0];
+        hasta = fechas[1];
+        calendario.organizarRecordatorios(desde, hasta);
+        Map<LocalDateTime, HashSet<Integer>> codigos = calendario.verRecordatoriosOrdenados(desde, hasta);
         vista.verEventosPorRangoFechas(codigos);
     }
 

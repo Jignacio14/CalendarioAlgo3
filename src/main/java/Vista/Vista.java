@@ -360,11 +360,12 @@ public class Vista {
     }
 
     public void verEventosPorRangoFechas(Map<LocalDateTime, HashSet<Integer>> codigosOrdenados){
+        contenedorRecordatorios.getChildren().clear();
         for (Map.Entry<LocalDateTime, HashSet<Integer>> entry : codigosOrdenados.entrySet()) {
-            LocalDateTime dateTime = entry.getKey();
             HashSet<Integer> codigos = entry.getValue();
-            System.out.println("Fecha y hora: " + dateTime);
-            System.out.println("Códigos: " + codigos);
+            for (var codigo: codigos){
+                crearVista(calendario.obtenerRecordatorio(codigo));
+            }
         }
     }
 

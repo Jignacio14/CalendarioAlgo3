@@ -112,7 +112,6 @@ public class Calendario implements Persistible {
         return organizador.verCalendarioOrdenado(desde, hasta);
     }
     public void agregarRepeticiones(Evento evento, Frecuencia frecuencia, Limite limite){
-        Integer id = evento.obtenerId();
         evento.configurarRepeticion(frecuencia, limite);
         organizador.actualizarRepeticiones(evento);
     }
@@ -123,7 +122,7 @@ public class Calendario implements Persistible {
         organizador.actualizarRepeticiones(evento);
     }
 
-    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){;
+    public void modificarRepeticionesIteraciones(Evento evento, Integer iteraciones){
         organizador.eliminarRepeticiones(evento);
         evento.configurarIteracion(iteraciones);
         organizador.actualizarRepeticiones(evento);

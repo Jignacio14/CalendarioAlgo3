@@ -17,7 +17,6 @@ public enum Avanzador {
             int longNuevoMes = hasta.plusDays(1).toLocalDate().lengthOfMonth();
             nuevoIncioFin[0] = desde.plusDays(longNuevoMes);
             nuevoIncioFin[1] = hasta.plusDays(longNuevoMes);
-            System.out.println("Desde: " + nuevoIncioFin[0] + " -> " + nuevoIncioFin[1]);
             return nuevoIncioFin;
         }
 
@@ -27,7 +26,6 @@ public enum Avanzador {
             int longNuevoMes = desde.minusDays(1).toLocalDate().lengthOfMonth();
             nuevoIncioFin[0] = desde.minusDays(longNuevoMes);
             nuevoIncioFin[1] = hasta.minusDays(longNuevoMes);
-            System.out.println("Desde: " + nuevoIncioFin[0] + " -> " + nuevoIncioFin[1]);
             return nuevoIncioFin;
         }
     };
@@ -41,7 +39,6 @@ public enum Avanzador {
         LocalDateTime[] nuevoIncioFin = new LocalDateTime[2];
         nuevoIncioFin[0] = desde.plusDays(porDefecto);
         nuevoIncioFin[1] = hasta.plusDays(porDefecto);
-        System.out.println("Desde: " + nuevoIncioFin[0] + " -> " + nuevoIncioFin[1]);
         return nuevoIncioFin;
     }
 
@@ -49,7 +46,6 @@ public enum Avanzador {
         LocalDateTime[] nuevoIncioFin = new LocalDateTime[2];
         nuevoIncioFin[0] = desde.minusDays(porDefecto);
         nuevoIncioFin[1] = hasta.minusDays(porDefecto);
-        System.out.println("Desde: " + nuevoIncioFin[0] + " -> " + nuevoIncioFin[1]);
         return nuevoIncioFin;
     }
 
