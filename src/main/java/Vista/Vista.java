@@ -124,23 +124,6 @@ public class Vista {
         }
     }
 
-    public void crearVistaRepeticiones(Recordatorio evento, LocalDateTime anioOriginalRec){
-
-    }
-
-    public void crearVista(Recordatorio recordatorioAct) {
-        if (recordatorioAct==null){return;}
-        String color = recordatorioAct.obtenerTipo().equals("Evento") ? this.colorEvento : this.colorTarea;
-        Button botonRecordatorio = new Button();
-        botonRecordatorio.setText("");
-        botonRecordatorio.setGraphic(datosRecordatorios(recordatorioAct));
-        botonRecordatorio.setStyle(color);
-        botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
-        botonRecordatorio.setOnAction(this.escuchaPersonalizarRec);
-        contenedorRecordatorios.getChildren().add(botonRecordatorio);
-    }
-
-
     public static Integer vistaCantIntervalo() {
         var modificarCant = new TextInputDialog();
         modificarCant.setHeaderText("Coloca la cantidad de intervalo a aplicar: ");
