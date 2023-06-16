@@ -49,8 +49,8 @@ public enum Limite {
         }
     };
 
-    public LocalDateTime fechaLimite;
-    public Integer iteraciones;
+    protected LocalDateTime fechaLimite;
+    protected Integer iteraciones;
 
     Limite(LocalDateTime fecha, Integer iteraciones) {
         this.fechaLimite = fecha;
