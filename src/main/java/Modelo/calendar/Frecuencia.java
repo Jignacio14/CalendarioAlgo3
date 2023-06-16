@@ -55,7 +55,6 @@ public enum Frecuencia {
             guia = incrementarFecha(guia);
             if (!verificarGuiaValida(limite, guia)){ break;}
             repeticiones.add(guia);
-            //limite.ajustarIteracion();
         } while (limite.verificarProximasIteraciones(guia) & guia.isBefore(tope) & limite.validarCantidadRepeticiones(repeticiones.size()));
         return repeticiones;
     }

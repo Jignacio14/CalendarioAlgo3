@@ -285,7 +285,7 @@ public class Controlador extends Application {
 
         switch ((String) opcionUsuario) {
             case "Sin repeticion" -> {
-                calendario.eliminarRepeticiones(recordatorioAct);
+                return;
             }
             case "Repeticion diaria" -> {
                 Supplier<Object> intervaloRepUsuario = () -> (Integer.parseInt(verificarDatoNuevo((pedirDatoUsuario
@@ -294,8 +294,6 @@ public class Controlador extends Application {
                 agregarLimiteRepDiaria(recordatorioAct, (Integer) intervaloRep, pedirDatoUsuario);
             }
         }
-
-
     }
 
     private void agregarLimiteRepDiaria(Recordatorio recordatorioAct, Integer intervaloRep, Function<String,String> pedirDatoUsuario) {

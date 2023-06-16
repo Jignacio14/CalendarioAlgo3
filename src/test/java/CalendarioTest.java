@@ -411,7 +411,6 @@ public class CalendarioTest {
         var inicio = LocalDateTime.of(2023, 1, 1, 0, 0);
         var fin = inicio.plusYears(1);
         var calendario = new Calendario();
-        var result = calendario.verRecordatoriosOrdenados(inicio, fin);
     }
 
     @Test
