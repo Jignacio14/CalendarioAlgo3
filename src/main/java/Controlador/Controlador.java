@@ -5,8 +5,10 @@ import Modelo.calendar.Persistencia.PersistorJSON;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.time.DayOfWeek;
@@ -33,7 +35,7 @@ public class Controlador extends Application {
         this.calendario = new Calendario();
         this.guia = Avanzador.Diario; // Vista por defecto es un dia
         cargarCalendario();
-        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), eventoAvanzarAtrasar(), eventoVerPorRango(), registrarEscuchaEnVista());
+        this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), eventoAvanzarAtrasar(), eventoVerPorRango(), escuchaAgregarRec());
         var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
         auxiliarGestionConsultas(fechasDefecto);
         stage.setOnCloseRequest(windowEvent -> guardarCalendario());
@@ -61,15 +63,19 @@ public class Controlador extends Application {
     public EventHandler<ActionEvent> escuchaPersonalizarRec(){
         return (actionEvent -> {
             int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
+            System.out.println(idRecordatorioAct);
+            System.out.println(this.calendario.obtenerRecordatorios());
             Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
-            Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
-            establecerDatosRec(opcionUsuario, recordatorioAct);
-            vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
+            if (recordatorioAct!=null){
+                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
+                establecerDatosRec(opcionUsuario, recordatorioAct);
+                vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
+            }
         });
     }
 
 
-    public EventHandler<ActionEvent> registrarEscuchaEnVista(){
+    public EventHandler<ActionEvent> escuchaAgregarRec(){
         return (actionEvent -> {
             String idAgregarRec = (vista.obtenerRecAgregado(actionEvent)).getId();
             if (idAgregarRec.equals("agregarEvento")) {
@@ -84,18 +90,20 @@ public class Controlador extends Application {
         String[] opcionesModRec;
         Recordatorio recordatorio;
         recordatorio = calendario.obtenerRecordatorio(crearRecordatorio(recAgregar));
-        opcionesModRec = vista.opcionesModificarRec(recordatorio);
+        opcionesModRec = Arrays.stream(vista.opcionesModificarRec(recordatorio))
+                .filter(opcion -> !Objects.equals(opcion, "Eliminar"))
+                .toArray(String[]::new);
 
         for (String modificar: opcionesModRec) {
             establecerDatosRec(modificar, recordatorio);
         }
-
-        vista.crearVista(recordatorio);
+        //vista.crearVista(recordatorio);
     }
 
     private int crearRecordatorio(String tipo) {
         LocalDateTime fechaHoraDefault = LocalDateTime.now();
-        return tipo.equals("Evento") ? this.calendario.crearEvento(fechaHoraDefault, 0, 0) : this.calendario.crearTarea(fechaHoraDefault, 0, 0);
+        return tipo.equals("Evento") ? this.calendario.crearEvento(fechaHoraDefault, 0, 0)
+                : this.calendario.crearTarea(fechaHoraDefault, 0, 0);
     }
 
     private String verificarDatoNuevo(String datoNuevo, String datoAnt) {
@@ -274,11 +282,19 @@ public class Controlador extends Application {
                     establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
                 }
             }
+            case "Eliminar" -> {
+                vista.eliminarRecordatorio(recordatorioAct.obtenerId());
+                this.calendario.eliminarRecordatorio(recordatorioAct);
+            }
         }
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = desde;
+        inicioFin[1] = hasta;
+        auxiliarGestionConsultas(inicioFin);
     }
 
     private void agregarRepeticion(Evento recordatorioAct, Function<String,String> pedirDatoUsuario) {
-        var opcionUsuario = vista.vistaAgregarRepeticion(recordatorioAct);
+        var opcionUsuario = vista.vistaAgregarRepeticion();
         if (opcionUsuario == null){
             return;
         }
@@ -297,7 +313,7 @@ public class Controlador extends Application {
     }
 
     private void agregarLimiteRepDiaria(Recordatorio recordatorioAct, Integer intervaloRep, Function<String,String> pedirDatoUsuario) {
-        var opcionUsuario = vista.vistaConsultarTipoLimiteRepDiaria(recordatorioAct);
+        var opcionUsuario = vista.vistaConsultarTipoLimiteRepDiaria();
         if (opcionUsuario == null){
             return;
         }

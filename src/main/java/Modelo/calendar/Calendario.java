@@ -12,17 +12,22 @@ public class Calendario implements Persistible {
     private List<Recordatorio> recordatorios = new ArrayList<>();
     private final Organizador organizador = new Organizador();
 
-    public Recordatorio obtenerRecordatorio(int idRecordatorio) { return this.recordatorios.get(idRecordatorio); }
+    public Recordatorio obtenerRecordatorio(int idRecordatorio) {
+        return this.recordatorios.get(idRecordatorio);
+    }
 
     public Boolean calendarioVacio(){ return recordatorios.isEmpty(); }
 
     private void agregarRecordatorio(Recordatorio recordatorio) {
+        System.out.println(recordatorios);
         int posicionVacia = this.recordatorios.indexOf(null);
+        System.out.println(posicionVacia);
         if (this.recordatorios.isEmpty() || posicionVacia < 0) {
             this.recordatorios.add(recordatorio);
         } else {
             this.recordatorios.set(posicionVacia, recordatorio);
         }
+        System.out.println(recordatorios);
     }
 
     public int crearEvento(LocalDateTime inicio, Integer horas, Integer minutos) {
@@ -31,7 +36,7 @@ public class Calendario implements Persistible {
         int idEvento = this.recordatorios.lastIndexOf(evento);
         this.recordatorios.get(idEvento).establecerId(idEvento);
         // TO DO -> agregar al ordenador
-        organizador.actualizarRepeticiones(evento);
+        //organizador.actualizarRepeticiones(evento);
         return idEvento;
     }
 

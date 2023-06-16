@@ -10,6 +10,7 @@ public class Organizador {
     }
     public void organizarRecordatorios(LocalDateTime desde, LocalDateTime hasta, List<Recordatorio> recordatorios){
         for (var recordatorio: recordatorios){
+            if (recordatorio==null){continue;}
             if (recordatorio.verificarRepeticion()){
                 agregarRepetidos(recordatorio.verRepeticiones(desde, hasta), recordatorio.obtenerId());
             }else {
@@ -28,6 +29,7 @@ public class Organizador {
     }
 
     public void actualizarRepeticiones(Recordatorio recordatorio){
+        if (organizador.isEmpty()){return;}
         if (recordatorio.verificarRepeticion()){
             List<LocalDateTime> fechas = recordatorio.verRepeticiones(recordatorio.obtenerInicio(), organizador.lastKey());
             agregarRepetidos(fechas, recordatorio.obtenerId());
