@@ -278,7 +278,7 @@ public class Controlador extends Application {
     }
 
     private void agregarRepeticion(Evento recordatorioAct, Function<String,String> pedirDatoUsuario) {
-        var opcionUsuario = vista.vistaAgregarRepeticion(recordatorioAct);
+        var opcionUsuario = vista.vistaAgregarRepeticion();
         if (opcionUsuario == null){
             return;
         }
@@ -299,7 +299,7 @@ public class Controlador extends Application {
     }
 
     private void agregarLimiteRepDiaria(Recordatorio recordatorioAct, Integer intervaloRep, Function<String,String> pedirDatoUsuario) {
-        var opcionUsuario = vista.vistaConsultarTipoLimiteRepDiaria(recordatorioAct);
+        var opcionUsuario = vista.vistaConsultarTipoLimiteRepDiaria();
         if (opcionUsuario == null){
             return;
         }

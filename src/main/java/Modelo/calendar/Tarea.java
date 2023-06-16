@@ -1,7 +1,5 @@
 package Modelo.calendar;
 
-import Vista.Actividad;
-import Vista.RecordatorioVisitor;
 
 import java.time.LocalDateTime;
 
@@ -11,10 +9,6 @@ public class Tarea extends Recordatorio {
     public Tarea(LocalDateTime inicio, Integer horas, Integer minutos) {
         super(inicio, horas, minutos);
         this.tipo = "Tarea";
-    }
-
-    public void aceptar(RecordatorioVisitor visitor) {
-        visitor.visitarTarea(this);
     }
 
     @Override
