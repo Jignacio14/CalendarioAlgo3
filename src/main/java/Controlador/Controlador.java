@@ -96,7 +96,6 @@ public class Controlador extends Application {
         for (String modificar: opcionesModRec) {
             establecerDatosRec(modificar, recordatorio);
         }
-        //vista.crearVista(recordatorio);
     }
 
     private int crearRecordatorio(String tipo) {

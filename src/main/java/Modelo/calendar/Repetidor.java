@@ -16,6 +16,11 @@ public class Repetidor {
         this.frecuencia = frecuencia;
     }
 
+    public void configurarFechaLimite(LocalDateTime fechaLimite) { this.limite.setFechaLimite(fechaLimite); }
+
+    public void configurarIteraciones(Integer iteraciones) { this.limite.setIteraciones(iteraciones); }
+
+    public void configurarIntervalo(Integer intervalo) { this.frecuencia.setIntervalo(intervalo); }
 
     public void configurarDias(Set<DayOfWeek> dias) { this.frecuencia.setDiasSemana(dias); }
 
