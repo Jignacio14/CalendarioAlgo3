@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -24,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.application.Platform;
@@ -136,7 +134,7 @@ public class Vista {
     }
 
     public void actualizarVistaRec(Button recordatorioAct, Recordatorio recordatorio) {
-        recordatorioAct.setGraphic(datosRecordatorios(recordatorio));
+        recordatorioAct.setGraphic(datosRecordatorios(recordatorio, recordatorio.obtenerInicio()));
     }
 
     public MenuItem obtenerRecAgregado(ActionEvent recSeleccionado) {
@@ -149,28 +147,8 @@ public class Vista {
                 : opcionesRec.concat("Cambiar estado").split(",");
     }
 
-    public TextFlow datosRecordatorios(Recordatorio recordatorio) {
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
-        Text infoRec = new Text();
-        infoRec.setText(recordatorio.obtenerTipo() + "\n" +
-                recordatorio.obtenerNombre() + "\n" +
-                "Inicio: " + formato.format(recordatorio.obtenerInicio()) + "\n" +
-                "Fin: " + formato.format(recordatorio.verFinal()) + "\n");
-
-        Text infoTarCom = ((recordatorio.obtenerTipo().equals("Tarea")) ? verificarCompletada(recordatorio.verificarCompletada()) : new Text(""));
-        infoTarCom.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        Text infoDiaCom = new Text(((recordatorio.verficarDiaCompleto()) ? "\n-- Dia completo --\n" : ""));
-        infoDiaCom.setFill(Color.BLUEVIOLET);
-        infoDiaCom.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        var info = new TextFlow();
-        info.setTextAlignment(TextAlignment.CENTER);
-        info.getChildren().addAll(infoRec, infoDiaCom, infoTarCom);
-        info.setPrefHeight(100);
-        return info;
-    }
-
-    private TextFlow datosCompletosRecordatorio(Recordatorio recordatorio) {
-        var info = datosRecordatorios(recordatorio);
+    private TextFlow datosCompletosRecordatorio(Recordatorio recordatorio, LocalDateTime inicio) {
+        var info = datosRecordatorios(recordatorio, inicio);
         info.setPrefHeight(300);
         info.setPrefWidth(300);
         Text descripcion = new Text("\n" + recordatorio.obtenerDescripcion());
@@ -302,7 +280,7 @@ public class Vista {
         botonRecordatorio.setText("");
         botonRecordatorio.setGraphic(datosRecordatorios(recordatorioAct, inicio));
         botonRecordatorio.setStyle(color);
-        botonRecordatorio.setId(Integer.toString(recordatorioAct.obtenerId()));
+        botonRecordatorio.setId(recordatorioAct.obtenerId()+","+inicio.toString());
         botonRecordatorio.setOnAction(this.escuchaPersonalizarRec);
         contenedorRecordatorios.getChildren().add(botonRecordatorio);
     }
@@ -379,11 +357,11 @@ public class Vista {
         return vistaChoiceDialog(opciones, "Modificar fecha de inicio y fin/duracion", "Elegi la fecha a modificar", null, null,0);
     }
 
-    public Object vistaPersonalizarRec(Recordatorio recordatorioAct) {
+    public Object vistaPersonalizarRec(Recordatorio recordatorioAct, LocalDateTime inicio) {
         String[] opcionesRec = opcionesModificarRec(recordatorioAct);
 
         Label label = new Label();
-        label.setGraphic(datosCompletosRecordatorio(recordatorioAct));
+        label.setGraphic(datosCompletosRecordatorio(recordatorioAct, inicio));
 
         return vistaChoiceDialog(opcionesRec, "Personalizar Recordatorio", null, "Modificar", label,300);
     }

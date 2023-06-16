@@ -30,7 +30,6 @@ public class LimitePersistencia extends Deserealizador implements JsonSerializer
     @Override
     public JsonElement serialize(Limite limite, Type type, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
-        System.out.println(limite.name() + "  " + limite.obtenerFechaLimite().toString() + "  " + limite.obtenerIteraciones().toString());
         jsonObject.addProperty("tipoLimite", limite.name());
         jsonObject.addProperty("fechaLimite", limite.obtenerFechaLimite().toString());
         jsonObject.addProperty("iteraciones", limite.obtenerIteraciones().toString());

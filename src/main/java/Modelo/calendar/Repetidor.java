@@ -39,11 +39,6 @@ public class Repetidor {
     public LocalDateTime obtenerUltConsulta() { return this.ultConsulta; }
 
     @Override
-    public String toString() {
-        return limite.obtenerIteraciones().toString() + " " + limite.obtenerFechaLimite().toString() + " " + ultConsulta.toString();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass()) {
             return false;

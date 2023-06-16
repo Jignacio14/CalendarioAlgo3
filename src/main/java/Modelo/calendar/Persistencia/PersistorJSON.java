@@ -123,8 +123,7 @@ public class PersistorJSON implements Persistor {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Repetidor.class, new RepetidorPersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
-        Repetidor repetidor = gson.fromJson(repetidorJson, Repetidor.class);
-        return repetidor;
+        return gson.fromJson(repetidorJson, Repetidor.class);
     }
 
     private void cargarAlarmas(String alarmasJson, Recordatorio recordatorio){

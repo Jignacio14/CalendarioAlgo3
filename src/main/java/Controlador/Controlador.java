@@ -63,16 +63,21 @@ public class Controlador extends Application {
 
     public EventHandler<ActionEvent> escuchaPersonalizarRec(){
         return (actionEvent -> {
-            int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
-            Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
+            String[] infoRecAct = (vista.obtenerRecSeleccionado(actionEvent)).getId().split(",");
+            Recordatorio recordatorioAct = calendario.obtenerRecordatorio(Integer.parseInt(infoRecAct[0]));
             if (recordatorioAct!=null){
-                Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
+                Object opcionUsuario;
+                opcionUsuario = recordatorioAct.verificarRepeticion() ? vistaRepeticiones(recordatorioAct, infoRecAct) : vista.vistaPersonalizarRec(recordatorioAct, recordatorioAct.obtenerInicio());
                 establecerDatosRec(opcionUsuario, recordatorioAct);
                 vista.actualizarVistaRec(vista.obtenerRecSeleccionado(actionEvent), recordatorioAct);
             }
         });
     }
 
+    private Object vistaRepeticiones(Recordatorio recordatorioAct, String[] infoRecAct) {
+        LocalDateTime fechaInicioRecRepAct = LocalDateTime.parse(infoRecAct[1]);
+        return vista.vistaPersonalizarRec(recordatorioAct, fechaInicioRecRepAct);
+    }
 
     public EventHandler<ActionEvent> escuchaAgregarRec(){
         return (actionEvent -> {
@@ -253,6 +258,10 @@ public class Controlador extends Application {
         String datoNuevo;
 
         if (opcionUsuario == null) {
+            LocalDateTime[] inicioFin = new LocalDateTime[2];
+            inicioFin[0] = desde;
+            inicioFin[1] = hasta;
+            auxiliarGestionConsultas(inicioFin);
             return;
         }
         switch ((String) opcionUsuario) {
