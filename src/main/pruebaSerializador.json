@@ -1,26 +1,27 @@
 [
+  null,
   {
     "repetidor": {
-      "ultConsulta": "2023-06-16T17:13:58.851143900",
+      "ultConsulta": "2023-06-16T18:08:03.475799",
       "Limite": {
-        "tipoLimite": "Iteraciones",
-        "fechaLimite": "2023-06-16T17:14:32.843404800",
-        "iteraciones": "8"
+        "tipoLimite": "FechaMax",
+        "fechaLimite": "2023-07-01T00:00",
+        "iteraciones": "2147483647"
       },
       "Frecuencia": {
         "tipoFrecuencia": "Diaria",
-        "intervalo": "3"
+        "intervalo": "2"
       }
     },
-    "ultRepeticion": "2024-02-11T17:01:21.684135200",
+    "ultRepeticion": "2023-06-30T18:06:42.502359200",
     "tipo": "Evento",
-    "nombre": "holaa",
+    "nombre": "PRUEBA 2",
     "descripcion": "Sin descripcion",
-    "inicio": "2023-06-16T17:01:21.684135200",
-    "fin": "2023-06-16T17:01:21.684135200",
+    "inicio": "2023-06-16T18:06:42.502359200",
+    "fin": "2023-06-16T18:06:42.502359200",
     "horas": 0,
     "minutos": 0,
-    "id": 0,
+    "id": 1,
     "alarmas": []
   }
 ]

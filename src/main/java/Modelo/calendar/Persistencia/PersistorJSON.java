@@ -63,15 +63,19 @@ public class PersistorJSON implements Persistor {
     private void cargarCalendario(JsonArray recordatoriosJson, List<Recordatorio> recordatorios){
 
         for (JsonElement recordatorioJson : recordatoriosJson) {
-            JsonObject recorjson = recordatorioJson.getAsJsonObject();
-            String tipoRecordatorio = recorjson.get("tipo").getAsString();
-            Recordatorio recordatorio;
-            if (tipoRecordatorio.equals("Evento")){
-                recordatorio = agregarElementosEvento(recorjson);
-            }else {
-                recordatorio = agregarElementosTarea( recorjson);
+            try {
+                Recordatorio recordatorio;
+                JsonObject recorjson = recordatorioJson.getAsJsonObject();
+                String tipoRecordatorio = recorjson.get("tipo").getAsString();
+                if (tipoRecordatorio.equals("Evento")){
+                    recordatorio = agregarElementosEvento(recorjson);
+                }else {
+                    recordatorio = agregarElementosTarea( recorjson);
+                }
+                recordatorios.add(recordatorio);
+            }catch (IllegalStateException e){
+                recordatorios.add(null);
             }
-            recordatorios.add(recordatorio);
         }
     }
 
