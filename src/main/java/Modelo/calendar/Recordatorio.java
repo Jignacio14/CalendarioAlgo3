@@ -44,6 +44,7 @@ public abstract class Recordatorio {
 
     public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
+    public LocalDateTime verFinal(LocalDateTime repe){ return repe.plusHours(horas).plusMinutes(minutos);}
     public boolean verficarDiaCompleto() { return (inicio.getHour() == 0) && (horas == 24) && (minutos == 0); }
 
     public boolean verificarRepeticion() { return false; }
