@@ -34,7 +34,7 @@ public class Controlador extends Application {
     public void start(Stage stage) throws Exception {
         this.calendario = new Calendario();
         this.guia = Avanzador.Diario; // Vista por defecto es un dia
-        //cargarCalendario();
+        cargarCalendario();
         this.vista = new Vista(stage, this.calendario, escuchaPersonalizarRec(), eventoAvanzarAtrasar(), eventoVerPorRango(), escuchaAgregarRec());
         var fechasDefecto = descomponerFechaRangoDia(LocalDateTime.now());
         auxiliarGestionConsultas(fechasDefecto);
@@ -97,7 +97,7 @@ public class Controlador extends Application {
         for (String modificar: opcionesModRec) {
             establecerDatosRec(modificar, recordatorio);
         }
-        vista.crearVista(recordatorio);
+        //vista.crearVista(recordatorio);
     }
 
     private int crearRecordatorio(String tipo) {
@@ -287,6 +287,10 @@ public class Controlador extends Application {
                 this.calendario.eliminarRecordatorio(recordatorioAct);
             }
         }
+        LocalDateTime[] inicioFin = new LocalDateTime[2];
+        inicioFin[0] = desde;
+        inicioFin[1] = hasta;
+        auxiliarGestionConsultas(inicioFin);
     }
 
     private void agregarRepeticion(Evento recordatorioAct, Function<String,String> pedirDatoUsuario) {

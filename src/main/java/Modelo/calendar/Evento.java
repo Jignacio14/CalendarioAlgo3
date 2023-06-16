@@ -52,7 +52,7 @@ public class Evento extends Recordatorio {
 
     @Override
     public boolean equals(Object obj) {
-        if (getClass() != obj.getClass()) {
+        if (obj==null || getClass() != obj.getClass()) {
             return false;
         }
 
