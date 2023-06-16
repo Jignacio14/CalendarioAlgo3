@@ -21,10 +21,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.application.Platform;
 import javafx.animation.AnimationTimer;
@@ -117,7 +117,8 @@ public class Vista {
     }
 
     public void cargarInterfaz() {
-        List<Recordatorio> recordatorios = this.calendario.obtenerRecordatorios();
+        List<Recordatorio> recordatorios = (this.calendario.obtenerRecordatorios()).stream()
+                .filter(Objects::nonNull).toList();
         for (Recordatorio recordatorio : recordatorios) {
             if (recordatorio.obtenerTipo().equals("Evento") && ((Evento)recordatorio).verificarRepeticion()){
                 crearVistaRepeticiones(recordatorio, recordatorio.obtenerInicio());
@@ -127,17 +128,16 @@ public class Vista {
         }
     }
 
+    public void eliminarRecordatorio(int recordatorioEliminado){
+        contenedorRecordatorios.getChildren().remove(recordatorioEliminado);
+    }
+
     public void crearVistaRepeticiones(Recordatorio evento, LocalDateTime anioOriginalRec){
-        var cantRepeticiones = ((Evento)evento).verRepeticiones(anioOriginalRec.plusYears(1)).size();
-        var repeticiones = ((Evento)evento).verRepeticiones(anioOriginalRec.plusYears(1));
-        for (int i = 0; i < cantRepeticiones; i++) {
-            evento.modificarInicio(repeticiones.get(i));
-            crearVista(evento);
-        }
-        evento.modificarInicio(anioOriginalRec);
+
     }
 
     public void crearVista(Recordatorio recordatorioAct) {
+        if (recordatorioAct==null){return;}
         String color = recordatorioAct.obtenerTipo().equals("Evento") ? this.colorEvento : this.colorTarea;
         Button botonRecordatorio = new Button();
         botonRecordatorio.setText("");
@@ -168,7 +168,7 @@ public class Vista {
     }
 
     public String[] opcionesModificarRec(Recordatorio recordatorio) {
-        String opcionesRec = "Titulo,Descripcion,Todo el dia,Fecha de inicio o fin,Agregar alarma,";
+        String opcionesRec = "Titulo,Descripcion,Todo el dia,Fecha de inicio o fin,Agregar alarma,Eliminar,";
         return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar repeticion").split(",")
                 : opcionesRec.concat("Cambiar estado").split(",");
     }
@@ -293,9 +293,16 @@ public class Vista {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                Function<Recordatorio, Stream<Alarma>> pedirAlarmas = recordatorio -> {
+                    if (recordatorio!=null){
+                        return recordatorio.obtenerAlarmas().stream();
+                    }
+                    return Stream.empty();
+                };
+
                 LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
                 calendario.obtenerRecordatorios().stream()
-                        .flatMap(recordatorio -> recordatorio.obtenerAlarmas().stream())
+                        .flatMap(pedirAlarmas)
                         .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
                         .forEach(Vista::lanzarAlarma);
             }
