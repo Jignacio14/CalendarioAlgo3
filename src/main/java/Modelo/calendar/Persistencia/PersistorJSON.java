@@ -38,7 +38,9 @@ public class PersistorJSON implements Persistor {
     private String crearSerializado(List<Recordatorio> recordatorios){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
+        gsonBuilder.registerTypeAdapter(Repetidor.class, new RepetidorPersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
+        System.out.println(gson.toJson(recordatorios));
         return gson.toJson(recordatorios);
     }
 
@@ -60,6 +62,7 @@ public class PersistorJSON implements Persistor {
     }
 
     private void cargarCalendario(JsonArray recordatoriosJson, List<Recordatorio> recordatorios){
+
         for (JsonElement recordatorioJson : recordatoriosJson) {
             JsonObject recorjson = recordatorioJson.getAsJsonObject();
             String tipoRecordatorio = recorjson.get("tipo").getAsString();
@@ -114,12 +117,12 @@ public class PersistorJSON implements Persistor {
     }
 
     private Repetidor crearRepetidor(String repetidorJson){
+        System.out.println(repetidorJson);
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Limite.class, new LimiteDeserializer());
-        gsonBuilder.registerTypeAdapter(Frecuencia.class, new FrecuenciaDeserializer());
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
+        gsonBuilder.registerTypeAdapter(Repetidor.class, new RepetidorPersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
-        return gson.fromJson(repetidorJson, Repetidor.class);
+        Repetidor repetidor = gson.fromJson(repetidorJson, Repetidor.class);
+        return repetidor;
     }
 
     private void cargarAlarmas(String alarmasJson, Recordatorio recordatorio){

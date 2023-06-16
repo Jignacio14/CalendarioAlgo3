@@ -26,8 +26,21 @@ public class Repetidor {
 
     public boolean verificarHayRepeticiones() { return limite.verificarProximasIteraciones(this.ultConsulta); }
 
+    public void establecerUltConsulta(LocalDateTime ultConsulta) { this.ultConsulta = ultConsulta; }
+
     public List<LocalDateTime> verFuturasRepeticiones(LocalDateTime desde, LocalDateTime hasta) {
         return frecuencia.obtenerRepeticiones(limite, hasta, desde);
+    }
+
+    public Limite obtenerLimite() { return this.limite; }
+
+    public Frecuencia obtenerFrecuencia() { return this.frecuencia; }
+
+    public LocalDateTime obtenerUltConsulta() { return this.ultConsulta; }
+
+    @Override
+    public String toString() {
+        return limite.obtenerIteraciones().toString() + " " + limite.obtenerFechaLimite().toString() + " " + ultConsulta.toString();
     }
 
     @Override

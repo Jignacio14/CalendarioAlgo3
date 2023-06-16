@@ -1,0 +1,26 @@
+[
+  {
+    "repetidor": {
+      "ultConsulta": "2023-06-16T17:13:58.851143900",
+      "Limite": {
+        "tipoLimite": "Iteraciones",
+        "fechaLimite": "2023-06-16T17:14:32.843404800",
+        "iteraciones": "8"
+      },
+      "Frecuencia": {
+        "tipoFrecuencia": "Diaria",
+        "intervalo": "3"
+      }
+    },
+    "ultRepeticion": "2024-02-11T17:01:21.684135200",
+    "tipo": "Evento",
+    "nombre": "holaa",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-16T17:01:21.684135200",
+    "fin": "2023-06-16T17:01:21.684135200",
+    "horas": 0,
+    "minutos": 0,
+    "id": 0,
+    "alarmas": []
+  }
+]

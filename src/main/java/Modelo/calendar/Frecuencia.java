@@ -69,4 +69,8 @@ public enum Frecuencia {
     }
     final Integer intervaloDefecto = 1;
     final Set<DayOfWeek> diaDefecto = Set.of(DayOfWeek.MONDAY);
+
+    public Integer obtenerIntervalo() {
+        return intervalo;
+    }
 }

@@ -9,14 +9,13 @@ public abstract class Deserealizador {
 
     public abstract Enum<?>[] listar();
 
-    public Enum<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context){
+    public Enum<?> deserialize(String json, Type typeOfT, JsonDeserializationContext context){
         var listado = listar();
         for (Enum<?> esperado: listado){
-            if(esperado.name().equals(json.getAsString())) {
+            if(esperado.name().equals(json)) {
                 return esperado;
             }
         }
         return null;
     }
-
 }

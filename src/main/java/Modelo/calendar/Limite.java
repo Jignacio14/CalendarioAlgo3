@@ -47,11 +47,10 @@ public enum Limite {
         @Override
         public void ajustarIteracion() {
         }
-
     };
 
-    protected LocalDateTime fechaLimite;
-    protected Integer iteraciones;
+    public LocalDateTime fechaLimite;
+    public Integer iteraciones;
 
     Limite(LocalDateTime fecha, Integer iteraciones) {
         this.fechaLimite = fecha;
@@ -70,5 +69,11 @@ public enum Limite {
         return cantidad <= iteraciones;
     }
 
+    public LocalDateTime obtenerFechaLimite() {
+        return fechaLimite;
+    };
 
+    public Integer obtenerIteraciones(){
+        return iteraciones;
+    };
 }

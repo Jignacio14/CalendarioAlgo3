@@ -16,6 +16,6 @@ public class AlarmaEfectosDeserializer extends Deserealizador implements JsonDes
 
     @Override
     public AlarmaEfectos deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-        return (AlarmaEfectos) super.deserialize(json, typeOfT, context);
+        return (AlarmaEfectos) super.deserialize(json.getAsString(), typeOfT, context);
     }
 }
