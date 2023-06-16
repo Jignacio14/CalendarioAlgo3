@@ -45,7 +45,7 @@ public class PersistorJSON implements Persistor {
     private void persistirArchivo(String json) throws IOException {
         try ( FileWriter archivo = new FileWriter(fileLocation);
               PrintWriter out = new PrintWriter(archivo) ) {
-            out.write(json);
+              out.write(json);
         }
     }
 

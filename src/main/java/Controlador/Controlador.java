@@ -46,7 +46,8 @@ public class Controlador extends Application {
         try {
             var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
             this.calendario.cargar(persistor);
-        }catch (IOException ignore){
+        }catch (Exception ignore){
+            // cualquier caso de error de lectura se levanta el calendario vacio
         }
     }
 
@@ -63,8 +64,6 @@ public class Controlador extends Application {
     public EventHandler<ActionEvent> escuchaPersonalizarRec(){
         return (actionEvent -> {
             int idRecordatorioAct = Integer.parseInt((vista.obtenerRecSeleccionado(actionEvent)).getId());
-            System.out.println(idRecordatorioAct);
-            System.out.println(this.calendario.obtenerRecordatorios());
             Recordatorio recordatorioAct = calendario.obtenerRecordatorio(idRecordatorioAct);
             if (recordatorioAct!=null){
                 Object opcionUsuario = vista.vistaPersonalizarRec(recordatorioAct);
@@ -271,15 +270,15 @@ public class Controlador extends Application {
             case "Agregar repeticion" -> {
                 Evento repetible = (Evento) recordatorioAct;
                 agregarRepeticion(repetible, pedirDatoUsuario);
+            } case "Fecha de inicio o fin" -> {
+                if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")) {
+                    establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
+                }
             }
             case "Todo el dia" -> {
                 if (vista.msjConfirmacion("¿Quiere que dure todo el dia?\nSi quiere que deje de durar todo el dia debe modificar la fecha de inicio")) {
-                    recordatorioAct.establecerDiaCompleto();
-                }
-            }
-            case "Fecha de inicio o fin" -> {
-                if (vista.msjConfirmacion("Quiere agregar una fecha de inicio y fin\n(Si elige 'ACEPTAR' el evento o tarea que es de dia completo va a dejar de serlo")) {
-                    establecerInicioyFinRec(recordatorioAct, pedirDatoUsuario);
+                    calendario.establecerDiaCompleto(recordatorioAct);
+
                 }
             }
             case "Eliminar" -> {

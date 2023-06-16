@@ -77,10 +77,6 @@ public class Vista {
         this.escuchaPersonalizarRec = escuchaPersonalizarRec;
         this.escuchaAgregarRec = escuchaAgregarRec;
 
-        if (!this.calendario.calendarioVacio()) {
-            cargarInterfaz();
-        }
-
         agregarRecordatorios();
         verCalendarioPorRango();
         verificarProximasAlarmas();
@@ -119,20 +115,13 @@ public class Vista {
         return botonAntSig.getId();
     }
 
-    public void cargarInterfaz() {
-        List<Recordatorio> recordatorios = (this.calendario.obtenerRecordatorios()).stream()
-                .filter(Objects::nonNull).toList();
-        for (Recordatorio recordatorio : recordatorios) {
-            if (recordatorio.obtenerTipo().equals("Evento") && ((Evento)recordatorio).verificarRepeticion()){
-                crearVistaRepeticiones(recordatorio, recordatorio.obtenerInicio());
-            } else {
-                crearVista(recordatorio);
-            }
-        }
-    }
 
     public void eliminarRecordatorio(int recordatorioEliminado){
-        contenedorRecordatorios.getChildren().remove(recordatorioEliminado);
+        try {
+            contenedorRecordatorios.getChildren().remove(recordatorioEliminado);
+        } catch (IndexOutOfBoundsException e){
+            contenedorRecordatorios.getChildren().clear();
+        }
     }
 
     public void crearVistaRepeticiones(Recordatorio evento, LocalDateTime anioOriginalRec){
@@ -172,7 +161,7 @@ public class Vista {
     }
 
     public String[] opcionesModificarRec(Recordatorio recordatorio) {
-        String opcionesRec = "Titulo,Descripcion,Todo el dia,Fecha de inicio o fin,Agregar alarma,Eliminar,";
+        String opcionesRec = "Titulo,Descripcion,Fecha de inicio o fin,Todo el dia,Agregar alarma,Eliminar,";
         return recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar repeticion").split(",")
                 : opcionesRec.concat("Cambiar estado").split(",");
     }
@@ -324,6 +313,7 @@ public class Vista {
     }
 
     public void crearVista(Recordatorio recordatorioAct, LocalDateTime inicio) {
+        if (recordatorioAct == null){return;}
         String color = recordatorioAct.obtenerTipo().equals("Evento") ? this.colorEvento : this.colorTarea;
         Button botonRecordatorio = new Button();
         botonRecordatorio.setText("");
@@ -344,7 +334,7 @@ public class Vista {
 
         Text infoTarCom = ((recordatorio.obtenerTipo().equals("Tarea")) ? verificarCompletada(recordatorio.verificarCompletada()) : new Text(""));
         infoTarCom.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        Text repe = null;
+        Text repe = new Text("");
         if (recordatorio.verificarRepeticion()){
             repe = new Text("Se repite");
         }
@@ -401,7 +391,7 @@ public class Vista {
     public Object vistaAgregarFechaIniYFin(Recordatorio recordatorio) {
         String opcionesRec = "Fecha de inicio,";
         String[] opciones = recordatorio.obtenerTipo().equals("Evento") ? opcionesRec.concat("Agregar duracion").split(",")
-                : opcionesRec.concat("Fecha de inicio").split(",");
+                : opcionesRec.concat("Fecha de fin").split(",");
 
         return vistaChoiceDialog(opciones, "Modificar fecha de inicio y fin/duracion", "Elegi la fecha a modificar", null, null,0);
     }

@@ -19,15 +19,12 @@ public class Calendario implements Persistible {
     public Boolean calendarioVacio(){ return recordatorios.isEmpty(); }
 
     private void agregarRecordatorio(Recordatorio recordatorio) {
-        System.out.println(recordatorios);
         int posicionVacia = this.recordatorios.indexOf(null);
-        System.out.println(posicionVacia);
         if (this.recordatorios.isEmpty() || posicionVacia < 0) {
             this.recordatorios.add(recordatorio);
         } else {
             this.recordatorios.set(posicionVacia, recordatorio);
         }
-        System.out.println(recordatorios);
     }
 
     public int crearEvento(LocalDateTime inicio, Integer horas, Integer minutos) {
@@ -70,7 +67,11 @@ public class Calendario implements Persistible {
         organizador.actualizarRepeticiones(recordatorio);
     }
 
-    public void establecerDiaCompleto(Recordatorio recordatorio) { recordatorio.establecerDiaCompleto(); }
+    public void establecerDiaCompleto(Recordatorio recordatorio) {
+        organizador.eliminarRepeticiones(recordatorio);
+        recordatorio.establecerDiaCompleto();
+        organizador.actualizarRepeticiones(recordatorio);
+    }
 
     public void modificarCompletada(Recordatorio recordatorio){ recordatorio.cambiarCompletada();}
 

@@ -29,7 +29,9 @@ public class Organizador {
     }
 
     public void actualizarRepeticiones(Recordatorio recordatorio){
-        if (organizador.isEmpty()){return;}
+
+        if (organizador.isEmpty()){
+            return;}
         if (recordatorio.verificarRepeticion()){
             List<LocalDateTime> fechas = recordatorio.verRepeticiones(recordatorio.obtenerInicio(), organizador.lastKey());
             agregarRepetidos(fechas, recordatorio.obtenerId());
