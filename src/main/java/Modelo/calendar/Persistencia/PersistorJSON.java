@@ -40,7 +40,6 @@ public class PersistorJSON implements Persistor {
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimePersistencia());
         gsonBuilder.registerTypeAdapter(Repetidor.class, new RepetidorPersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
-        System.out.println(gson.toJson(recordatorios));
         return gson.toJson(recordatorios);
     }
 
@@ -117,7 +116,6 @@ public class PersistorJSON implements Persistor {
     }
 
     private Repetidor crearRepetidor(String repetidorJson){
-        System.out.println(repetidorJson);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Repetidor.class, new RepetidorPersistencia());
         Gson gson = gsonBuilder.setPrettyPrinting().create();

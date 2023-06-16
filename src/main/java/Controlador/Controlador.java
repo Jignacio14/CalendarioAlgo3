@@ -46,9 +46,7 @@ public class Controlador extends Application {
         try {
             var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
             this.calendario.cargar(persistor);
-            System.out.println(calendario.obtenerRecordatorios());
         }catch (Exception e){
-            System.out.println(e);
             // cualquier caso de error de lectura se levanta el calendario vacio
         }
     }
