@@ -170,7 +170,7 @@ public class Controlador extends Application {
         }
         auxiliarGestionConsultas(inicioFin);
     }
-
+    
     private void auxiliarGestionConsultas(LocalDateTime[] fechas){
         desde = fechas[0];
         hasta = fechas[1];
