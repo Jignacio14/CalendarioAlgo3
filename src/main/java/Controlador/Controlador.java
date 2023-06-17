@@ -44,7 +44,7 @@ public class Controlador extends Application {
 
     private void cargarCalendario() throws IOException {
         try {
-            var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
+            var persistor = new PersistorJSON(System.getProperty("user.dir")+"calendario.json");
             this.calendario.cargar(persistor);
         }catch (Exception e){
             // cualquier caso de error de lectura se levanta el calendario vacio
@@ -54,7 +54,7 @@ public class Controlador extends Application {
     private void guardarCalendario() {
         try {
             if ( !this.calendario.calendarioVacio() ){
-                var persistor = new PersistorJSON("./src/main/pruebaSerializador.json");
+                var persistor = new PersistorJSON(System.getProperty("user.dir")+"calendario.json");
                 this.calendario.guardar(persistor);
             }
         }catch (IOException ignore){
@@ -95,7 +95,7 @@ public class Controlador extends Application {
         Recordatorio recordatorio;
         recordatorio = calendario.obtenerRecordatorio(crearRecordatorio(recAgregar));
         opcionesModRec = Arrays.stream(vista.opcionesModificarRec(recordatorio))
-                .filter(opcion -> !Objects.equals(opcion, "Eliminar"))
+                .filter(opcion -> !Objects.equals(opcion, "Eliminar") && !Objects.equals(opcion, "Cambiar estado"))
                 .toArray(String[]::new);
 
         for (String modificar: opcionesModRec) {
@@ -357,7 +357,9 @@ public class Controlador extends Application {
                         var duracionHs = verificarDatoUsuarioInt(duracionHorasUsuario);
                         Supplier<Object> duracionMinUsuario = () -> (Integer.parseInt(verificarDatoNuevo(pedirDatoUsuario.apply("Ingrese los minutos que quiere que dure el evento"), "0")));
                         var duracionMin = verificarDatoUsuarioInt(duracionMinUsuario);
-                        recordatorioAct.modificarFin(recordatorioAct.obtenerInicio().plusHours((Integer) duracionHs).plusMinutes((Integer) duracionMin));
+
+                        recordatorioAct.establecerHorasDuracion((Integer) duracionHs);
+                        recordatorioAct.establecerMinDuracion((Integer) duracionMin);
                 }
 
                 case "Fecha de fin" -> modificarFecha("fin", recordatorioAct);

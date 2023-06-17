@@ -1,38 +1,74 @@
 [
   {
-    "repetidor": {
-      "ultConsulta": "2023-06-16T19:21:10.642399900",
-      "Limite": {
-        "tipoLimite": "Iteraciones",
-        "fechaLimite": "2023-06-16T20:50:18.529580100",
-        "iteraciones": "3"
-      },
-      "Frecuencia": {
-        "tipoFrecuencia": "Diaria",
-        "intervalo": "2"
-      }
-    },
-    "ultRepeticion": "2024-06-04T19:20:54.266018500",
+    "completada": false,
+    "tipo": "Tarea",
+    "nombre": "SOMOS LA MISMA TAREA",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-17T00:06:09.775381900",
+    "fin": "2023-06-17T00:06:09.775381900",
+    "horas": 0,
+    "minutos": 0,
+    "id": 0,
+    "alarmas": []
+  },
+  {
+    "ultRepeticion": "2023-06-16T23:18:52.380275100",
     "tipo": "Evento",
     "nombre": "Sin titulo",
     "descripcion": "Sin descripcion",
-    "inicio": "2023-06-16T00:00",
-    "fin": "2023-06-17T00:00",
+    "inicio": "2023-06-16T23:18:52.380275100",
+    "fin": "2023-06-16T23:18:52.380275100",
+    "horas": 0,
+    "minutos": 20,
+    "id": 1,
+    "alarmas": []
+  },
+  {
+    "completada": false,
+    "tipo": "Tarea",
+    "nombre": "Sin titulo",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-17T00:06:11.478165400",
+    "fin": "2023-06-17T00:06:11.478165400",
+    "horas": 0,
+    "minutos": 0,
+    "id": 0,
+    "alarmas": []
+  },
+  {
+    "ultRepeticion": "2023-06-17T00:06:12.639307",
+    "tipo": "Evento",
+    "nombre": "Sin titulo",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-17T00:06:12.639307",
+    "fin": "2023-06-17T00:06:12.639307",
+    "horas": 0,
+    "minutos": 0,
+    "id": 3,
+    "alarmas": []
+  },
+  {
+    "completada": false,
+    "tipo": "Tarea",
+    "nombre": "Sin titulo",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-17T00:04:04.189172400",
+    "fin": "2023-06-17T00:04:04.189172400",
+    "horas": 0,
+    "minutos": 0,
+    "id": 4,
+    "alarmas": []
+  },
+  {
+    "completada": false,
+    "tipo": "Tarea",
+    "nombre": "Sin titulo",
+    "descripcion": "Sin descripcion",
+    "inicio": "2023-06-17T00:00",
+    "fin": "2023-06-18T00:00",
     "horas": 23,
     "minutos": 59,
-    "id": 0,
-    "alarmas": [
-      {
-        "fechaHora": "2023-06-16T18:50:54.266018500",
-        "efecto": "NOTIFICACION",
-        "nombre": "Sin titulo",
-        "descripcion": "Sin descripcion",
-        "fechaHoraRecordatorio": "2023-06-16T19:20:54.266018500",
-        "ultRepeticion": "2023-06-16T18:50:54.266018500",
-        "id": 0,
-        "sono": false
-      }
-    ]
-  },
-  null
+    "id": 5,
+    "alarmas": []
+  }
 ]

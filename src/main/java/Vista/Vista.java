@@ -60,7 +60,6 @@ public class Vista {
     private static String fechaAMod;
 
 
-
     public Vista(Stage stage, Calendario calendario, EventHandler<ActionEvent> escuchaPersonalizarRec, EventHandler<ActionEvent> generarAntSig, EventHandler<ActionEvent> verPorRango, EventHandler<ActionEvent> escuchaAgregarRec) throws IOException {
         stage.setTitle("Calendario");
         FXMLLoader loader = new FXMLLoader(getClass().

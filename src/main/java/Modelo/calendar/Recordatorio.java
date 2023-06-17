@@ -42,6 +42,16 @@ public abstract class Recordatorio {
         alarmas.clear();
     }
 
+    public void establecerHorasDuracion(Integer horas) {
+        this.horas = horas;
+        this.fin = fin.plusHours(horas);
+    }
+
+    public void establecerMinDuracion(Integer minutos) {
+        this.minutos = minutos;
+        this.fin = fin.plusMinutes(minutos);
+    }
+
     public LocalDateTime verFinal() { return this.inicio.plusHours(horas).plusMinutes(minutos); }
 
     public LocalDateTime verFinal(LocalDateTime repe){ return repe.plusHours(horas).plusMinutes(minutos);}
@@ -135,8 +145,8 @@ public abstract class Recordatorio {
         return null;
     }
 
-    public void modificarFin(LocalDateTime fin){
-        this.fin = fin;
+    public void modificarFin(LocalDateTime finNuevo){
+        this.fin = finNuevo;
     }
     @Override
     public boolean equals(Object obj) {
