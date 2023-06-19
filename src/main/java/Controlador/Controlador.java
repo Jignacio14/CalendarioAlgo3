@@ -48,6 +48,7 @@ public class Controlador extends Application {
             this.calendario.cargar(persistor);
         }catch (Exception e){
             // cualquier caso de error de lectura se levanta el calendario vacio
+            System.out.println("Error apertura");
         }
     }
 
@@ -58,6 +59,7 @@ public class Controlador extends Application {
                 this.calendario.guardar(persistor);
             }
         }catch (IOException ignore){
+            System.out.println("Error guardado");
         }
     }
 

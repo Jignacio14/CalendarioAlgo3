@@ -19,17 +19,7 @@ public class Organizador {
         }
     }
 
-
-    public void eliminarRepeticiones(Evento evento){
-        var repeticionesPrevias = evento.verRepeticiones(evento.obtenerInicio(), organizador.lastKey().plusDays(1));
-        repeticionesPrevias.remove(0);
-        for (var repe: repeticionesPrevias){
-            auxiliarEliminacion(repe, evento.obtenerId());
-        }
-    }
-
     public void actualizarRepeticiones(Recordatorio recordatorio){
-
         if (organizador.isEmpty()){
             return;}
         if (recordatorio.verificarRepeticion()){
@@ -63,9 +53,6 @@ public class Organizador {
         return organizador.isEmpty();
     }
 
-    public void eliminarRepeticiones(Recordatorio recordatorio){
-        auxiliarEliminacion(recordatorio.obtenerInicio(), recordatorio.obtenerId());
-    }
 
     private void auxiliarEliminacion(LocalDateTime fecha, Integer id){
         if (organizador.isEmpty()){
@@ -81,5 +68,20 @@ public class Organizador {
        }
     }
 
+    public void eliminarRepeticiones(Recordatorio recordatorio){
+        if (recordatorio.verificarRepeticion()){
+            eliminarRepeticiones((Evento) recordatorio);
+            return;
+        }
+        auxiliarEliminacion(recordatorio.obtenerInicio(), recordatorio.obtenerId());
+    }
+
+    private void eliminarRepeticiones(Evento evento){
+        var repeticionesPrevias = evento.verRepeticiones(evento.obtenerInicio(), organizador.lastKey().plusDays(1));
+        //repeticionesPrevias.remove(0);
+        for (var repe: repeticionesPrevias){
+            auxiliarEliminacion(repe, evento.obtenerId());
+        }
+    }
 
 }

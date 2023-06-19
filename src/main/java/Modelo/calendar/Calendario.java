@@ -32,8 +32,7 @@ public class Calendario implements Persistible {
         agregarRecordatorio(evento);
         int idEvento = this.recordatorios.lastIndexOf(evento);
         this.recordatorios.get(idEvento).establecerId(idEvento);
-        // TO DO -> agregar al ordenador
-        //organizador.actualizarRepeticiones(evento);
+        organizador.actualizarRepeticiones(evento);
         return idEvento;
     }
 
@@ -49,7 +48,7 @@ public class Calendario implements Persistible {
 
     public void eliminarRecordatorio(Recordatorio recordatorio) {
         var idRecordatorio = recordatorio.obtenerId();
-        // TO DO -> agregar la eliminacion
+        organizador.eliminarRepeticiones(recordatorio);
         this.recordatorios.set(idRecordatorio, null);
     }
 
