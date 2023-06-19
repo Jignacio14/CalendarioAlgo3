@@ -77,8 +77,10 @@ public class Organizador {
     }
 
     private void eliminarRepeticiones(Evento evento){
+        if(organizador.isEmpty()){
+            return;
+        }
         var repeticionesPrevias = evento.verRepeticiones(evento.obtenerInicio(), organizador.lastKey().plusDays(1));
-        //repeticionesPrevias.remove(0);
         for (var repe: repeticionesPrevias){
             auxiliarEliminacion(repe, evento.obtenerId());
         }
