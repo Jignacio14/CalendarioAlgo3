@@ -151,7 +151,7 @@ public class Vista {
         info.setPrefHeight(300);
         info.setPrefWidth(300);
         Text descripcion = new Text("\n" + recordatorio.obtenerDescripcion());
-        Text infoAlarmas = new Text("\n  Alarmas: " + ((recordatorio.obtenerAlarmas().isEmpty()) ? "Sin alarmas" : Arrays.toString(mostrarAlarmas(recordatorio.obtenerAlarmas()))) + "\n");
+        Text infoAlarmas = new Text("\n  Alarmas: " + ((recordatorio.obtenerAlarmas().isEmpty()) ? "Sin alarmas" : Arrays.toString(obtenerVistaAlarmas(recordatorio.obtenerAlarmas(), recordatorio, inicio))) + "\n");
         Text infoRepe = ((recordatorio.obtenerTipo().equals("Evento")) ? msjRepeticiones(((Evento)recordatorio).verificarRepeticion(), recordatorio) : new Text(""));
         infoRepe.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 
@@ -161,17 +161,20 @@ public class Vista {
 
     private Text msjRepeticiones(boolean hayRepeticiones, Recordatorio recordatorio) {
         Text infoRep = new Text();
-        LocalDateTime todasRep = LocalDateTime.now().plusYears(1);
-        String textoRep = (hayRepeticiones ?  ("Cantidad total de repeticiones: " + (((Evento)recordatorio).verRepeticiones(todasRep).size())) : "Sin Repeticiones");
+
+        String textoRep = (hayRepeticiones ?  ("Cantidad total de repeticiones: " + (((Evento)recordatorio).verRepeticiones(recordatorio.obtenerInicio(), recordatorio.obtenerInicio().plusYears(1)).size())) : "Sin Repeticiones");
         infoRep.setText(textoRep);
         return infoRep;
     }
 
-    private String[] mostrarAlarmas(List<Alarma> alarmas){
+    private String[] obtenerVistaAlarmas(List<Alarma> alarmas, Recordatorio recordatorio, LocalDateTime inicio){
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
 
         String[] alarmasAMostrar = new String[alarmas.size()];
         for (int i = 0; i < alarmas.size(); i++) {
-            alarmasAMostrar[i] = alarmas.get(i).toString();
+            Alarma alarmaAct = alarmas.get(i);
+            LocalDateTime fechaHoraAlarma = inicio.minusMinutes(alarmaAct.obtenerDiferenciaHoraria());
+            alarmasAMostrar[i] = (" - " + formato.format(fechaHoraAlarma) + " ___ Efecto: " + (alarmaAct.obtenerEfecto() == null ? "Sin efecto" : alarmaAct.obtenerEfecto()) + " - \n");
         }
         return alarmasAMostrar;
     }
