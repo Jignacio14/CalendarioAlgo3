@@ -22,7 +22,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.application.Platform;
@@ -151,7 +153,7 @@ public class Vista {
         info.setPrefHeight(300);
         info.setPrefWidth(300);
         Text descripcion = new Text("\n" + recordatorio.obtenerDescripcion());
-        Text infoAlarmas = new Text("\n  Alarmas: " + ((recordatorio.obtenerAlarmas().isEmpty()) ? "Sin alarmas" : Arrays.toString(obtenerVistaAlarmas(recordatorio.obtenerAlarmas(), recordatorio, inicio))) + "\n");
+        Text infoAlarmas = new Text("\n  Alarmas: " + ((recordatorio.obtenerAlarmas().isEmpty()) ? "Sin alarmas" : Arrays.toString(obtenerVistaAlarmas(recordatorio.obtenerAlarmas(), inicio))) + "\n");
         Text infoRepe = ((recordatorio.obtenerTipo().equals("Evento")) ? msjRepeticiones(((Evento)recordatorio).verificarRepeticion(), recordatorio) : new Text(""));
         infoRepe.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 
@@ -167,7 +169,7 @@ public class Vista {
         return infoRep;
     }
 
-    private String[] obtenerVistaAlarmas(List<Alarma> alarmas, Recordatorio recordatorio, LocalDateTime inicio){
+    private String[] obtenerVistaAlarmas(List<Alarma> alarmas, LocalDateTime inicio){
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
 
         String[] alarmasAMostrar = new String[alarmas.size()];
@@ -243,22 +245,40 @@ public class Vista {
         return alert.getResult() == ButtonType.OK;
     }
 
+    List<Alarma> crearAlarmasRepe(Stream<LocalDateTime> repeticiones, Alarma alarma) {
+        return repeticiones.map(repeticion -> {
+            Alarma alarmaRepe = new Alarma(alarma.obtenerNombre(), alarma.obtenerDescripcion(), repeticion.minusMinutes(alarma.obtenerDiferenciaHoraria()), "Evento");
+            alarmaRepe.establecerEfecto(alarma.obtenerEfecto());
+            return alarmaRepe;
+        }).collect(Collectors.toList());
+    };
+
+    public Stream<Alarma> obtenerAlarmasRepe(Recordatorio recordatorio) {
+        Stream<LocalDateTime> repeticiones = recordatorio.verRepeticiones(recordatorio.obtenerInicio(), recordatorio.obtenerInicio().plusYears(1)).stream();
+        List<Alarma> alarmasRepe = new ArrayList<>();
+        for (Alarma alarma : recordatorio.obtenerAlarmas()){
+            if (!alarma.yaSono()){
+                alarmasRepe.add(alarma);
+                alarmasRepe.addAll(crearAlarmasRepe(repeticiones, alarma));
+            }
+        }
+        return alarmasRepe.stream();
+    }
 
     private void verificarProximasAlarmas() {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                Function<Recordatorio, Stream<Alarma>> pedirAlarmas = recordatorio -> {
-                    if (recordatorio!=null){
-                        return recordatorio.obtenerAlarmas().stream();
-                    }
-                    return Stream.empty();
+                Function<Recordatorio, Stream<Alarma>> obtenerAlarmas = recordatorio -> {
+                    if (recordatorio==null) { return Stream.empty(); }
+                    if (recordatorio.verificarRepeticion()){ return obtenerAlarmasRepe(recordatorio); }
+                    return recordatorio.obtenerAlarmas().stream().filter(alarma -> !alarma.yaSono());
                 };
 
                 LocalDateTime tiempoAct = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
                 calendario.obtenerRecordatorios().stream()
-                        .flatMap(pedirAlarmas)
-                        .filter(alarma -> !alarma.yaSono() && alarma.obtenerfechaHora().equals(tiempoAct))
+                        .flatMap(obtenerAlarmas)
+                        .filter(alarma -> alarma.obtenerfechaHora().equals(tiempoAct))
                         .forEach(Vista::lanzarAlarma);
             }
         };
