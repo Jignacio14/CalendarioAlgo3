@@ -1,6 +1,7 @@
 package Modelo.calendar;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,13 +21,14 @@ public class Alarma {
     private String tipoRec;
     private boolean sono = false;
 
-    public Alarma(String nombre, String descripcion, LocalDateTime fechaHora) {
+    public Alarma(String nombre, String descripcion, LocalDateTime fechaHora, String tipoRec) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaHoraRecordatorio = fechaHora;
         this.fechaHora = fechaHora;
         this.ultRepeticion = fechaHora;
         this.id = -1;
+        this.tipoRec = tipoRec;
     }
 
     public void modificarNombre(String nuevoNombre) { this.nombre = nuevoNombre; }
@@ -45,6 +47,7 @@ public class Alarma {
 
     public void establecerIntervalo(Integer min, Integer horas, Integer dias, Integer semanas, boolean esDiaCompleto) {
         this.fechaHora = (esDiaCompleto ? this.fechaHora.plusMinutes(min).plusHours(horas).minusDays(dias).minusWeeks(semanas) : this.fechaHora.minusMinutes(min).minusHours(horas).minusDays(dias).minusWeeks(semanas));
+        this.diferenciaHoraria = (int)(Duration.between(fechaHora, this.fechaHoraRecordatorio).toMinutes());
         this.ultRepeticion = fechaHora;
     }
 
@@ -58,7 +61,6 @@ public class Alarma {
 
     public void establecerEfecto(AlarmaEfectos efecto) { this.efecto = efecto; }
 
-
     /* ____ GETTERS ____ */
 
     public LocalDateTime obtenerfechaHora() { return this.fechaHora; }
@@ -70,6 +72,8 @@ public class Alarma {
     public String obtenerDescripcion() { return this.descripcion; }
 
     public int obtenerId(){ return this.id; }
+
+    public int obtenerDiferenciaHoraria() { return this.diferenciaHoraria==null ? 0 : this.diferenciaHoraria; }
 
     public String obtenerTipoRec() { return this.tipoRec; }
 
@@ -127,12 +131,5 @@ public class Alarma {
         }
         return this.repetidor.equals(repetidorAcomparar);
     }
-
-    @Override
-    public String toString() {
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss");
-        return " - " + formato.format(this.fechaHora) + " ___ Efecto: " + (this.efecto == null ? "Sin efecto" : this.efecto) + " - \n";
-    }
-
 }
 

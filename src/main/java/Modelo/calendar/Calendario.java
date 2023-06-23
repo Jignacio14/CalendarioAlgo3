@@ -75,7 +75,7 @@ public class Calendario implements Persistible {
     public void modificarCompletada(Recordatorio recordatorio){ recordatorio.cambiarCompletada();}
 
     public int agregarAlarma(Recordatorio recordatorio) {
-        var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio());
+        var alarma = new Alarma(recordatorio.obtenerNombre(), recordatorio.obtenerDescripcion(), recordatorio.obtenerInicio(), recordatorio.obtenerTipo());
         return recordatorio.agregarAlarma(alarma);
     }
 

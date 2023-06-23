@@ -33,7 +33,7 @@ public class AlarmaTest {
     @Test
     public void TestModificarAlarmaConFechaHoraAbs() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         var fechaHoraAlarmaEsperada = LocalDateTime.of(2023, 4, 15, 10, 0);
 
         alarma.establecerFechaHoraAbs(fechaHoraAlarmaEsperada);
@@ -48,7 +48,7 @@ public class AlarmaTest {
     @Test
     public void TestAgregarAlarmaConIntervaloMinutos() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarma.establecerIntervalo(30, 0, 0, 0, false);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
@@ -61,7 +61,7 @@ public class AlarmaTest {
     @Test
     public void TestAgregarAlarmaConIntervaloRecordatorioDiaCompleto() {
         var fecha = LocalDateTime.of(2023, 4, 20, 0, 0);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarma.establecerIntervalo(30, 9, 3, 0, true);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
@@ -76,7 +76,7 @@ public class AlarmaTest {
     @Test
     public void TestEfectoAlarmaSonido() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
         alarmaNueva.establecerEfecto(AlarmaEfectos.SONIDO);
@@ -87,7 +87,7 @@ public class AlarmaTest {
     @Test
     public void TestEfectoAlarmaEmail() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
         alarmaNueva.establecerEfecto(AlarmaEfectos.EMAIL);
@@ -98,7 +98,7 @@ public class AlarmaTest {
     @Test
     public void TestEfectoAlarmaNotificacion() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
         alarmaNueva.establecerEfecto(AlarmaEfectos.NOTIFICACION);
@@ -111,7 +111,7 @@ public class AlarmaTest {
     @Test
     public void TestTituloAlarma() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
         alarmaNueva.establecerEfecto(AlarmaEfectos.EMAIL);
@@ -122,7 +122,7 @@ public class AlarmaTest {
     @Test
     public void TestDescripcionAlarma() {
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarmaNueva = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
 
         alarmaNueva.establecerIntervalo(30, 0, 0, 0, false);
         alarmaNueva.establecerEfecto(AlarmaEfectos.EMAIL);
@@ -135,7 +135,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaRepeticionDiaria(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerIntervalo(30, 0, 0, 0, false);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
@@ -165,7 +165,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaRepeticionSemanal(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerIntervalo(30, 0, 0, 0, false);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
         var fechaConIntervalo = alarma.obtenerfechaHora();
@@ -195,7 +195,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaRepeticionMensual(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerIntervalo(30, 0, 0, 0, false);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
@@ -222,7 +222,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaRepeticionAnual(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerIntervalo(30, 0, 0, 0, false);
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
@@ -261,7 +261,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaFechaHoraAbsRepeticionDiaria(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(2).minusHours(1).minusMinutes(30));
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
@@ -291,7 +291,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaFechaHoraAbsRepeticionSemanal(){
         var fecha = LocalDateTime.of(2023, 4, 18, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
         var fechaConIntervalo = alarma.obtenerfechaHora();
@@ -323,7 +323,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaFechaHoraAbsRepeticionMensual(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
@@ -352,7 +352,7 @@ public class AlarmaTest {
     @Test
     public void TestAlarmaFechaHoraAbsRepeticionAnual(){
         var fecha = LocalDateTime.of(2023, 4, 20, 10, 30);
-        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha);
+        Alarma alarma = new Alarma("titulo prueba", "descripcion prueba", fecha, "prueba");
         alarma.establecerFechaHoraAbsRepeticiones(fecha.minusDays(3).minusHours(1).minusMinutes(30));
         alarma.establecerEfecto(AlarmaEfectos.SONIDO);
 
